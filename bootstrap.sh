@@ -34,6 +34,7 @@ wget http://python-distribute.org/distribute_setup.py
 python distribute_setup.py
 easy_install pip
 
+
 # Install Java Ambient
 #sudo add-apt-repository ppa:webupd8team/java
 #sudo apt-get update
