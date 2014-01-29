@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
@@ -17,8 +18,8 @@ class CreatePublicationAPITestCase(APILiveServerTestCase):
             'title': 'First publication',
             'description': 'First description',
             'slug': 'first-publication',
-            'publication_start_date': '2014-01-29 19:10:07',
-            'publication_end_date': '',
+            'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
+            'publication_end_date': None,
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

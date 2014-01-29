@@ -1,15 +1,16 @@
 from django.conf.urls import patterns, url, include
-
 from django.contrib import admin
+from rest_framework.routers import DefaultRouter
+from publication import views
+
 admin.autodiscover()
 
+router = DefaultRouter()
+router.register(r'publication', views.PublicationViewSet)
+
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'publication.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^', include('snippets.urls')),
-
+    url(r'^publication/', include(router.urls), name='publication-list')
 )
