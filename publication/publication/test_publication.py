@@ -126,3 +126,22 @@ class PublicationAPITestCase(APILiveServerTestCase):
         detail_url = response.data['results'][0]['url']
         response = self.client.get(detail_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_if_updates_publication(self):
+        """
+        Tests if an authenticated user can update a publication
+        """
+        response = self.client.post(self.url, self.data, format='json')
+        unaltered_data = copy.copy(response.data)
+        altered_data = response.data
+        altered_data['title'] = 'Altered title'
+        response2 = self.client.patch(altered_data['url'], altered_data)
+        self.assertNotEqual(unaltered_data['title'], response2.data['title'])
+
+    def test_unauthenticated_user_can_not_update_publication(self):
+        response = self.client.post(self.url, self.data, format='json')
+        self.client.force_authenticate(user=None)
+        altered_data = response.data
+        altered_data['title'] = 'Altered title'
+        response2 = self.client.patch(altered_data['url'], altered_data)
+        self.assertEqual(response2.status_code, status.HTTP_403_FORBIDDEN)
