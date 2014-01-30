@@ -19,7 +19,7 @@ class Publication(Common):
     author = models.ForeignKey(User, blank=True)
 
 
-def find_available_slug(object, instance, slug, slug_number=2):
+def find_available_slug(object, instance, slug, original_slug, slug_number=2):
     """
     Recursive method that will add underscores to a slug field
     until a free value is located
@@ -29,13 +29,13 @@ def find_available_slug(object, instance, slug, slug_number=2):
     except object.DoesNotExist:
         instance.slug = slug
     else:
-        slug = slugify(slug + "-{0}".format(slug_number))
+        slug = slugify(original_slug + "-{0}".format(slug_number))
         slug_number += 1
-        find_available_slug(object, instance, slug, slug_number=slug_number)
+        find_available_slug(object, instance, slug, original_slug, slug_number=slug_number)
     return
 
 
 @receiver(pre_save, sender=Publication)
 def slugify_title(sender, instance, *args, **kwargs):
     slug = slugify(instance.title)
-    find_available_slug(sender, instance, slug)
+    find_available_slug(sender, instance, slug, slug)

@@ -33,6 +33,14 @@ class CommonTestCase(LiveServerTestCase):
 class CreatePublicationAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
+        self.url = reverse('publication-list')
+        self.data = {
+            'title': 'First publication',
+            'description': 'First description',
+            'slug': 'first-publication',
+            'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
+            'publication_end_date': None,
+        }
         self.superuser = User.objects.create_superuser(username='superuser', email='su@su.com', password='123')
         self.client.force_authenticate(user=self.superuser)
         super(CreatePublicationAPITestCase, self).setUp()
@@ -42,92 +50,54 @@ class CreatePublicationAPITestCase(APILiveServerTestCase):
         """
         Ensure we can create a new publication object
         """
-        url = reverse('publication-list')
-        data = {
-            'title': 'First publication',
-            'description': 'First description',
-            'slug': 'first-publication',
-            'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
-            'publication_end_date': None,
-        }
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(self.url, self.data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_post_blank_publication(self):
         """
         Ensure it does not accept the data when some mandatory fields are sent without data
         """
-        url = reverse('publication-list')
-        data = {
+        self.data = {
             'title': None,
             'description': None,
             'slug': None,
             'publication_start_date': None,
             'publication_end_date': None,
         }
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(self.url, self.data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_slug_is_generated_automatically(self):
         """
         Checks if the slug is generated automatically
         """
-        url = reverse('publication-list')
-        data = {
-            'title': 'First publication',
-            'description': 'First description',
-            'slug': 'other-slug',
-            'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
-            'publication_end_date': None,
-        }
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(self.url, self.data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['slug'], slugify(data['title']))
+        self.assertEqual(response.data['slug'], slugify(self.data['title']))
 
     def test_slug_is_unique(self):
-        url = reverse('publication-list')
-        data = {
-            'title': 'First publication',
-            'description': 'First description',
-            'slug': 'other-slug',
-            'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
-            'publication_end_date': None,
-        }
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(self.url, self.data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['slug'], slugify(data['title']))
-        response2 = self.client.post(url, data, format='json')
+        self.assertEqual(response.data['slug'], slugify(self.data['title']))
+        response2 = self.client.post(self.url, self.data, format='json')
         self.assertEqual(response2.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response2.data['slug'], slugify(data['title'] + "-2"))
+        self.assertEqual(response2.data['slug'], slugify(self.data['title'] + "-2"))
+        response3 = self.client.post(self.url, self.data, format='json')
+        self.assertEqual(response3.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response3.data['slug'], slugify(self.data['title'] + "-3"))
 
     def test_do_not_create_publication_without_authentication(self):
         """
         Ensure we can create a new publication object
         """
-        url = reverse('publication-list')
-        data = {
-            'title': 'First publication',
-            'description': 'First description',
-            'slug': 'first-publication',
-            'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
-            'publication_end_date': None,
-        }
         self.client.force_authenticate(user=None)
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(self.url, self.data, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_publication_has_author(self):
         """
         Ensure publication created has author
         """
-        url = reverse('publication-list')
-        data = {
-            'title': 'First publication',
-            'description': 'First description',
-            'slug': 'first-publication',
-            'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
-            'publication_end_date': None,
-        }
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(self.url, self.data, format='json')
         self.assertIn('author', list(response.data))
         self.assertEqual(response.data['author'], self.superuser.username)
