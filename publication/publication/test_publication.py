@@ -1,3 +1,4 @@
+import copy, time
 from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.utils.text import slugify
@@ -18,6 +19,15 @@ class CommonTestCase(LiveServerTestCase):
         common = Common.objects.create()
         self.assertTrue(common.creation_date)
         self.assertTrue(common.last_modification_date)
+
+    def test_update_common_fields(self):
+        """
+        Ensure common field last_modification_date is changed when object is saved
+        """
+        common = Common.objects.create()
+        common2 = copy.copy(common)
+        common.save()
+        self.assertNotEqual(common.last_modification_date, common2.last_modification_date)
 
 
 class CreatePublicationAPITestCase(APILiveServerTestCase):
