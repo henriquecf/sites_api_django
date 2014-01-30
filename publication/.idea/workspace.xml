@@ -12,8 +12,8 @@
     <file path="/views.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391103148298" ignored="false" />
     <file path="/settings.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391031162177" ignored="false" />
     <file path="/serializers.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391110268270" ignored="false" />
-    <file path="/Dummy.txt" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391112377442" ignored="false" />
-    <file path="/test_publication.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391112724506" ignored="false" />
+    <file path="/Dummy.txt" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391112787175" ignored="false" />
+    <file path="/test_publication.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391114174551" ignored="false" />
     <file path="/models.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391108729628" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -86,7 +86,7 @@
       <file leaf-file-name="test_publication.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/publication/test_publication.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="156" column="49" selection-start="6652" selection-end="6652" vertical-scroll-proportion="1.2080537">
+            <state line="166" column="46" selection-start="7158" selection-end="7158" vertical-scroll-proportion="0.8791946">
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -440,7 +440,11 @@
       <created>1391112379959</created>
       <updated>1391112379959</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Created and passed tests for deleting publications">
+      <created>1391112790370</created>
+      <updated>1391112790370</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -510,7 +514,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Created and passed tests for updating publications" />
+    <option name="LAST_COMMIT_MESSAGE" value="Created and passed tests for deleting publications" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -539,6 +543,7 @@
     <MESSAGE value="Created and passed list publication test" />
     <MESSAGE value="Created and passed test for retrieving urls from publication lists" />
     <MESSAGE value="Created and passed tests for updating publications" />
+    <MESSAGE value="Created and passed tests for deleting publications" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -643,7 +648,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/publication/test_publication.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="156" column="49" selection-start="6652" selection-end="6652" vertical-scroll-proportion="1.2080537">
+        <state line="166" column="46" selection-start="7158" selection-end="7158" vertical-scroll-proportion="0.8791946">
           <folding>
             <element signature="e#0#17#0" expanded="true" />
           </folding>

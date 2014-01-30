@@ -158,3 +158,10 @@ class PublicationAPITestCase(APILiveServerTestCase):
         detail_url = response.data['url']
         response2 = self.client.delete(detail_url)
         self.assertEqual(response2.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_if_publication_is_published(self):
+        response = self.client.post(self.url, self.data, format='json')
+        self.assertIn('is_published', list(response.data))
+        is_published_url = response.data['is_published']
+        response2 = self.client.get(is_published_url)
+        self.assertEqual(response2.data, True)
