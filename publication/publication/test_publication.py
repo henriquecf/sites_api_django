@@ -2,11 +2,24 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.utils.text import slugify
 from django.contrib.auth.models import User
+from django.test import LiveServerTestCase
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
+from publication.models import Common
 
 # TODO Create common class that will store creation date, last modification date,
 #  author and last editor and will be inhereted by all the others
+class CommonTestCase(LiveServerTestCase):
+
+    def test_create_common_fields(self):
+        """
+        Ensure common is created
+        """
+        common = Common.objects.create()
+        self.assertTrue(common.creation_date)
+        self.assertTrue(common.last_modification_date)
+
+
 class CreatePublicationAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
@@ -14,22 +27,6 @@ class CreatePublicationAPITestCase(APILiveServerTestCase):
         self.client.force_authenticate(user=self.superuser)
         super(CreatePublicationAPITestCase, self).setUp()
 
-    def test_common_model_is_created(self):
-        """
-        Ensure common model comes within a publication
-        """
-        url = reverse('publication-list')
-        data = {
-            'title': 'First publication',
-            'description': 'First description',
-            'slug': 'first-publication',
-            'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
-            'publication_end_date': None,
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        common_fields = ['creation_date', 'last_modification_date', 'author', 'last_editor']
-        self.assertIn(common_fields, list(response.data))
 
     def test_create_publication(self):
         """
@@ -108,3 +105,18 @@ class CreatePublicationAPITestCase(APILiveServerTestCase):
         self.client.force_authenticate(user=None)
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_publication_has_author(self):
+        """
+        Ensure publication created has author
+        """
+        url = reverse('publication-list')
+        data = {
+            'title': 'First publication',
+            'description': 'First description',
+            'slug': 'first-publication',
+            'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
+            'publication_end_date': None,
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertIn('author', list(response.data))

@@ -2,9 +2,15 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils.text import slugify
+from django.contrib.auth.models import User
 
 
-class Publication(models.Model):
+class Common(models.Model):
+    creation_date = models.DateTimeField(auto_now_add=True, editable=False)
+    last_modification_date = models.DateTimeField(auto_now=True, editable=False)
+
+
+class Publication(Common):
     title = models.CharField(max_length=150)
     description = models.TextField()
     slug = models.SlugField(max_length=150)

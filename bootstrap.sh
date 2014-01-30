@@ -24,15 +24,13 @@ sudo apt-get install -y libreadline-dev libncurses5-dev libssl1.0.0 tk8.5-dev zl
 
 wget http://python.org/ftp/python/3.3.3/Python-3.3.3.tgz
 tar xvfz Python-3.3.3.tgz
+rm Python-3.3.3.tgz
 cd Python-3.3.3
 sudo ./configure --prefix=/opt/python3.3
 make
 sudo make install
-/opt/python3.3/bin/pyvenv ~/python3.3
-source ~/python3.3/bin/activate
-wget http://python-distribute.org/distribute_setup.py
-python distribute_setup.py
-easy_install pip
+cd ../
+rm -rf Python-3.3.3
 
 
 # Install Java Ambient
