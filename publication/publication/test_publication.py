@@ -14,6 +14,23 @@ class CreatePublicationAPITestCase(APILiveServerTestCase):
         self.client.force_authenticate(user=self.superuser)
         super(CreatePublicationAPITestCase, self).setUp()
 
+    def test_common_model_is_created(self):
+        """
+        Ensure common model comes within a publication
+        """
+        url = reverse('publication-list')
+        data = {
+            'title': 'First publication',
+            'description': 'First description',
+            'slug': 'first-publication',
+            'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
+            'publication_end_date': None,
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        common_fields = ['creation_date', 'last_modification_date', 'author', 'last_editor']
+        self.assertIn(common_fields, list(response.data))
+
     def test_create_publication(self):
         """
         Ensure we can create a new publication object
@@ -28,7 +45,6 @@ class CreatePublicationAPITestCase(APILiveServerTestCase):
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data, data)
 
     def test_post_blank_publication(self):
         """
