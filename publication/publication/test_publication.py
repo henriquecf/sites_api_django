@@ -8,26 +8,26 @@ from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 from publication.models import Common
 
-# TODO Create common class that will store creation date, last modification date,
-#  author and last editor and will be inhereted by all the others
+
 class CommonTestCase(LiveServerTestCase):
+
+    def setUp(self):
+        self.common = Common.objects.create()
 
     def test_create_common_fields(self):
         """
         Ensure common is created
         """
-        common = Common.objects.create()
-        self.assertTrue(common.creation_date)
-        self.assertTrue(common.last_modification_date)
+        self.assertTrue(self.common.creation_date)
+        self.assertTrue(self.common.last_modification_date)
 
     def test_update_common_fields(self):
         """
         Ensure common field last_modification_date is changed when object is saved
         """
-        common = Common.objects.create()
-        common2 = copy.copy(common)
-        common.save()
-        self.assertNotEqual(common.last_modification_date, common2.last_modification_date)
+        common2 = copy.copy(self.common)
+        self.common.save()
+        self.assertNotEqual(self.common.last_modification_date, common2.last_modification_date)
 
 
 class CreatePublicationAPITestCase(APILiveServerTestCase):
