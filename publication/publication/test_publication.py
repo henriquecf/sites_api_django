@@ -56,3 +56,19 @@ class CreatePublicationAPITestCase(APILiveServerTestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['slug'], slugify(data['title']))
+
+    def test_slug_is_unique(self):
+        url = reverse('publication-list')
+        data = {
+            'title': 'First publication',
+            'description': 'First description',
+            'slug': 'other-slug',
+            'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
+            'publication_end_date': None,
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['slug'], slugify(data['title']))
+        response2 = self.client.post(url, data, format='json')
+        self.assertEqual(response2.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response2.data['slug'], slugify(data['title'] + "-2"))
