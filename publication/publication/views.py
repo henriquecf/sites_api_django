@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from publication.models import Publication
 from publication.serializers import PublicationSerializer
 
@@ -9,3 +9,4 @@ class PublicationViewSet(viewsets.ModelViewSet):
     """
     queryset = Publication.objects.all()
     serializer_class = PublicationSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )

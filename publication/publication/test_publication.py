@@ -1,14 +1,18 @@
 from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.utils.text import slugify
+from django.contrib.auth.models import User
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 
-# TODO Test if just authenticated user can create a publication
-# TODO Generate slug automatically
 # TODO Create common class that will store creation date, last modification date,
 #  author and last editor and will be inhereted by all the others
 class CreatePublicationAPITestCase(APILiveServerTestCase):
+
+    def setUp(self):
+        self.superuser = User.objects.create_superuser(username='superuser', email='su@su.com', password='123')
+        self.client.force_authenticate(user=self.superuser)
+        super(CreatePublicationAPITestCase, self).setUp()
 
     def test_create_publication(self):
         """
@@ -72,3 +76,19 @@ class CreatePublicationAPITestCase(APILiveServerTestCase):
         response2 = self.client.post(url, data, format='json')
         self.assertEqual(response2.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response2.data['slug'], slugify(data['title'] + "-2"))
+
+    def test_do_not_create_publication_without_authentication(self):
+        """
+        Ensure we can create a new publication object
+        """
+        url = reverse('publication-list')
+        data = {
+            'title': 'First publication',
+            'description': 'First description',
+            'slug': 'first-publication',
+            'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
+            'publication_end_date': None,
+        }
+        self.client.force_authenticate(user=None)
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
