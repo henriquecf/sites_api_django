@@ -112,3 +112,17 @@ class PublicationAPITestCase(APILiveServerTestCase):
         self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
         self.assertEqual(response.data['count'], 3)
+
+    def test_retrive_url_from_list(self):
+        """
+        Gets a publication list and retrieves the field url from each publication in the list
+        """
+        self.client.post(self.url, self.data, formart='json')
+        self.client.post(self.url, self.data, formart='json')
+        self.client.post(self.url, self.data, formart='json')
+        self.client.force_authenticate(user=None)
+        response = self.client.get(self.url)
+        self.assertIn('url', list(response.data['results'][0]))
+        detail_url = response.data['results'][0]['url']
+        response = self.client.get(detail_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
