@@ -30,7 +30,7 @@ class CommonTestCase(LiveServerTestCase):
         self.assertNotEqual(self.common.last_modification_date, common2.last_modification_date)
 
 
-class CreatePublicationAPITestCase(APILiveServerTestCase):
+class PublicationAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
         self.url = reverse('publication-list')
@@ -43,7 +43,7 @@ class CreatePublicationAPITestCase(APILiveServerTestCase):
         }
         self.superuser = User.objects.create_superuser(username='superuser', email='su@su.com', password='123')
         self.client.force_authenticate(user=self.superuser)
-        super(CreatePublicationAPITestCase, self).setUp()
+        super(PublicationAPITestCase, self).setUp()
 
 
     def test_create_publication(self):
@@ -101,3 +101,14 @@ class CreatePublicationAPITestCase(APILiveServerTestCase):
         response = self.client.post(self.url, self.data, format='json')
         self.assertIn('author', list(response.data))
         self.assertEqual(response.data['author'], self.superuser.username)
+
+    def test_list_publication(self):
+        """
+        Posts some publication and retrieves them back, even when not authenticated
+        """
+        self.client.post(self.url, self.data, formart='json')
+        self.client.post(self.url, self.data, formart='json')
+        self.client.post(self.url, self.data, formart='json')
+        self.client.force_authenticate(user=None)
+        response = self.client.get(self.url)
+        self.assertEqual(response.data['count'], 3)
