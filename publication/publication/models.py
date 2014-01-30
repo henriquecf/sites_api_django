@@ -16,6 +16,7 @@ class Publication(Common):
     slug = models.SlugField(max_length=150)
     publication_start_date = models.DateTimeField()
     publication_end_date = models.DateTimeField(blank=True, null=True)
+    author = models.ForeignKey(User, blank=True)
 
 
 def find_available_slug(object, instance, slug, slug_number=2):

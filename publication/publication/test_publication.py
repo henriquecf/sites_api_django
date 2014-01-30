@@ -120,3 +120,4 @@ class CreatePublicationAPITestCase(APILiveServerTestCase):
         }
         response = self.client.post(url, data, format='json')
         self.assertIn('author', list(response.data))
+        self.assertEqual(response.data['author'], self.superuser.username)

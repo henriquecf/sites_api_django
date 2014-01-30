@@ -3,6 +3,7 @@ from publication.models import Publication
 
 
 class PublicationSerializer(serializers.ModelSerializer):
+    author = serializers.Field(source='author.username')
 
     class Meta:
         model = Publication

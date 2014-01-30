@@ -10,3 +10,6 @@ class PublicationViewSet(viewsets.ModelViewSet):
     queryset = Publication.objects.all()
     serializer_class = PublicationSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+    def pre_save(self, obj):
+        obj.author = self.request.user
