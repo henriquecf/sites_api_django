@@ -1,23 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" name="Default" comment="Refactoring">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/.name" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/dataSources.ids" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/dataSources.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/other.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/publication.iml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/scopes/scope_settings.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/testrunner.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/vagrant.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
+    <list default="true" id="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/publication/test_publication.py" afterPath="$PROJECT_DIR$/publication/test_publication.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="publication.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,8 +12,8 @@
     <file path="/views.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391103148298" ignored="false" />
     <file path="/settings.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391031162177" ignored="false" />
     <file path="/serializers.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391110268270" ignored="false" />
-    <file path="/Dummy.txt" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391110534944" ignored="false" />
-    <file path="/test_publication.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391112329301" ignored="false" />
+    <file path="/Dummy.txt" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391112377442" ignored="false" />
+    <file path="/test_publication.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391112724506" ignored="false" />
     <file path="/models.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391108729628" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -100,7 +86,7 @@
       <file leaf-file-name="test_publication.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/publication/test_publication.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="140" column="60" selection-start="5814" selection-end="5814" vertical-scroll-proportion="0.75838923">
+            <state line="156" column="49" selection-start="6652" selection-end="6652" vertical-scroll-proportion="1.2080537">
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -450,7 +436,11 @@
       <created>1391110536825</created>
       <updated>1391110536825</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Created and passed tests for updating publications">
+      <created>1391112379959</created>
+      <updated>1391112379959</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -520,7 +510,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Created and passed test for retrieving urls from publication lists" />
+    <option name="LAST_COMMIT_MESSAGE" value="Created and passed tests for updating publications" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -548,6 +538,7 @@
     <MESSAGE value="Refactored find_available_slug function to work for over 2 equal slugs" />
     <MESSAGE value="Created and passed list publication test" />
     <MESSAGE value="Created and passed test for retrieving urls from publication lists" />
+    <MESSAGE value="Created and passed tests for updating publications" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -652,7 +643,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/publication/test_publication.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="140" column="60" selection-start="5814" selection-end="5814" vertical-scroll-proportion="0.75838923">
+        <state line="156" column="49" selection-start="6652" selection-end="6652" vertical-scroll-proportion="1.2080537">
           <folding>
             <element signature="e#0#17#0" expanded="true" />
           </folding>

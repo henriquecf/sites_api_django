@@ -145,3 +145,16 @@ class PublicationAPITestCase(APILiveServerTestCase):
         altered_data['title'] = 'Altered title'
         response2 = self.client.patch(altered_data['url'], altered_data)
         self.assertEqual(response2.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_if_deletes_publication(self):
+        response = self.client.post(self.url, self.data, format='json')
+        detail_url = response.data['url']
+        response2 = self.client.delete(detail_url)
+        self.assertEqual(response2.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_unauthenticated_user_can_not_delete_publication(self):
+        response = self.client.post(self.url, self.data, format='json')
+        self.client.force_authenticate(user=None)
+        detail_url = response.data['url']
+        response2 = self.client.delete(detail_url)
+        self.assertEqual(response2.status_code, status.HTTP_403_FORBIDDEN)
