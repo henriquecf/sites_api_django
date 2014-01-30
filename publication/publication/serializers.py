@@ -4,6 +4,7 @@ from publication.models import Publication
 
 class PublicationSerializer(serializers.HyperlinkedModelSerializer):
     author = serializers.Field(source='author.username')
+    is_published = serializers.HyperlinkedIdentityField(view_name='publication-is-published')
 
     class Meta:
         model = Publication
