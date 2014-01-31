@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" name="Default" comment="Passed test if a publication is published or not - test if not published">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/publication/test_publication.py" afterPath="$PROJECT_DIR$/publication/test_publication.py" />
+    <list default="true" id="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/publication/models.py" afterPath="$PROJECT_DIR$/publication/models.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/publication/serializers.py" afterPath="$PROJECT_DIR$/publication/serializers.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/publication/views.py" afterPath="$PROJECT_DIR$/publication/views.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="publication.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/urls.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391031175235" ignored="false" />
     <file path="/Python Console" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1390924626760" ignored="false" />
-    <file path="/views.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391115298860" ignored="false" />
+    <file path="/views.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391170632179" ignored="false" />
     <file path="/settings.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391031162177" ignored="false" />
-    <file path="/serializers.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391114926360" ignored="false" />
-    <file path="/Dummy.txt" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391169763296" ignored="false" />
+    <file path="/serializers.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391170707956" ignored="false" />
+    <file path="/Dummy.txt" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391170816278" ignored="false" />
     <file path="/test_publication.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391169538318" ignored="false" />
-    <file path="/models.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391108729628" ignored="false" />
+    <file path="/models.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391170733310" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +57,16 @@
       <file leaf-file-name="views.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/publication/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="25" column="17" selection-start="995" selection-end="995" vertical-scroll-proportion="0.0">
+            <state line="28" column="45" selection-start="973" selection-end="973" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="serializers.py" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/publication/serializers.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="10" column="27" selection-start="432" selection-end="432" vertical-scroll-proportion="0.19042316">
               <folding />
             </state>
           </provider>
@@ -65,19 +75,17 @@
       <file leaf-file-name="models.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/publication/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="40" column="53" selection-start="1413" selection-end="1413" vertical-scroll-proportion="0.0">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test_publication.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="test_publication.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/publication/test_publication.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="184" column="39" selection-start="8014" selection-end="8014" vertical-scroll-proportion="0.9365256">
-              <folding>
-                <element signature="e#0#17#0" expanded="true" />
-              </folding>
+            <state line="184" column="39" selection-start="8014" selection-end="8014" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -109,10 +117,10 @@
         <option value="$PROJECT_DIR$/snippets/views.py" />
         <option value="$PROJECT_DIR$/publication/settings.py" />
         <option value="$PROJECT_DIR$/publication/urls.py" />
-        <option value="$PROJECT_DIR$/publication/models.py" />
-        <option value="$PROJECT_DIR$/publication/views.py" />
-        <option value="$PROJECT_DIR$/publication/serializers.py" />
         <option value="$PROJECT_DIR$/publication/test_publication.py" />
+        <option value="$PROJECT_DIR$/publication/views.py" />
+        <option value="$PROJECT_DIR$/publication/models.py" />
+        <option value="$PROJECT_DIR$/publication/serializers.py" />
       </list>
     </option>
   </component>
@@ -188,13 +196,13 @@
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
     <property name="recentsLimit" value="5" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Vagrantfile" />
+    <property name="options.lastSelected" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="restartRequiresConfirmation" value="true" />
-    <property name="dynamic.classpath" value="false" />
-    <property name="options.searchVisible" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Vagrantfile" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
+    <property name="dynamic.classpath" value="false" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -242,29 +250,6 @@
       <option name="PARAMETERS" value="" />
       <method />
     </configuration>
-    <configuration default="true" type="tests" factoryName="Unittests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="publication" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PUREUNITTEST" value="true" />
-      <option name="PARAMS" value="" />
-      <option name="USE_PARAM" value="false" />
-      <method />
-    </configuration>
     <configuration default="true" type="Python.DjangoServer" factoryName="Django server">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -286,6 +271,29 @@
       <option name="runNoReload" value="false" />
       <option name="useCustomRunCommand" value="false" />
       <option name="customRunCommand" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="publication" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
       <method />
     </configuration>
     <configuration default="true" type="tests" factoryName="Doctests">
@@ -441,7 +449,11 @@
       <created>1391115921036</created>
       <updated>1391115921036</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Created test to check if publication is publishing with action &quot;publish&quot;">
+      <created>1391169871261</created>
+      <updated>1391169871261</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -452,7 +464,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20632279" sideWeight="0.67096776" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20909595" sideWeight="0.67096776" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32903227" sideWeight="0.5002764" order="7" side_tool="true" content_ui="tabs" />
@@ -511,7 +523,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Passed test if a publication is published or not - test if not published" />
+    <option name="LAST_COMMIT_MESSAGE" value="Created test to check if publication is publishing with action &quot;publish&quot;" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -544,6 +556,7 @@
     <MESSAGE value="Created and test if a publication is published or not" />
     <MESSAGE value="Passed test if a publication is published or not" />
     <MESSAGE value="Passed test if a publication is published or not - test if not published" />
+    <MESSAGE value="Created test to check if publication is publishing with action &quot;publish&quot;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -559,9 +572,7 @@
     <entry file="file://$PROJECT_DIR$/publication/test_publication.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="142" column="49" selection-start="5943" selection-end="5943" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#0#17#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -589,9 +600,7 @@
     <entry file="file://$PROJECT_DIR$/publication/serializers.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="8" column="97" selection-start="284" selection-end="284" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#0#38#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -635,35 +644,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/publication/test_publication.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="184" column="39" selection-start="8014" selection-end="8014" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/publication/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="45" selection-start="973" selection-end="973" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/publication/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="40" column="53" selection-start="1413" selection-end="1413" vertical-scroll-proportion="0.0">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/publication/serializers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="47" selection-start="396" selection-end="396" vertical-scroll-proportion="0.21205357">
-          <folding>
-            <element signature="e#0#38#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/publication/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="17" selection-start="995" selection-end="995" vertical-scroll-proportion="0.0">
+        <state line="10" column="27" selection-start="432" selection-end="432" vertical-scroll-proportion="0.19042316">
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/publication/test_publication.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="184" column="39" selection-start="8014" selection-end="8014" vertical-scroll-proportion="0.9365256">
-          <folding>
-            <element signature="e#0#17#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>

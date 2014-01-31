@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils.text import slugify
+from django.utils import timezone
 from django.contrib.auth.models import User
 
 
@@ -17,6 +18,24 @@ class Publication(Common):
     publication_start_date = models.DateTimeField()
     publication_end_date = models.DateTimeField(blank=True, null=True)
     author = models.ForeignKey(User, blank=True)
+
+    def publish(self):
+        if self.publication_start_date > timezone.now():
+            self.publication_start_date = timezone.now()
+        if self.publication_end_date:
+            self.publication_end_date = None
+        return True
+
+    def is_published(self):
+        if self.publication_end_date:
+            if self.publication_start_date > timezone.now() or self.publication_end_date < timezone.now():
+                return False
+            else:
+                return True
+        elif self.publication_start_date > timezone.now():
+            return False
+        else:
+            return True
 
 
 def find_available_slug(object, instance, slug, original_slug, slug_number=2):

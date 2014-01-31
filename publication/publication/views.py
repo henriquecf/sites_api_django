@@ -20,12 +20,10 @@ class PublicationViewSet(viewsets.ModelViewSet):
     @link()
     def is_published(self, request, *args, **kwargs):
         publication = self.get_object()
-        if publication.publication_end_date:
-            if publication.publication_start_date > timezone.now() or publication.publication_end_date < timezone.now():
-                return Response(False)
-            else:
-                return Response(True)
-        elif publication.publication_start_date > timezone.now():
-            return Response(False)
-        else:
-            return Response(True)
+        return Response(publication.is_published())
+
+
+    @link()
+    def publish(self, request, *args, **kwargs):
+        publication = self.get_object()
+        return Response(publication.publish())

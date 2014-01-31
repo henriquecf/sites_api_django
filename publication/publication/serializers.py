@@ -5,7 +5,7 @@ from publication.models import Publication
 class PublicationSerializer(serializers.HyperlinkedModelSerializer):
     author = serializers.Field(source='author.username')
     is_published = serializers.HyperlinkedIdentityField(view_name='publication-is-published')
+    publish = serializers.HyperlinkedIdentityField(view_name='publication-publish')
 
     class Meta:
         model = Publication
-        #fields = ('title', 'description', 'slug', 'publication_start_date', 'publication_end_date')
