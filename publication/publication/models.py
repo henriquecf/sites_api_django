@@ -25,13 +25,13 @@ class Publication(Common):
         if self.publication_end_date:
             self.publication_end_date = None
         self.save()
-        return True
+        return self.is_published()
 
     def unpublish(self):
         self.publication_start_date = timezone.now()
         self.publication_end_date = timezone.now()
         self.save()
-        return True
+        return self.is_published()
 
     def is_published(self):
         if self.publication_end_date:

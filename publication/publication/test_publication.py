@@ -171,8 +171,6 @@ class PublicationAPITestCase(APILiveServerTestCase):
         response4 = self.client.get(response3.data['is_published'])
         self.assertFalse(response4.data)
 
-    #TODO: Make publish and unpublish links
-
     def test_if_publication_publishes(self):
         response = self.client.post(self.url, self.data, format='json')
         altered_data = copy.copy(response.data)
@@ -182,8 +180,7 @@ class PublicationAPITestCase(APILiveServerTestCase):
         self.assertFalse(response3.data)
         self.assertIn('publish', list(response.data))
         publish_url = response.data['publish']
-        self.client.get(publish_url)
-        response4 = self.client.get(response.data['is_published'])
+        response4 = self.client.get(publish_url)
         self.assertTrue(response4.data)
 
     def test_if_publication_unpublishes(self):
@@ -194,6 +191,5 @@ class PublicationAPITestCase(APILiveServerTestCase):
         self.assertTrue(response2.data)
         self.assertIn('unpublish', response.data)
         unpublish_url = response.data['unpublish']
-        self.client.get(unpublish_url)
-        response3 = self.client.get(response.data['is_published'])
+        response3 = self.client.get(unpublish_url)
         self.assertFalse(response3.data)
