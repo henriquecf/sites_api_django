@@ -170,3 +170,16 @@ class PublicationAPITestCase(APILiveServerTestCase):
         response3 = self.client.patch(response.data['url'], altered_data)
         response4 = self.client.get(response3.data['is_published'])
         self.assertFalse(response4.data)
+
+    #TODO: Make publish and unpublish links
+
+    def test_if_publication_publishes(self):
+        response = self.client.post(self.url, self.data, format='json')
+        self.assertIn('is_published', list(response.data))
+        is_published_url = response.data['is_published']
+        response2 = self.client.get(is_published_url)
+        self.assertTrue(response2.data)
+        self.assertIn('publish', list(response.data))
+        publish_url = response.data['publish']
+        response3 = self.client.get(publish_url)
+        self.assertTrue(response3.data)
