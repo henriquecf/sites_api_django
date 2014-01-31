@@ -27,3 +27,8 @@ class PublicationViewSet(viewsets.ModelViewSet):
     def publish(self, request, *args, **kwargs):
         publication = self.get_object()
         return Response(publication.publish())
+
+    @link()
+    def unpublish(self, request, *args, **kwargs):
+        publication = self.get_object()
+        return Response(publication.unpublish())

@@ -4,6 +4,7 @@
     <list default="true" id="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/publication/models.py" afterPath="$PROJECT_DIR$/publication/models.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/publication/serializers.py" afterPath="$PROJECT_DIR$/publication/serializers.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/publication/test_publication.py" afterPath="$PROJECT_DIR$/publication/test_publication.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/publication/views.py" afterPath="$PROJECT_DIR$/publication/views.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -11,12 +12,12 @@
     <ignored path=".idea/workspace.xml" />
     <file path="/urls.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391031175235" ignored="false" />
     <file path="/Python Console" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1390924626760" ignored="false" />
-    <file path="/views.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391170632179" ignored="false" />
+    <file path="/views.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391172044546" ignored="false" />
     <file path="/settings.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391031162177" ignored="false" />
-    <file path="/serializers.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391170707956" ignored="false" />
-    <file path="/Dummy.txt" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391170816278" ignored="false" />
-    <file path="/test_publication.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391169538318" ignored="false" />
-    <file path="/models.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391170733310" ignored="false" />
+    <file path="/serializers.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391172060671" ignored="false" />
+    <file path="/Dummy.txt" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391170920591" ignored="false" />
+    <file path="/test_publication.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391171739681" ignored="false" />
+    <file path="/models.py" changelist="99d1b24b-4599-4189-bfdc-b4eb57a68b9d" time="1391171959322" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,16 +58,16 @@
       <file leaf-file-name="views.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/publication/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="45" selection-start="973" selection-end="973" vertical-scroll-proportion="0.0">
+            <state line="33" column="47" selection-start="1126" selection-end="1126" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="serializers.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="serializers.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/publication/serializers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="27" selection-start="432" selection-end="432" vertical-scroll-proportion="0.19042316">
+            <state line="8" column="87" selection-start="475" selection-end="475" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -75,16 +76,18 @@
       <file leaf-file-name="models.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/publication/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="32" column="19" selection-start="1152" selection-end="1152" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="e#0#28#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test_publication.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="test_publication.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/publication/test_publication.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="184" column="39" selection-start="8014" selection-end="8014" vertical-scroll-proportion="0.0">
+            <state line="186" column="39" selection-start="8152" selection-end="8152" vertical-scroll-proportion="3.766147">
               <folding />
             </state>
           </provider>
@@ -117,10 +120,10 @@
         <option value="$PROJECT_DIR$/snippets/views.py" />
         <option value="$PROJECT_DIR$/publication/settings.py" />
         <option value="$PROJECT_DIR$/publication/urls.py" />
-        <option value="$PROJECT_DIR$/publication/test_publication.py" />
-        <option value="$PROJECT_DIR$/publication/views.py" />
         <option value="$PROJECT_DIR$/publication/models.py" />
+        <option value="$PROJECT_DIR$/publication/views.py" />
         <option value="$PROJECT_DIR$/publication/serializers.py" />
+        <option value="$PROJECT_DIR$/publication/test_publication.py" />
       </list>
     </option>
   </component>
@@ -453,13 +456,18 @@
       <created>1391169871261</created>
       <updated>1391169871261</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Passed publish publication test">
+      <created>1391170923450</created>
+      <updated>1391170923450</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="64" y="-4" width="1857" height="1085" extended-state="6" />
     <editor active="true" />
     <layout>
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -475,7 +483,6 @@
       <window_info id="Heroku" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -523,7 +530,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Created test to check if publication is publishing with action &quot;publish&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Passed publish publication test" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -557,6 +564,7 @@
     <MESSAGE value="Passed test if a publication is published or not" />
     <MESSAGE value="Passed test if a publication is published or not - test if not published" />
     <MESSAGE value="Created test to check if publication is publishing with action &quot;publish&quot;" />
+    <MESSAGE value="Passed publish publication test" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -565,7 +573,9 @@
     <entry file="file://$PROJECT_DIR$/publication/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="40" column="53" selection-start="1413" selection-end="1413" vertical-scroll-proportion="0.0">
-          <folding />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -607,7 +617,9 @@
     <entry file="file://$PROJECT_DIR$/publication/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="8" column="69" selection-start="311" selection-end="311" vertical-scroll-proportion="0.0">
-          <folding />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -644,30 +656,32 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/publication/test_publication.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="184" column="39" selection-start="8014" selection-end="8014" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/publication/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="45" selection-start="973" selection-end="973" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/publication/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+        <state line="33" column="47" selection-start="1126" selection-end="1126" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/publication/serializers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="27" selection-start="432" selection-end="432" vertical-scroll-proportion="0.19042316">
+        <state line="8" column="87" selection-start="475" selection-end="475" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/publication/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="19" selection-start="1152" selection-end="1152" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/publication/test_publication.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="186" column="39" selection-start="8152" selection-end="8152" vertical-scroll-proportion="3.766147">
           <folding />
         </state>
       </provider>
