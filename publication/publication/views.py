@@ -9,6 +9,8 @@ class PublicationViewSet(viewsets.ModelViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.
+    Has some extra actions as publish, unpublish end check if is
+    publisehd or not.
     """
     queryset = Publication.objects.all()
     serializer_class = PublicationSerializer

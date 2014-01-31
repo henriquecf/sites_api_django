@@ -30,6 +30,7 @@ class CommonTestCase(LiveServerTestCase):
         self.assertNotEqual(self.common.last_modification_date, common2.last_modification_date)
 
 
+#TODO Refactor publication test cases, at least removing duplicated code
 class PublicationAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
