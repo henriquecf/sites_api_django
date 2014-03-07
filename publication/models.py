@@ -7,15 +7,15 @@ from django.contrib.auth.models import User
 
 
 class Common(models.Model):
-    creation_date = models.DateTimeField(auto_now_add=True, editable=False)
-    last_modification_date = models.DateTimeField(auto_now=True, editable=False)
+    creation_date = models.DateTimeField(auto_now_add=True)
+    last_modification_date = models.DateTimeField(auto_now=True)
 
 
 class Publication(Common):
     title = models.CharField(max_length=150)
-    description = models.TextField()
-    slug = models.SlugField(max_length=150)
-    publication_start_date = models.DateTimeField()
+    description = models.TextField(blank=True)
+    slug = models.SlugField(max_length=150, editable=False)
+    publication_start_date = models.DateTimeField(blank=True, default=timezone.now())
     publication_end_date = models.DateTimeField(blank=True, null=True)
     author = models.ForeignKey(User, blank=True)
 
@@ -28,7 +28,8 @@ class Publication(Common):
         return self.is_published()
 
     def unpublish(self):
-        self.publication_start_date = timezone.now()
+        if self.publication_start_date > timezone.now():
+            self.publication_start_date = timezone.now()
         self.publication_end_date = timezone.now()
         self.save()
         return self.is_published()
@@ -65,3 +66,5 @@ def find_available_slug(object, instance, slug, original_slug, slug_number=2):
 def slugify_title(sender, instance, *args, **kwargs):
     slug = slugify(instance.title)
     find_available_slug(sender, instance, slug, slug)
+    if not instance.publication_start_date:
+        instance.publication_start_date = timezone.now()

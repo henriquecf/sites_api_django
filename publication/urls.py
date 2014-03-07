@@ -12,5 +12,5 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^publication/', include(router.urls), name='publication-list')
+    url(r'^api/', include(router.urls), name='api')
 )
