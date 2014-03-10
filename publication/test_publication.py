@@ -1,11 +1,12 @@
-import copy, time
-from datetime import datetime
+import copy
+from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse
 from django.utils.text import slugify
 from django.contrib.auth.models import User
 from django.test import LiveServerTestCase
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
+from oauth2_provider.models import Application, AccessToken
 from publication.models import Common
 
 
@@ -43,7 +44,10 @@ class PublicationAPITestCase(APILiveServerTestCase):
             'publication_end_date': None,
         }
         self.superuser = User.objects.create_superuser(username='superuser', email='su@su.com', password='123')
-        self.client.force_authenticate(user=self.superuser)
+        #self.client.force_authenticate(user=self.superuser)
+        aplicacao = Application.objects.create(user=self.superuser, client_type='confidential', authorization_grant_type='password', client_id='12345')
+        access_token = AccessToken.objects.create(user=self.superuser, token='12345', application=aplicacao, expires=datetime.now() + timedelta(0, 60))
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token.token)
         super(PublicationAPITestCase, self).setUp()
 
 
@@ -91,9 +95,9 @@ class PublicationAPITestCase(APILiveServerTestCase):
         """
         Ensure we can create a new publication object
         """
-        self.client.force_authenticate(user=None)
+        self.client.credentials()
         response = self.client.post(self.url, self.data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_publication_has_author(self):
         """
@@ -141,11 +145,11 @@ class PublicationAPITestCase(APILiveServerTestCase):
 
     def test_unauthenticated_user_can_not_update_publication(self):
         response = self.client.post(self.url, self.data, format='json')
-        self.client.force_authenticate(user=None)
+        self.client.credentials()
         altered_data = response.data
         altered_data['title'] = 'Altered title'
         response2 = self.client.patch(altered_data['url'], altered_data)
-        self.assertEqual(response2.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response2.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_if_deletes_publication(self):
         response = self.client.post(self.url, self.data, format='json')
@@ -155,10 +159,10 @@ class PublicationAPITestCase(APILiveServerTestCase):
 
     def test_unauthenticated_user_can_not_delete_publication(self):
         response = self.client.post(self.url, self.data, format='json')
-        self.client.force_authenticate(user=None)
+        self.client.credentials()
         detail_url = response.data['url']
         response2 = self.client.delete(detail_url)
-        self.assertEqual(response2.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response2.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_if_publication_is_published_or_not(self):
         response = self.client.post(self.url, self.data, format='json')
