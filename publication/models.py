@@ -11,13 +11,18 @@ class Common(models.Model):
     last_modification_date = models.DateTimeField(auto_now=True)
 
 
+class OwnerMixin(models.Model):
+    owner = models.ForeignKey(User, blank=True, related_name='owner')
+
+
 class Publication(Common):
     title = models.CharField(max_length=150)
     description = models.TextField(blank=True)
     slug = models.SlugField(max_length=150, editable=False)
     publication_start_date = models.DateTimeField(blank=True, default=timezone.now())
     publication_end_date = models.DateTimeField(blank=True, null=True)
-    author = models.ForeignKey(User, blank=True)
+    author = models.ForeignKey(User, blank=True, related_name='author')
+    owner = models.ForeignKey(User, blank=True, related_name='owner2')
 
     def publish(self):
         if self.publication_start_date > timezone.now():
