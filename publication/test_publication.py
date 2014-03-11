@@ -44,8 +44,6 @@ class PublicationAPITestCase(APILiveServerTestCase):
             'publication_end_date': None,
         }
         self.superuser = User.objects.create_superuser(username='superuser', email='su@su.com', password='123')
-        self.data['owner'] = self.superuser.id
-        #self.client.force_authenticate(user=self.superuser)
         aplicacao = Application.objects.create(user=self.superuser, client_type='confidential', authorization_grant_type='password', client_id='12345')
         access_token = AccessToken.objects.create(user=self.superuser, token='12345', application=aplicacao, expires=datetime.now() + timedelta(0, 60))
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token.token)
@@ -200,7 +198,6 @@ class PublicationAPITestCase(APILiveServerTestCase):
         response3 = self.client.get(unpublish_url)
         self.assertFalse(response3.data)
 
-# TODO find the best alternative to generalize a way of retrieving the user to the owner field in OwnerMixin model
     def test_if_non_owner_cannot_access_others_data(self):
         response = self.client.post(self.url, self.data)
         pub_url = response.data['url']
@@ -209,4 +206,15 @@ class PublicationAPITestCase(APILiveServerTestCase):
         access_token = AccessToken.objects.create(user=other_user, token='123456', application=aplicacao, expires=datetime.now() + timedelta(0, 60))
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token.token)
         response2 = self.client.get(pub_url)
-        self.assertEqual(response2.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response2.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_if_list_retrieves_just_owner_data(self):
+        self.client.post(self.url, self.data)
+        response = self.client.get(self.url)
+        self.assertEqual(response.data['count'], 1)
+        other_user = User.objects.create(username='henrique', password='123', email='h@g.com')
+        aplicacao = Application.objects.create(user=other_user, client_type='confidential', authorization_grant_type='password', client_id='123456')
+        access_token = AccessToken.objects.create(user=other_user, token='123456', application=aplicacao, expires=datetime.now() + timedelta(0, 60))
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token.token)
+        response2 = self.client.get(self.url)
+        self.assertEqual(response2.data['count'], 0)
