@@ -1,9 +1,13 @@
 from rest_framework import serializers
 from publication.models import Publication
+from .models import Owner
 
 
 class OwnerSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.Field(source='owner.username')
+
+    class Meta:
+        model = Owner
 
 
 class PublicationSerializer(OwnerSerializer):

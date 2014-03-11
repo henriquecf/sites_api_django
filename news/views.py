@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from publication.views import OwnerViewSet
+from .serializers import CategorySerializer
+from .models import Category
 
-# Create your views here.
+
+class CategoryViewSet(OwnerViewSet):
+    serializer_class = CategorySerializer
+    model = Category
