@@ -171,12 +171,12 @@ class PublicationAPITestCase(APILiveServerTestCase):
         self.assertIn('is_published', list(response.data))
         is_published_url = response.data['is_published']
         response2 = self.client.get(is_published_url)
-        self.assertTrue(response2.data)
+        self.assertTrue(response2.data['is_published'])
         altered_data = copy.copy(response.data)
         altered_data['publication_end_date'] = datetime.now()
         response3 = self.client.patch(response.data['url'], altered_data)
         response4 = self.client.get(response3.data['is_published'])
-        self.assertFalse(response4.data)
+        self.assertFalse(response4.data['is_published'])
 
     def test_if_publication_publishes(self):
         response = self.client.post(self.url, self.data, format='json')
@@ -184,22 +184,22 @@ class PublicationAPITestCase(APILiveServerTestCase):
         altered_data['publication_end_date'] = datetime.now()
         response2 = self.client.patch(response.data['url'], altered_data)
         response3 = self.client.get(response2.data['is_published'])
-        self.assertFalse(response3.data)
+        self.assertFalse(response3.data['is_published'])
         self.assertIn('publish', list(response.data))
         publish_url = response.data['publish']
         response4 = self.client.get(publish_url)
-        self.assertTrue(response4.data)
+        self.assertTrue(response4.data['is_published'])
 
     def test_if_publication_unpublishes(self):
         response = self.client.post(self.url, self.data, format='json')
         self.assertIn('is_published', list(response.data))
         is_published_url = response.data['is_published']
         response2 = self.client.get(is_published_url)
-        self.assertTrue(response2.data)
+        self.assertTrue(response2.data['is_published'])
         self.assertIn('unpublish', response.data)
         unpublish_url = response.data['unpublish']
         response3 = self.client.get(unpublish_url)
-        self.assertFalse(response3.data)
+        self.assertFalse(response3.data['is_published'])
 
     def test_if_non_owner_cannot_access_others_data(self):
         response = self.client.post(self.url, self.data)
