@@ -31,8 +31,14 @@ class CommonTestCase(LiveServerTestCase):
         self.assertNotEqual(self.common.last_modification_date, common2.last_modification_date)
 
 
-#TODO Refactor publication test cases, at least removing duplicated code
 class PublicationAPITestCase(APILiveServerTestCase):
+
+    def oauth2_authorize(self, username, token, client_type='confidential', grant_type='password'):
+        email = '{0}@gmail.com'.format(username)
+        self.superuser = User.objects.create(username=username, email=email, password='123')
+        aplicacao = Application.objects.create(user=self.superuser, client_type=client_type, authorization_grant_type=grant_type, client_id=token)
+        access_token = AccessToken.objects.create(user=self.superuser, token=token, application=aplicacao, expires=datetime.now() + timedelta(0, 60))
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token.token)
 
     def setUp(self):
         self.url = reverse('publication-list')
@@ -43,10 +49,7 @@ class PublicationAPITestCase(APILiveServerTestCase):
             'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
             'publication_end_date': None,
         }
-        self.superuser = User.objects.create_superuser(username='superuser', email='su@su.com', password='123')
-        aplicacao = Application.objects.create(user=self.superuser, client_type='confidential', authorization_grant_type='password', client_id='12345')
-        access_token = AccessToken.objects.create(user=self.superuser, token='12345', application=aplicacao, expires=datetime.now() + timedelta(0, 60))
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token.token)
+        self.oauth2_authorize('user1', '12345')
         super(PublicationAPITestCase, self).setUp()
 
 
@@ -201,10 +204,7 @@ class PublicationAPITestCase(APILiveServerTestCase):
     def test_if_non_owner_cannot_access_others_data(self):
         response = self.client.post(self.url, self.data)
         pub_url = response.data['url']
-        other_user = User.objects.create(username='henrique', password='123', email='h@g.com')
-        aplicacao = Application.objects.create(user=other_user, client_type='confidential', authorization_grant_type='password', client_id='123456')
-        access_token = AccessToken.objects.create(user=other_user, token='123456', application=aplicacao, expires=datetime.now() + timedelta(0, 60))
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token.token)
+        self.oauth2_authorize('user2', '123456')
         response2 = self.client.get(pub_url)
         self.assertEqual(response2.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -212,9 +212,6 @@ class PublicationAPITestCase(APILiveServerTestCase):
         self.client.post(self.url, self.data)
         response = self.client.get(self.url)
         self.assertEqual(response.data['count'], 1)
-        other_user = User.objects.create(username='henrique', password='123', email='h@g.com')
-        aplicacao = Application.objects.create(user=other_user, client_type='confidential', authorization_grant_type='password', client_id='123456')
-        access_token = AccessToken.objects.create(user=other_user, token='123456', application=aplicacao, expires=datetime.now() + timedelta(0, 60))
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token.token)
+        self.oauth2_authorize('user2', '123456')
         response2 = self.client.get(self.url)
         self.assertEqual(response2.data['count'], 0)
