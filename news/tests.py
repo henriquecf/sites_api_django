@@ -59,3 +59,9 @@ class CategoryAPITestCase(APILiveServerTestCase):
         response2 = self.client.delete(response.data['url'])
         self.assertEqual(response2.status_code, status.HTTP_204_NO_CONTENT)
 
+    def test_if_creates_with_parent(self):
+        data2 = self.data.update({'parent': '1'})
+        self.test_if_creates()
+        response = self.client.post(self.url, data2)
+        self.assertEqual(response.data['parent'], 1)
+
