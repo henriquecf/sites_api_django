@@ -34,15 +34,15 @@ class PublicationViewSet(OwnerViewSet):
     @link()
     def is_published(self, request, *args, **kwargs):
         publication = self.get_object()
-        return Response(publication.is_published())
+        return Response({'is_published': publication.is_published()})
 
 
     @link()
     def publish(self, request, *args, **kwargs):
         publication = self.get_object()
-        return Response(publication.publish())
+        return Response({'is_published': publication.publish()})
 
     @link()
     def unpublish(self, request, *args, **kwargs):
         publication = self.get_object()
-        return Response(publication.unpublish())
+        return Response({'is_published': publication.unpublish()})
