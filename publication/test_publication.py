@@ -64,14 +64,14 @@ class PublicationAPITestCase(APILiveServerTestCase):
         """
         Ensure it does not accept the data when some mandatory fields are sent without data
         """
-        self.data = {
+        blank_data = {
             'title': None,
             'description': None,
             'slug': None,
             'publication_start_date': None,
             'publication_end_date': None,
         }
-        response = self.client.post(self.url, self.data, format='json')
+        response = self.client.post(self.url, blank_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_slug_is_generated_automatically(self):

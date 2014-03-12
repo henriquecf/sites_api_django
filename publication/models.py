@@ -50,25 +50,17 @@ class Publication(Owner):
             return True
 
 
-def find_available_slug(object, instance, slug, original_slug, slug_number=2):
+def find_available_slug(model, instance, slug, original_slug, slug_number=2):
     """
     Recursive method that will add underscores to a slug field
     until a free value is located
     """
     try:
-        sender_node = object.objects.get(slug=slug)
-    except object.DoesNotExist:
+        sender_node = model.objects.get(slug=slug)
+    except model.DoesNotExist:
         instance.slug = slug
     else:
         slug = slugify(original_slug + "-{0}".format(slug_number))
         slug_number += 1
-        find_available_slug(object, instance, slug, original_slug, slug_number=slug_number)
+        find_available_slug(model, instance, slug, original_slug, slug_number=slug_number)
     return
-
-
-@receiver(pre_save, sender=Publication)
-def slugify_title(sender, instance, *args, **kwargs):
-    slug = slugify(instance.title)
-    find_available_slug(sender, instance, slug, slug)
-    if not instance.publication_start_date:
-        instance.publication_start_date = timezone.now()

@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from publication.serializers import OwnerSerializer
-from .models import Category
+from publication.serializers import OwnerSerializer, PublicationSerializer
+from .models import Category, News
 
 
 class CategorySerializer(OwnerSerializer):
@@ -9,3 +9,9 @@ class CategorySerializer(OwnerSerializer):
 
     class Meta:
         model = Category
+
+
+class NewsSerializer(PublicationSerializer):
+
+    class Meta:
+        model = News

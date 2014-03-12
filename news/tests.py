@@ -99,4 +99,8 @@ class CategoryAPITestCase(APILiveServerTestCase):
 
 
 class NewsAPITestCase(PublicationAPITestCase):
-    url = reverse('news-list')
+
+    def setUp(self):
+        super(NewsAPITestCase, self).setUp()
+        self.url = reverse('news-list')
+        self.data.update({'content': 'My first news', 'title': 'My first news'})

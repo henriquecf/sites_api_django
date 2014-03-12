@@ -9,6 +9,7 @@ admin.autodiscover()
 router = DefaultRouter()
 router.register(r'publication', publication_views.PublicationViewSet)
 router.register(r'category', news_views.CategoryViewSet)
+router.register(r'news', news_views.NewsViewSet)
 
 urlpatterns = patterns('',
 
