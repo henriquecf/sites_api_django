@@ -1,6 +1,6 @@
 from copy import copy
 from datetime import datetime, timedelta
-from django.core.urlresolvers import reverse, NoReverseMatch
+from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
@@ -96,3 +96,7 @@ class CategoryAPITestCase(APILiveServerTestCase):
         self.client.post(self.url, children_data)
         response2 = self.client.get(response.data['url'])
         self.assertFalse(response2.data['is_leaf_node'])
+
+
+class NewsAPITestCase(PublicationAPITestCase):
+    url = reverse('news-list')

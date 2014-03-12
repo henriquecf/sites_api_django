@@ -13,4 +13,4 @@ class Category(MPTTModel, Owner):
 
 class News(Publication):
     content = models.TextField()
-    #image = models.ImageField()
+    image = models.ImageField(upload_to='news/')
