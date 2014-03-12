@@ -3,17 +3,16 @@ from rest_framework.response import Response
 from rest_framework.decorators import link
 from publication.models import Publication, Owner
 from publication.serializers import PublicationSerializer, OwnerSerializer
+from .filters import IsOwnerFilterBackend
 
 
 class OwnerViewSet(viewsets.ModelViewSet):
     serializer_class = OwnerSerializer
     model = Owner
+    filter_backends = (IsOwnerFilterBackend, )
 
     def pre_save(self, obj):
         obj.owner = self.request.user
-
-    def get_queryset(self):
-        return self.model.objects.filter(owner=self.request.user)
 
 
 class PublicationViewSet(OwnerViewSet):
@@ -25,7 +24,6 @@ class PublicationViewSet(OwnerViewSet):
     """
     model = Publication
     serializer_class = PublicationSerializer
-
 
     def pre_save(self, obj):
         super(PublicationViewSet, self).pre_save(obj)

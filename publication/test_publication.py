@@ -215,3 +215,5 @@ class PublicationAPITestCase(APILiveServerTestCase):
         self.oauth2_authorize('user2', '123456')
         response2 = self.client.get(self.url)
         self.assertEqual(response2.data['count'], 0)
+
+    # TODO create tests for filters, ordering and pagination in publication
