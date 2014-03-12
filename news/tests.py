@@ -1,3 +1,4 @@
+from copy import copy
 from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.contrib.auth.models import User
@@ -60,8 +61,9 @@ class CategoryAPITestCase(APILiveServerTestCase):
         self.assertEqual(response2.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_if_creates_with_parent(self):
-        data2 = self.data.update({'parent': '1'})
-        self.test_if_creates()
-        response = self.client.post(self.url, data2)
-        self.assertEqual(response.data['parent'], 1)
+        response0 = self.client.post(self.url, self.data)
+        parent_data = copy(response0.data)
+        parent_data.update({'parent': parent_data['url'], 'name': 'Category 2'})
+        response = self.client.post(self.url, parent_data)
+        self.assertEqual(response.data['parent'], parent_data['url'])
 
