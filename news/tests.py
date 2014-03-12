@@ -62,8 +62,37 @@ class CategoryAPITestCase(APILiveServerTestCase):
 
     def test_if_creates_with_parent(self):
         response0 = self.client.post(self.url, self.data)
-        parent_data = copy(response0.data)
-        parent_data.update({'parent': parent_data['url'], 'name': 'Category 2'})
-        response = self.client.post(self.url, parent_data)
-        self.assertEqual(response.data['parent'], parent_data['url'])
+        children_data = copy(self.data)
+        children_data.update({'parent': response0.data['url'], 'name': 'Category 2'})
+        response = self.client.post(self.url, children_data)
+        self.assertEqual(response.data['parent'], response0.data['url'])
 
+    def test_if_lists_just_owner_items(self):
+        self.client.post(self.url, self.data)
+        response = self.client.get(self.url)
+        self.assertEqual(response.data['count'], 1)
+        self.oauth2_authorize(username='user2', token='123456')
+        response2 = self.client.get(self.url)
+        self.assertEqual(response2.data['count'], 0)
+        self.assertEqual(response2.data['results'], [])
+
+    def test_if_gets_descendants(self):
+        response0 = self.client.post(self.url, self.data)
+        children_data = copy(self.data)
+        children_data.update({'parent': response0.data['url'], 'name': 'Category 2'})
+        response = self.client.post(self.url, children_data)
+        response1 = self.client.get(response0.data['url'])
+        self.assertIn('get_descendants', response1.data)
+        get_descendants_url = response1.data['get_descendants']
+        response2 = self.client.get(get_descendants_url)
+        self.assertEqual(response2.data['descendants'][0], response.data)
+
+    def test_if_has_is_leaf_node_field(self):
+        response = self.client.post(self.url, self.data)
+        self.assertIn('is_leaf_node', response.data)
+        self.assertTrue(response.data['is_leaf_node'])
+        children_data = copy(self.data)
+        children_data.update({'parent': response.data['url'], 'name': 'Category 2'})
+        self.client.post(self.url, children_data)
+        response2 = self.client.get(response.data['url'])
+        self.assertFalse(response2.data['is_leaf_node'])

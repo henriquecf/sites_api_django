@@ -13,6 +13,6 @@ router.register(r'category', news_views.CategoryViewSet)
 urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
-
-    url(r'^', include(router.urls), name='api')
+    url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    url(r'^', include(router.urls), name='api'),
 )
