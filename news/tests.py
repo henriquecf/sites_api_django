@@ -2,12 +2,9 @@ from copy import copy
 from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from django.core.files import File
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 from oauth2_provider.models import AccessToken, Application
-from publication.test_publication import PublicationAPITestCase
-from .models import News
 
 
 class CategoryAPITestCase(APILiveServerTestCase):
@@ -100,12 +97,27 @@ class CategoryAPITestCase(APILiveServerTestCase):
         self.assertFalse(response2.data['is_leaf_node'])
 
 
-class NewsAPITestCase(PublicationAPITestCase):
+class NewsAPITestCase(APILiveServerTestCase):
+
+    def oauth2_authorize(self, username, token, client_type='confidential', grant_type='password'):
+        email = '{0}@gmail.com'.format(username)
+        self.superuser = User.objects.create(username=username, email=email, password='123')
+        aplicacao = Application.objects.create(user=self.superuser, client_type=client_type, authorization_grant_type=grant_type, client_id=token)
+        access_token = AccessToken.objects.create(user=self.superuser, token=token, application=aplicacao, expires=datetime.now() + timedelta(0, 60))
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token.token)
 
     def setUp(self):
-        super(NewsAPITestCase, self).setUp()
         self.url = reverse('news-list')
-        self.data.update({'content': 'My first news', 'title': 'My first news'})
+        self.data = {
+            'title': 'First news',
+            'description': 'First description',
+            'slug': 'first-publication',
+            'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
+            'publication_end_date': None,
+            'content': 'My first news',
+        }
+        self.oauth2_authorize('user1', '12345')
+        super(NewsAPITestCase, self).setUp()
 
     def test_if_adds_category(self):
         data2 = copy(self.data)
@@ -119,5 +131,3 @@ class NewsAPITestCase(PublicationAPITestCase):
         response2 = self.client.post(self.url, data2)
         self.assertEqual(response2.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response2.data['categories'], [cat1_url])
-
-    # TODO Do filters for news and category

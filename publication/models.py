@@ -1,19 +1,9 @@
 from django.db import models
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
 from django.utils.text import slugify
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-
-class Common(models.Model):
-    creation_date = models.DateTimeField(auto_now_add=True)
-    last_modification_date = models.DateTimeField(auto_now=True)
-
-
-class Account(Common):
-    owner = models.ForeignKey(User, blank=True, related_name='owner2')
-    expiration_date = models.DateField(editable=False)
+from account.models import Account
 
 
 class Publication(Account):

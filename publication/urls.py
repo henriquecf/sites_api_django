@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, url, include
 from django.contrib import admin
 from rest_framework.routers import DefaultRouter
+from account.views import AccountViewSet
 from publication import views as publication_views
 from news import views as news_views
 
@@ -10,6 +11,7 @@ router = DefaultRouter()
 router.register(r'publication', publication_views.PublicationBaseViewSet)
 router.register(r'category', news_views.CategoryBaseViewSet)
 router.register(r'news', news_views.NewsViewSet)
+router.register(r'account', AccountViewSet)
 
 urlpatterns = patterns('',
 

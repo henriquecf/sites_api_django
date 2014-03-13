@@ -1,27 +1,13 @@
-import datetime
 from django.utils.text import slugify
 from django.utils import timezone
-import django_filters
-from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import link
-from rest_framework.permissions import IsAdminUser
-from publication.models import Publication, Account
-from publication.serializers import PublicationSerializer, OwnerSerializer
+
+from publication.models import Publication
+
+from publication.serializers import PublicationSerializer
+from account.views import AccountBaseViewSet
 from .models import find_available_slug
-
-
-class AccountBaseViewSet(viewsets.ModelViewSet):
-    serializer_class = OwnerSerializer
-    model = Account
-
-    def pre_save(self, obj):
-        obj.owner = self.request.user
-        obj.expiration_date = datetime.date.today() + datetime.timedelta(365)
-
-
-class AccountViewSet(AccountBaseViewSet):
-    permission_classes = (IsAdminUser, )
 
 
 class PublicationBaseViewSet(AccountBaseViewSet):

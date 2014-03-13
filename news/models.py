@@ -1,6 +1,7 @@
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
-from publication.models import Publication, Account
+from account.models import Account
+from publication.models import Publication
 
 
 class Category(MPTTModel, Account):

@@ -39,10 +39,12 @@ INSTALLED_APPS = (
 
     'oauth2_provider',
     'rest_framework',
-    'publication',
-    'news',
     'mptt',
     'django_filters',
+
+    'account',
+    'publication',
+    'news',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -105,7 +107,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_FILTER_BACKENDS': (
-        'publication.filters.IsOwnerFilterBackend',
+        'account.filters.IsOwnerFilterBackend',
         'rest_framework.filters.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
         'rest_framework.filters.OrderingFilter',
