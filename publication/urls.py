@@ -7,8 +7,8 @@ from news import views as news_views
 admin.autodiscover()
 
 router = DefaultRouter()
-router.register(r'publication', publication_views.PublicationViewSet)
-router.register(r'category', news_views.CategoryViewSet)
+router.register(r'publication', publication_views.PublicationBaseViewSet)
+router.register(r'category', news_views.CategoryBaseViewSet)
 router.register(r'news', news_views.NewsViewSet)
 
 urlpatterns = patterns('',

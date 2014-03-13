@@ -1,11 +1,11 @@
 from rest_framework.decorators import link
 from rest_framework.response import Response
-from publication.views import OwnerViewSet, PublicationViewSet
+from publication.views import AccountBaseViewSet, PublicationBaseViewSet
 from .serializers import CategorySerializer, NewsSerializer
 from .models import Category, News
 
 
-class CategoryViewSet(OwnerViewSet):
+class CategoryBaseViewSet(AccountBaseViewSet):
     serializer_class = CategorySerializer
     model = Category
 
@@ -15,6 +15,6 @@ class CategoryViewSet(OwnerViewSet):
         return Response({'descendants': CategorySerializer(category.get_descendants(), context={'request': request}).data})
 
 
-class NewsViewSet(PublicationViewSet):
+class NewsViewSet(PublicationBaseViewSet):
     serializer_class = NewsSerializer
     model = News

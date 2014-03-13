@@ -32,6 +32,35 @@ class CommonTestCase(LiveServerTestCase):
         self.assertNotEqual(self.common.last_modification_date, common2.last_modification_date)
 
 
+class AccountAPITestCase(APILiveServerTestCase):
+
+    def oauth2_authorize(self, username, token, client_type='confidential', grant_type='password', is_superuser=True):
+        email = '{0}@gmail.com'.format(username)
+        if is_superuser:
+            self.superuser = User.objects.create_superuser(username=username, email=email, password='123')
+        else:
+            self.superuser = User.objects.create(username=username, email=email, password='123')
+        aplicacao = Application.objects.create(user=self.superuser, client_type=client_type, authorization_grant_type=grant_type, client_id=token)
+        access_token = AccessToken.objects.create(user=self.superuser, token=token, application=aplicacao, expires=datetime.now() + timedelta(0, 60))
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token.token)
+
+    def setUp(self):
+        self.url = reverse('account-list')
+        self.data = {
+            'username': 'user2',
+            'password': '123',
+        }
+        self.oauth2_authorize(username='superuser', token='12345')
+        super(AccountAPITestCase, self).setUp()
+
+    def test_if_normal_user_can_not_list(self):
+        self.oauth2_authorize('user', '123456', is_superuser=False)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+# TODO Create tests to create app user, test if just owner and children access data
+
+
 class PublicationAPITestCase(APILiveServerTestCase):
 
     def oauth2_authorize(self, username, token, client_type='confidential', grant_type='password'):
@@ -241,6 +270,11 @@ class PublicationAPITestCase(APILiveServerTestCase):
         #self.filter_request('publication_start_date', response.data['publication_start_date'])
         #self.filter_request('publication_end_date', response.data['publication_end_date'])
         self.oauth2_authorize('user2', '1828283')
+        self.client.post(self.url, self.data)
+        data3 = copy.copy(self.data)
+        data3.update({
+            'author': 1
+        })
         self.client.post(self.url, self.data)
         self.filter_request('author__username', 'user2')
 

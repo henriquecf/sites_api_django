@@ -1,9 +1,9 @@
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
-from publication.models import Publication, Owner
+from publication.models import Publication, Account
 
 
-class Category(MPTTModel, Owner):
+class Category(MPTTModel, Account):
     name = models.CharField(max_length=150)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
 

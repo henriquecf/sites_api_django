@@ -1,23 +1,30 @@
+import datetime
 from django.utils.text import slugify
 from django.utils import timezone
 import django_filters
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import link
-from publication.models import Publication, Owner
+from rest_framework.permissions import IsAdminUser
+from publication.models import Publication, Account
 from publication.serializers import PublicationSerializer, OwnerSerializer
 from .models import find_available_slug
 
 
-class OwnerViewSet(viewsets.ModelViewSet):
+class AccountBaseViewSet(viewsets.ModelViewSet):
     serializer_class = OwnerSerializer
-    model = Owner
+    model = Account
 
     def pre_save(self, obj):
         obj.owner = self.request.user
+        obj.expiration_date = datetime.date.today() + datetime.timedelta(365)
 
 
-class PublicationViewSet(OwnerViewSet):
+class AccountViewSet(AccountBaseViewSet):
+    permission_classes = (IsAdminUser, )
+
+
+class PublicationBaseViewSet(AccountBaseViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.
@@ -26,11 +33,11 @@ class PublicationViewSet(OwnerViewSet):
     """
     model = Publication
     serializer_class = PublicationSerializer
-    filter_fields = ('title', 'description', 'publication_start_date', 'publication_end_date', 'author')
+    filter_fields = ('title', 'description', 'publication_start_date', 'publication_end_date', 'author__username')
     search_fields = ('title', 'description')
 
     def pre_save(self, obj):
-        super(PublicationViewSet, self).pre_save(obj)
+        super(PublicationBaseViewSet, self).pre_save(obj)
         # Makes the user who is posting the author of the publication
         obj.author = self.request.user
         # Creates a slug for the publication based on the title

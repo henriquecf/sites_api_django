@@ -11,11 +11,12 @@ class Common(models.Model):
     last_modification_date = models.DateTimeField(auto_now=True)
 
 
-class Owner(Common):
+class Account(Common):
     owner = models.ForeignKey(User, blank=True, related_name='owner2')
+    expiration_date = models.DateField(editable=False)
 
 
-class Publication(Owner):
+class Publication(Account):
     title = models.CharField(max_length=150)
     description = models.TextField(blank=True)
     slug = models.SlugField(max_length=150, editable=False)
