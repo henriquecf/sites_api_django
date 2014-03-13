@@ -23,6 +23,9 @@ class Publication(Owner):
     publication_end_date = models.DateTimeField(blank=True, null=True)
     author = models.ForeignKey(User, blank=True, related_name='author')
 
+    def __str__(self):
+        return self.title
+
     def publish(self):
         if self.publication_start_date > timezone.now():
             self.publication_start_date = timezone.now()

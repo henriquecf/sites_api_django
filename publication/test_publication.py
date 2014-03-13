@@ -2,6 +2,7 @@ import copy
 from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse
 from django.utils.text import slugify
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.test import LiveServerTestCase
 from rest_framework.test import APILiveServerTestCase
@@ -216,4 +217,31 @@ class PublicationAPITestCase(APILiveServerTestCase):
         response2 = self.client.get(self.url)
         self.assertEqual(response2.data['count'], 0)
 
-    # TODO create tests for filters, ordering and pagination in publication
+    def filter_request(self, field, value):
+        filter_data = {
+            field: value,
+        }
+        response_filter = self.client.get(self.url, filter_data)
+        self.assertEqual(response_filter.data['count'], 1, 'Did not filter if count = 2')
+
+    def test_if_filter_works(self):
+        self.client.post(self.url, self.data)
+        data2 = copy.copy(self.data)
+        data2.update({
+            'title': 'Publication for filter',
+            'description': 'Description for filter',
+            'publication_start_date': timezone.now() - timedelta(1),
+            'publication_end_date': timezone.now() + timedelta(100),
+        })
+        response = self.client.post(self.url, data2)
+        self.filter_request('search', 'filter')
+        self.filter_request('title', data2['title'])
+        self.filter_request('description', data2['description'])
+        # TODO Check filter for datetime fields
+        #self.filter_request('publication_start_date', response.data['publication_start_date'])
+        #self.filter_request('publication_end_date', response.data['publication_end_date'])
+        self.oauth2_authorize('user2', '1828283')
+        self.client.post(self.url, self.data)
+        self.filter_request('author__username', 'user2')
+
+    # TODO create tests for ordering and pagination in publication

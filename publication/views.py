@@ -1,18 +1,17 @@
 from django.utils.text import slugify
 from django.utils import timezone
+import django_filters
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import link
 from publication.models import Publication, Owner
 from publication.serializers import PublicationSerializer, OwnerSerializer
-from .filters import IsOwnerFilterBackend
 from .models import find_available_slug
 
 
 class OwnerViewSet(viewsets.ModelViewSet):
     serializer_class = OwnerSerializer
     model = Owner
-    filter_backends = (IsOwnerFilterBackend, )
 
     def pre_save(self, obj):
         obj.owner = self.request.user
@@ -27,6 +26,8 @@ class PublicationViewSet(OwnerViewSet):
     """
     model = Publication
     serializer_class = PublicationSerializer
+    filter_fields = ('title', 'description', 'publication_start_date', 'publication_end_date', 'author')
+    search_fields = ('title', 'description')
 
     def pre_save(self, obj):
         super(PublicationViewSet, self).pre_save(obj)

@@ -8,6 +8,7 @@ class OwnerSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Owner
+        exclude = ['owner']
 
 
 class PublicationSerializer(OwnerSerializer):
@@ -16,5 +17,5 @@ class PublicationSerializer(OwnerSerializer):
     publish = serializers.HyperlinkedIdentityField(view_name='publication-publish')
     unpublish = serializers.HyperlinkedIdentityField(view_name='publication-unpublish')
 
-    class Meta:
+    class Meta(OwnerSerializer.Meta):
         model = Publication

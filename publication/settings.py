@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'publication',
     'news',
     'mptt',
+    'django_filters',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -94,11 +95,19 @@ OAUTH2_PROVIDER = {
 
 REST_FRAMEWORK = {
     'PAGINATE_BY': 10,
+    'PAGINATE_BY_PARAM': 'page_size',
+    'MAX_PAGINATE_BY': 100,
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'oauth2_provider.ext.rest_framework.OAuth2Authentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'publication.filters.IsOwnerFilterBackend',
+        'rest_framework.filters.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
     )
 }
