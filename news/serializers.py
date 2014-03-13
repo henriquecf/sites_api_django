@@ -12,6 +12,7 @@ class CategorySerializer(OwnerSerializer):
 
 
 class NewsSerializer(PublicationSerializer):
+    image = serializers.ImageField(source='news.image', required=False)
 
     class Meta:
         model = News

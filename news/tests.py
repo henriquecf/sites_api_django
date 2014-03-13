@@ -2,10 +2,12 @@ from copy import copy
 from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.core.files import File
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 from oauth2_provider.models import AccessToken, Application
 from publication.test_publication import PublicationAPITestCase
+from .models import News
 
 
 class CategoryAPITestCase(APILiveServerTestCase):
@@ -104,3 +106,18 @@ class NewsAPITestCase(PublicationAPITestCase):
         super(NewsAPITestCase, self).setUp()
         self.url = reverse('news-list')
         self.data.update({'content': 'My first news', 'title': 'My first news'})
+
+    def test_if_adds_category(self):
+        data2 = copy(self.data)
+        category_data = {
+            'name': 'Category 1',
+        }
+        category_url = reverse('category-list')
+        response = self.client.post(category_url, category_data)
+        cat1_url = response.data['url']
+        data2.update({'categories': [cat1_url]})
+        response2 = self.client.post(self.url, data2)
+        self.assertEqual(response2.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response2.data['categories'], [cat1_url])
+
+    # TODO Do filters for news and category

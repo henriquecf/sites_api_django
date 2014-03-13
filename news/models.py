@@ -13,7 +13,7 @@ class Category(MPTTModel, Owner):
 
 class News(Publication):
     content = models.TextField()
-    image = models.ImageField(upload_to='news/', null=True, blank=True)
+    image = models.ImageField(upload_to='media/news/', null=True, blank=True)
     categories = models.ManyToManyField(Category, null=True, blank=True, related_name='news_set')
 
     def __str__(self):
