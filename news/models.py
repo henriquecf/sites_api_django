@@ -1,6 +1,6 @@
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
-from account.models import Account
+from accounts.models import Account
 from publication.models import Publication
 
 

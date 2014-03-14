@@ -6,7 +6,7 @@ from rest_framework.decorators import link
 from publication.models import Publication
 
 from publication.serializers import PublicationSerializer
-from account.views import AccountBaseViewSet
+from accounts.views import AccountBaseViewSet
 from .models import find_available_slug
 
 

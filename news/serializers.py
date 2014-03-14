@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from account.views import AccountSerializer
+from accounts.views import AccountSerializer
 from publication.serializers import PublicationSerializer
 from .models import Category, News
 

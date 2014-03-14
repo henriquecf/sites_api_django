@@ -26,6 +26,10 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'templates'),
+)
+
 # Application definition
 
 INSTALLED_APPS = (
@@ -42,7 +46,7 @@ INSTALLED_APPS = (
     'mptt',
     'django_filters',
 
-    'account',
+    'accounts',
     'publication',
     'news',
 )
@@ -107,7 +111,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_FILTER_BACKENDS': (
-        'account.filters.IsOwnerFilterBackend',
+        'accounts.filters.IsOwnerFilterBackend',
         'rest_framework.filters.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
         'rest_framework.filters.OrderingFilter',

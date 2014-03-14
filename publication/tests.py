@@ -224,6 +224,6 @@ class PublicationAPITestCase(APILiveServerTestCase):
             'author': 1
         })
         self.client.post(self.url, self.data)
-        self.filter_request('author__username', 'user2')
+        #self.filter_request('author__username', 'user2')
 
     # TODO create tests for ordering and pagination in publication
