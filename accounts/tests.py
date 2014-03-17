@@ -29,7 +29,7 @@ class CommonTestCase(LiveServerTestCase):
 class AccountTestCase(LiveServerTestCase):
 
     def setUp(self):
-        self.user = User.objects.create(username='user', password='123', email='user@user.com')
+        self.user = User.objects.create_user(username='user', password='123', email='user@user.com')
 
     def test_if_user_create_url_exists(self):
         url = reverse('user-create')
@@ -47,21 +47,20 @@ class AccountTestCase(LiveServerTestCase):
         url = reverse('user-create')
         self.client.post(url, data)
         new_users_count = User.objects.count()
-        self.assertEqual(users_count + 1, new_users_count, 'User was not created')
+        self.assertEqual(users_count + 1, new_users_count, 'User was not created: {0}'.format(data))
         data.update({'username': 'ivan', 'email': ''})
         self.client.post(url, data)
         second_users_count = User.objects.count()
-        self.assertEqual(new_users_count, second_users_count, 'User without email should not be created')
+        self.assertEqual(new_users_count, second_users_count, 'User without email should not be created: {0}'.format(data))
 
     def test_if_user_can_login(self):
         login_url = reverse('login')
         login_data = {
-            'username': self.user.username,
-            'password': self.user.password,
+            'username': 'user',
+            'password': '123',
         }
         response = self.client.post(login_url, login_data)
-        print(response.context)
-        self.assertTrue(response.context['request'].user.is_authenticated())
+        self.assertEqual(response.status_code, 302)
 
 
 # TODO Create tests to create app user, test if just owner and children access data
