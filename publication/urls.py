@@ -14,9 +14,8 @@ router.register(r'news', news_views.NewsViewSet)
 router.register(r'account', account_views.AccountViewSet)
 
 urlpatterns = patterns('',
-
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-    url(r'^accounts/', include('accounts.urls')),
-    url(r'^', include(router.urls), name='api'),
+                       url(r'^admin/', include(admin.site.urls)),
+                       url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+                       url(r'^accounts/', include('accounts.urls')),
+                       url(r'^', include(router.urls), name='api'),
 )
