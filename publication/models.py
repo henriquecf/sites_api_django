@@ -6,6 +6,10 @@ from accounts.models import Owner
 
 
 class Publication(Owner):
+    """
+    This model was intended to be inherited by every model that is publishable,
+    can be published, unpublished, has an author, title and slug for the url
+    """
     title = models.CharField(max_length=150)
     description = models.TextField(blank=True)
     slug = models.SlugField(max_length=150, editable=False)
