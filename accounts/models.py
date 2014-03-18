@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -7,6 +8,9 @@ class Common(models.Model):
     last_modification_date = models.DateTimeField(auto_now=True)
 
 
-class Account(Common):
-    owner = models.ForeignKey(User, blank=True, related_name='owner2')
-    expiration_date = models.DateField(editable=False)
+class Owner(Common):
+    owner = models.ForeignKey(User, blank=True)
+
+
+class Account(Owner):
+    expiration_date = models.DateField(editable=False, default=datetime.today()+timedelta(30))

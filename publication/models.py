@@ -2,11 +2,10 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils import timezone
 from django.contrib.auth.models import User
+from accounts.models import Owner
 
-from accounts.models import Account
 
-
-class Publication(Account):
+class Publication(Owner):
     title = models.CharField(max_length=150)
     description = models.TextField(blank=True)
     slug = models.SlugField(max_length=150, editable=False)

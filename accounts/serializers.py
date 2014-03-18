@@ -2,7 +2,7 @@ from rest_framework import serializers
 from accounts.models import Account
 
 
-class AccountSerializer(serializers.HyperlinkedModelSerializer):
+class OwnerSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.Field(source='owner.username')
 
     class Meta:

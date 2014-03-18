@@ -6,11 +6,11 @@ from rest_framework.decorators import link
 from publication.models import Publication
 
 from publication.serializers import PublicationSerializer
-from accounts.views import AccountBaseViewSet
+from accounts.views import OwnerViewSet
 from .models import find_available_slug
 
 
-class PublicationBaseViewSet(AccountBaseViewSet):
+class PublicationBaseViewSet(OwnerViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.

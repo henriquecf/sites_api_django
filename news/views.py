@@ -1,12 +1,12 @@
 from rest_framework.decorators import link
 from rest_framework.response import Response
-from accounts.views import AccountBaseViewSet
+from accounts.views import OwnerViewSet
 from publication.views import PublicationBaseViewSet
 from .serializers import CategorySerializer, NewsSerializer
 from .models import Category, News
 
 
-class CategoryBaseViewSet(AccountBaseViewSet):
+class CategoryBaseViewSet(OwnerViewSet):
     serializer_class = CategorySerializer
     model = Category
 
