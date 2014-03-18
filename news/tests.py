@@ -2,6 +2,7 @@ from copy import copy
 from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.utils import timezone
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 from oauth2_provider.models import AccessToken, Application
@@ -17,11 +18,11 @@ class CategoryAPITestCase(APILiveServerTestCase):
         email = '{0}@gmail.com'.format(username)
         self.superuser = User.objects.create(username=username, email=email, password='123')
         aplicacao = Application.objects.create(user=self.superuser, client_type=client_type, authorization_grant_type=grant_type, client_id=token)
-        access_token = AccessToken.objects.create(user=self.superuser, token=token, application=aplicacao, expires=datetime.now() + timedelta(0, 60))
+        access_token = AccessToken.objects.create(user=self.superuser, token=token, application=aplicacao, expires=timezone.now() + timedelta(0, 60))
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token.token)
 
     def setUp(self):
-        self.oauth2_authorize(username='user1', token='12345')
+        self.token = self.oauth2_authorize(username='user1', token='12345')
         super(CategoryAPITestCase, self).setUp()
 
     def test_cant_list_without_authentication(self):
