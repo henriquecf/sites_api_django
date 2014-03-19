@@ -60,8 +60,6 @@ class APIGenericTest:
     def create(self, status_code=status.HTTP_201_CREATED):
         response = self.test_case.client.post(self.url, self.data)
         self.test_case.assertEqual(response.status_code, status_code)
-        # TODO remove this dependence of other tests from this
-        return response
 
     def list(self, count=1, status_code=status.HTTP_200_OK):
         response = self.test_case.client.get(self.url)

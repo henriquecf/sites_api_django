@@ -12,7 +12,7 @@ from accounts.tests import OwnerGenericTest, oauth2_authorize
 
 class PublicationGenericTest(OwnerGenericTest):
     def slug_is_slugified_title(self, slug_repeat_number='-2'):
-        response = self.create()
+        response = self.test_case.client.post(self.url, self.data)
         self.test_case.assertEqual(response.data['slug'], slugify(response.data['title']) + slug_repeat_number,
                                    'Slug is not slugified title')
 
