@@ -95,7 +95,7 @@ class APIGenericTest:
             self.test_case.client.post(self.url, self.altered_data)
             query_parameter = {'search': filter_parameter}
             response = self.test_case.client.get(self.url, query_parameter)
-            self.test_case.assertEqual(response.data['count'], 1, 'Field {0} not in search fields'.format(field))
+            self.test_case.assertEqual(response.data['count'], 1, 'Field "{0}" not in search fields'.format(field))
 
     # TODO Still need to create a generic test for ordering
 
