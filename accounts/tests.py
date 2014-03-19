@@ -155,6 +155,7 @@ class OwnerGenericTest(APIGenericTest):
         owner_obj = Owner.objects.get(id=owner_id)
         user = User.objects.get(username=username)
         self.test_case.assertEqual(user, owner_obj.owner)
+        self.reset_authorization()
 
 
 class CommonTestCase(LiveServerTestCase):

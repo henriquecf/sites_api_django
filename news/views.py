@@ -13,7 +13,8 @@ class CategoryBaseViewSet(OwnerViewSet):
     @link()
     def get_descendants(self, request, *agrs, **kwargs):
         category = self.get_object()
-        return Response({'descendants': CategorySerializer(category.get_descendants(), context={'request': request}).data})
+        return Response(
+            {'descendants': CategorySerializer(category.get_descendants(), context={'request': request}).data})
 
 
 class NewsViewSet(PublicationBaseViewSet):

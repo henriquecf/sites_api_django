@@ -35,16 +35,16 @@ class PublicationBaseViewSet(OwnerViewSet):
             obj.publication_start_date = timezone.now()
 
     @link()
-    def is_published(self):
+    def is_published(self, request, *args, **kwargs):
         publication = self.get_object()
         return Response({'is_published': publication.is_published()})
 
     @link()
-    def publish(self):
+    def publish(self, request, *args, **kwargs):
         publication = self.get_object()
         return Response({'is_published': publication.publish()})
 
     @link()
-    def unpublish(self):
+    def unpublish(self, request, *args, **kwargs):
         publication = self.get_object()
         return Response({'is_published': publication.unpublish()})

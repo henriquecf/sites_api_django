@@ -30,6 +30,7 @@ class PublicationGenericTest(OwnerGenericTest):
 
     def get_action_response(self, action_name, status_code=status.HTTP_200_OK):
         action_url = self.first_object_response.data[action_name]
+        print(action_url)
         response = self.test_case.client.get(action_url)
         self.test_case.assertEqual(response.status_code, status_code)
         return response
@@ -87,6 +88,9 @@ class PublicationAPITestCase(APILiveServerTestCase):
 
     def test_destroy(self):
         self.publication_generic_test.destroy()
+
+    def test_owner_is_request_user(self):
+        self.publication_generic_test.owner_is_request_user()
 
     def test_slug_is_slugified_title(self):
         self.publication_generic_test.slug_is_slugified_title()
