@@ -3,42 +3,35 @@ from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse
 from django.utils.text import slugify
 from django.utils import timezone
-from django.contrib.auth.models import User
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
-from oauth2_provider.models import Application, AccessToken
+
 from accounts.tests import OwnerGenericTest, oauth2_authorize
 
 
 class PublicationGenericTest(OwnerGenericTest):
-
-    def slug_is_slugified_title(self, slug_repeat_number=''):
+    def slug_is_slugified_title(self, slug_repeat_number='-2'):
         response = self.create()
-        self.test_case.assertEqual(response.data['slug'], slugify(response.data['title']) + slug_repeat_number, 'Slug is not slugified title')
+        self.test_case.assertEqual(response.data['slug'], slugify(response.data['title']) + slug_repeat_number,
+                                   'Slug is not slugified title')
 
     def slug_is_unique(self):
-        self.slug_is_slugified_title()
         self.slug_is_slugified_title(slug_repeat_number='-2')
         self.slug_is_slugified_title(slug_repeat_number='-3')
+        self.slug_is_slugified_title(slug_repeat_number='-4')
 
     def has_author(self):
-        oauth2_authorize(self.test_case.client, 'user_author', 'kashdfjhasdf')
-        response = self.create()
-        self.test_case.assertIn('author', response.data, 'Response has no field "author"')
-        self.test_case.assertEqual(response.data['author'], 'user_author', 'Unexpected author name returned')
-
-    def is_published(self):
-        response = self.create()
-        self.test_case.assertIn('is_published', response.data, 'Response has no field "is_published"')
-        return response.data['is_published']
+        self.test_case.assertIn('author', self.first_object_response.data, 'Response has no field "author"')
+        self.test_case.assertEqual(self.first_object_response.data['author'], self.username_or_token,
+                                   'Unexpected author name returned')
 
     def is_published_default_true(self):
-        is_published = self.is_published()
-        self.test_case.assertTrue(is_published, 'Is_published default value must be True')
+        self.test_case.assertIn('is_published', self.first_object_response.data, 'Response has no field "is_published"')
+        self.test_case.assertTrue(self.first_object_response.data['is_published'],
+                                  'Is_published default value must be True')
 
     def get_action_response(self, action_name, status_code=status.HTTP_200_OK):
-        response = self.create()
-        action_url = response.data[action_name]
+        action_url = self.first_object_response.data[action_name]
         response = self.test_case.client.get(action_url)
         self.test_case.assertEqual(response.status_code, status_code)
         return response
@@ -53,7 +46,6 @@ class PublicationGenericTest(OwnerGenericTest):
 
 
 class PublicationAPITestCase(APILiveServerTestCase):
-
     def setUp(self):
         self.url = reverse('publication-list')
         self.data = {
@@ -70,101 +62,61 @@ class PublicationAPITestCase(APILiveServerTestCase):
             'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
             'publication_end_date': None,
         }
-        self.token = oauth2_authorize(self.client, 'user1', '12345')
-        self.publication_generic_tests = PublicationGenericTest(self)
-        super(PublicationAPITestCase, self).setUp()
+        self.publication_generic_test = PublicationGenericTest(self)
 
     def test_create(self):
         """
         Ensure we can create a new publication object
         """
-        self.publication_generic_tests.create()
-
-    def test_slug_is_slugified_title(self):
-        """
-        Checks if the slug is generated automatically
-        """
-        self.publication_generic_tests.slug_is_slugified_title()
-
-    def test_slug_is_unique(self):
-        self.publication_generic_tests.slug_is_unique()
-
-    def test_do_not_create_publication_without_authentication(self):
-        """
-        Ensure we can create a new publication object
-        """
-        self.client.credentials()
-        response = self.client.post(self.url, self.data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_has_author(self):
-        """
-        Ensure publication created has author
-        """
-        self.publication_generic_tests.has_author()
+        self.publication_generic_test.create()
 
     def test_list(self):
         """
         Posts some publication and retrieves them back, even when not authenticated
         """
-        self.publication_generic_tests.list()
+        self.publication_generic_test.list()
 
-    def test_retrive(self):
+    def test_retrieve(self):
         """
         Gets a publication list and retrieves the field url from each publication in the list
         """
-        self.publication_generic_tests.retrieve()
+        self.publication_generic_test.retrieve()
 
     def test_update(self):
         """
         Tests if an authenticated user can update a publication
         """
-        self.publication_generic_tests.update()
+        self.publication_generic_test.update()
 
     def test_partial_update(self):
-        self.publication_generic_tests.partial_update()
-
-    def test_unauthenticated_user_can_not_update_publication(self):
-        response = self.client.post(self.url, self.data, format='json')
-        self.client.credentials()
-        altered_data = response.data
-        altered_data['title'] = 'Altered title'
-        response2 = self.client.patch(altered_data['url'], altered_data)
-        self.assertEqual(response2.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.publication_generic_test.partial_update()
 
     def test_destroy(self):
-        self.publication_generic_tests.destroy()
+        self.publication_generic_test.destroy()
 
-    def test_unauthenticated_user_can_not_delete_publication(self):
-        response = self.client.post(self.url, self.data, format='json')
-        self.client.credentials()
-        detail_url = response.data['url']
-        response2 = self.client.delete(detail_url)
-        self.assertEqual(response2.status_code, status.HTTP_401_UNAUTHORIZED)
+    def test_slug_is_slugified_title(self):
+        """
+        Checks if the slug is generated automatically
+        """
+        self.publication_generic_test.slug_is_slugified_title()
+
+    def test_slug_is_unique(self):
+        self.publication_generic_test.slug_is_unique()
+
+    def test_has_author(self):
+        """
+        Ensure publication created has author
+        """
+        self.publication_generic_test.has_author()
 
     def test_is_published_default_true(self):
-        self.publication_generic_tests.is_published_default_true()
+        self.publication_generic_test.is_published_default_true()
 
     def test_publish(self):
-        self.publication_generic_tests.publish()
+        self.publication_generic_test.publish()
 
     def test_unpublish(self):
-        self.publication_generic_tests.unpublish()
-
-    def test_if_non_owner_cannot_access_others_data(self):
-        response = self.client.post(self.url, self.data)
-        pub_url = response.data['url']
-        oauth2_authorize(self.client, 'user2', '123456')
-        response2 = self.client.get(pub_url)
-        self.assertEqual(response2.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_if_list_retrieves_just_owner_data(self):
-        self.client.post(self.url, self.data)
-        response = self.client.get(self.url)
-        self.assertEqual(response.data['count'], 1)
-        oauth2_authorize(self.client, 'user2', '123456')
-        response2 = self.client.get(self.url)
-        self.assertEqual(response2.data['count'], 0)
+        self.publication_generic_test.unpublish()
 
     def filter_request(self, field, value):
         filter_data = {
@@ -198,4 +150,4 @@ class PublicationAPITestCase(APILiveServerTestCase):
         self.client.post(self.url, self.data)
         #self.filter_request('author__username', 'user2')
 
-    # TODO create tests for ordering and pagination in publication
+        # TODO create tests for ordering and pagination in publication

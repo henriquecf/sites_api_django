@@ -19,7 +19,6 @@ class OwnerViewSet(viewsets.ModelViewSet):
 
 
 class AccountViewSet(OwnerViewSet):
-    permission_classes = (IsAdminUser, )
     model = Account
 
     def pre_save(self, obj):
