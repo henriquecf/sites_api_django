@@ -1,4 +1,5 @@
 import copy
+import random
 from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse
 from django.utils.text import slugify
@@ -43,6 +44,16 @@ class PublicationGenericTest(OwnerGenericTest):
     def publish(self):
         response = self.get_action_response('publish')
         self.test_case.assertTrue(response.data['is_published'], 'Is_published return must be True')
+
+    def search_fields(self):
+        search_fields = ('title', 'description')
+        for field in search_fields:
+            filter_parameter = random.randint(1, 999999)
+            self.altered_data.update({field: filter_parameter})
+            self.test_case.client.post(self.url, self.altered_data)
+            query_parameter = {'search': filter_parameter}
+            response = self.test_case.client.get(self.url, query_parameter)
+            self.test_case.assertEqual(response.data['count'], 1, 'Field {0} not in search fields'.format(field))
 
 
 class PublicationAPITestCase(APILiveServerTestCase):
@@ -117,6 +128,9 @@ class PublicationAPITestCase(APILiveServerTestCase):
 
     def test_unpublish(self):
         self.publication_generic_test.unpublish()
+
+    def test_search_fields(self):
+        self.publication_generic_test.search_fields()
 
     def filter_request(self, field, value):
         filter_data = {
