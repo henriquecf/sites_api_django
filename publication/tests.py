@@ -1,13 +1,10 @@
-import copy
-import random
-from datetime import datetime, timedelta
+from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.utils.text import slugify
-from django.utils import timezone
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 
-from accounts.tests import OwnerGenericTest, oauth2_authorize
+from accounts.tests import OwnerGenericTest
 
 
 class PublicationGenericTest(OwnerGenericTest):
@@ -45,15 +42,13 @@ class PublicationGenericTest(OwnerGenericTest):
         response = self.get_action_response('publish')
         self.test_case.assertTrue(response.data['is_published'], 'Is_published return must be True')
 
-    def search_fields(self):
-        search_fields = ('title', 'description')
-        for field in search_fields:
-            filter_parameter = random.randint(1, 999999)
-            self.altered_data.update({field: filter_parameter})
-            self.test_case.client.post(self.url, self.altered_data)
-            query_parameter = {'search': filter_parameter}
-            response = self.test_case.client.get(self.url, query_parameter)
-            self.test_case.assertEqual(response.data['count'], 1, 'Field {0} not in search fields'.format(field))
+    def filter_author(self):
+        filter_data = {'author': self.username_or_token}
+        response = self.test_case.client.get(self.url, filter_data)
+        self.test_case.assertEqual(response.data['count'], 1)
+        filter_data.update({'author': 'another_author'})
+        response2 = self.test_case.client.get(self.url, filter_data)
+        self.test_case.assertEqual(response2.data['count'], 0, 'Filter not working')
 
 
 class PublicationAPITestCase(APILiveServerTestCase):
@@ -76,27 +71,15 @@ class PublicationAPITestCase(APILiveServerTestCase):
         self.publication_generic_test = PublicationGenericTest(self)
 
     def test_create(self):
-        """
-        Ensure we can create a new publication object
-        """
         self.publication_generic_test.create()
 
     def test_list(self):
-        """
-        Posts some publication and retrieves them back, even when not authenticated
-        """
         self.publication_generic_test.list()
 
     def test_retrieve(self):
-        """
-        Gets a publication list and retrieves the field url from each publication in the list
-        """
         self.publication_generic_test.retrieve()
 
     def test_update(self):
-        """
-        Tests if an authenticated user can update a publication
-        """
         self.publication_generic_test.update()
 
     def test_partial_update(self):
@@ -106,18 +89,12 @@ class PublicationAPITestCase(APILiveServerTestCase):
         self.publication_generic_test.destroy()
 
     def test_slug_is_slugified_title(self):
-        """
-        Checks if the slug is generated automatically
-        """
         self.publication_generic_test.slug_is_slugified_title()
 
     def test_slug_is_unique(self):
         self.publication_generic_test.slug_is_unique()
 
     def test_has_author(self):
-        """
-        Ensure publication created has author
-        """
         self.publication_generic_test.has_author()
 
     def test_is_published_default_true(self):
@@ -130,38 +107,8 @@ class PublicationAPITestCase(APILiveServerTestCase):
         self.publication_generic_test.unpublish()
 
     def test_search_fields(self):
-        self.publication_generic_test.search_fields()
+        search_fields = ('title', 'description')
+        self.publication_generic_test.search_fields(search_fields)
 
-    def filter_request(self, field, value):
-        filter_data = {
-            field: value,
-        }
-        response_filter = self.client.get(self.url, filter_data)
-        self.assertEqual(response_filter.data['count'], 1, 'Did not filter if count = 2')
-
-    def test_if_filter_works(self):
-        self.client.post(self.url, self.data)
-        data2 = copy.copy(self.data)
-        data2.update({
-            'title': 'Publication for filter',
-            'description': 'Description for filter',
-            'publication_start_date': timezone.now() - timedelta(1),
-            'publication_end_date': timezone.now() + timedelta(100),
-        })
-        response = self.client.post(self.url, data2)
-        self.filter_request('search', 'filter')
-        self.filter_request('title', data2['title'])
-        self.filter_request('description', data2['description'])
-        # TODO Check filter for datetime fields
-        #self.filter_request('publication_start_date', response.data['publication_start_date'])
-        #self.filter_request('publication_end_date', response.data['publication_end_date'])
-        oauth2_authorize(self.client, 'user2', '1828283')
-        self.client.post(self.url, self.data)
-        data3 = copy.copy(self.data)
-        data3.update({
-            'author': 1
-        })
-        self.client.post(self.url, self.data)
-        #self.filter_request('author__username', 'user2')
-
-        # TODO create tests for ordering and pagination in publication
+    def test_filter_author(self):
+        self.publication_generic_test.filter_author()

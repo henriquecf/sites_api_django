@@ -8,6 +8,7 @@ from publication.models import Publication
 from publication.serializers import PublicationSerializer
 from accounts.views import OwnerViewSet
 from .models import find_available_slug
+from .filtersets import PublicationFilterSet
 
 
 class PublicationBaseViewSet(OwnerViewSet):
@@ -19,7 +20,7 @@ class PublicationBaseViewSet(OwnerViewSet):
     """
     model = Publication
     serializer_class = PublicationSerializer
-    filter_fields = ('title', 'description', 'publication_start_date', 'publication_end_date', 'author__username')
+    filter_class = PublicationFilterSet
     search_fields = ('title', 'description')
 
     def pre_save(self, obj):
@@ -34,17 +35,16 @@ class PublicationBaseViewSet(OwnerViewSet):
             obj.publication_start_date = timezone.now()
 
     @link()
-    def is_published(self, request, *args, **kwargs):
+    def is_published(self):
         publication = self.get_object()
         return Response({'is_published': publication.is_published()})
 
-
     @link()
-    def publish(self, request, *args, **kwargs):
+    def publish(self):
         publication = self.get_object()
         return Response({'is_published': publication.publish()})
 
     @link()
-    def unpublish(self, request, *args, **kwargs):
+    def unpublish(self):
         publication = self.get_object()
         return Response({'is_published': publication.unpublish()})

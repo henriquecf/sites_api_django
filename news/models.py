@@ -19,7 +19,6 @@ class News(Publication):
     """
     Stores HTML content and an optional featured image, besides categories
     """
-    # TODO The content must be stored in HTML mode
     content = models.TextField()
     image = models.ImageField(upload_to='media/news/', null=True, blank=True)
     categories = models.ManyToManyField(Category, null=True, blank=True, related_name='news_set')

@@ -1,4 +1,5 @@
-import copy, datetime
+import copy
+import datetime
 import random
 from datetime import timedelta
 from django.contrib.auth.models import User
@@ -86,6 +87,17 @@ class APIGenericTest:
     def destroy(self, status_code=status.HTTP_204_NO_CONTENT):
         response = self.test_case.client.delete(self.first_object_response.data['url'])
         self.test_case.assertEqual(response.status_code, status_code)
+
+    def search_fields(self, search_fields=None):
+        for field in search_fields:
+            filter_parameter = random.randint(1, 999999)
+            self.altered_data.update({field: filter_parameter})
+            self.test_case.client.post(self.url, self.altered_data)
+            query_parameter = {'search': filter_parameter}
+            response = self.test_case.client.get(self.url, query_parameter)
+            self.test_case.assertEqual(response.data['count'], 1, 'Field {0} not in search fields'.format(field))
+
+    # TODO Still need to create a generic test for ordering
 
 
 class OwnerGenericTest(APIGenericTest):
