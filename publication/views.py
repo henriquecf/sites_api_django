@@ -1,14 +1,24 @@
 from django.utils.text import slugify
 from django.utils import timezone
-from rest_framework.response import Response
 from rest_framework.decorators import link
+from rest_framework.response import Response
 
-from publication.models import Publication
-
+from publication.serializers import CategorySerializer
 from publication.serializers import PublicationSerializer
 from accounts.views import OwnerViewSet
-from .models import find_available_slug
+from .models import find_available_slug, Publication, Category
 from .filtersets import PublicationFilterSet
+
+
+class CategoryViewSet(OwnerViewSet):
+    serializer_class = CategorySerializer
+    model = Category
+
+    @link()
+    def get_descendants(self, request, *agrs, **kwargs):
+        category = self.get_object()
+        return Response(
+            {'descendants': CategorySerializer(category.get_descendants(), context={'request': request}).data})
 
 
 class PublicationBaseViewSet(OwnerViewSet):

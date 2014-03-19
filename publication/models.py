@@ -2,6 +2,9 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils import timezone
 from django.contrib.auth.models import User
+from mptt.fields import TreeForeignKey
+from mptt.models import MPTTModel
+
 from accounts.models import Owner
 
 
@@ -61,3 +64,15 @@ def find_available_slug(model, instance, slug, original_slug, slug_number=2):
         slug_number += 1
         find_available_slug(model, instance, slug, original_slug, slug_number=slug_number)
     return
+
+
+class Category(MPTTModel, Owner):
+    """
+    This model implements hierarchy.
+    """
+    name = models.CharField(max_length=150)
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+    model_name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
