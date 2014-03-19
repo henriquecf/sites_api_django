@@ -4,10 +4,57 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 from publication.tests import PublicationGenericTest
+from accounts.tests import OwnerGenericTest
 
-#TODO: Test create, list, update, partial update and destroy subscription
-#TODO: Test just owner can create, list, update, partial update
-#TODO: Test just owner can destroy or user with code and id can destroy
+#TODO: Test just owner can destroy or user with unsubscription code can destroy
+
+class SubscpritionsAPITestCase(APILiveServerTestCase):
+
+    def setUp(self):
+        self.url = reverse('subscriptions-list')
+        self.data = {
+            'name': 'Idan',
+            'email': 'ivan.eng.controle@gmail.com',
+        }
+        self.altered_data = {
+            'name': 'Ivan',
+            'email': 'ivan_morais@yahoo.com.br',
+        }
+        self.owner_generic_test = OwnerGenericTest(self)
+
+    def test_create(self):
+        self.owner_generic_test.create()
+
+    def test_list(self):
+        self.owner_generic_test.list()
+
+    def test_retrieve(self):
+        self.owner_generic_test.retrieve()
+
+    def test_update(self):
+        self.owner_generic_test.update()
+
+    def test_partial_update(self):
+        self.owner_generic_test.partial_update()
+
+    def test_destroy(self):
+        self.owner_generic_test.destroy()
+
+    def test_owner_is_user_request(self):
+        self.owner_generic_test.owner_is_request_user()
+'''
+    def test_user_destroy(self):
+        response = self.client.post(self.url, self.data)
+        subscription = Subscriptions.objects.get(email=response.data['email'])
+        self.owner_generic_test.set_authorization(random_user=True)
+        response2 = self.client.get(response.data['unsubscribe'], {'code': subscription.code})
+        self.assertEqual(response2.status_code, status.HTTP_404_NOT_FOUND)
+        self.owner_generic_test.reset_authorization()
+        response2 = self.client.get(response.data['unsubscribe'], {'code': 'ASPO29348734582j'})
+        self.assertEqual(response2.status_code, status.HTTP_403_FORBIDDEN)
+        response2 = self.client.get(response.data['unsubscribe'], {'code': subscription.code})
+        self.assertEqual(response2.status_code, status.HTTP_204_NO_CONTENT)
+'''
 
 class NewsletterAPITestCase(APILiveServerTestCase):
 
