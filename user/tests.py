@@ -1,4 +1,4 @@
-# Create your tests here.
+import copy
 from datetime import timedelta
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from oauth2_provider.models import Application, AccessToken
 import random
 from rest_framework import status
+from rest_framework.test import APILiveServerTestCase
 
 
 def oauth2_authorize(client, username_and_token, client_type='confidential', grant_type='password', is_superuser=False):
@@ -37,7 +38,12 @@ class APIGenericTest:
         self.data = self.test_case.data
         self.altered_data = self.test_case.altered_data
         self.url = self.test_case.url
-        self.first_object_response = self.test_case.client.post(self.url, self.data)
+        data = copy.copy(self.data)
+        try:
+            data['username'] = 'user'
+        except KeyError:
+            pass
+        self.first_object_response = self.test_case.client.post(self.url, data)
 
     def set_authorization(self, username='user', random_user=False):
         if random_user:
@@ -98,16 +104,36 @@ class APIGenericTest:
 class ChildrenGenericTest(APIGenericTest):
 
     def create_children(self):
-        user = User.objects.get(username=self.username_or_token)
         data = {
             'username': 'children',
             'password': '123',
-            'parent': user
         }
         url = reverse('user-list')
         response = self.test_case.client.post(url, data)
-        self.test_case.assertEqual(response.data, status.HTTP_201_CREATED)
+        self.test_case.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def create(self, status_code=status.HTTP_201_CREATED):
-        super(ChildrenGenericTest, self).create()
-        self.create_children()
+        super(ChildrenGenericTest, self).create(status_code=status_code)
+
+
+class UserAPITestCase(APILiveServerTestCase):
+
+    def setUp(self):
+        self.url = reverse('user-list')
+        self.data = {
+            'username': 'children',
+            'password': '123',
+        }
+        self.altered_data = {
+            'username': 'childrenaltered',
+            'password': '123altered',
+        }
+        self.api_generic_test = APIGenericTest(self)
+
+    def test_created_user_password(self):
+        user = User.objects.get(username='user')
+        print(self.data, user.password, user.username)
+        self.assertNotEqual(user.password, self.data['password'], 'Password is being stored raw')
+
+    def test_create(self):
+        self.api_generic_test.create()

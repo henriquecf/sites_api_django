@@ -108,7 +108,7 @@ class UserTestCase(LiveServerTestCase):
         self.assertEqual(new_users_count, second_users_count,
                          'User without email should not be created: {0}'.format(data))
 
-    def test_user_can_login(self):
+    def test_user_login(self):
         login_url = reverse('login')
         login_data = {
             'username': 'user',

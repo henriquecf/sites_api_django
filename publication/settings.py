@@ -52,6 +52,7 @@ INSTALLED_APPS = (
     'file_explorer',
     'newsletter',
     'owner',
+    'user',
 )
 
 MIDDLEWARE_CLASSES = (
