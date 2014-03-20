@@ -180,12 +180,12 @@ class UserTestCase(LiveServerTestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='user', password='123', email='user@user.com')
 
-    def test_if_user_create_url_exists(self):
+    def test_user_create_url_exists(self):
         url = reverse('user-create')
         response = self.client.get(url)
         self.assertNotEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_if_creates_user(self):
+    def test_create_user(self):
         users_count = User.objects.count()
         data = (dict(username='henrique', email='elo.henrique@gmail.com', password1='123', password2='123'))
         url = reverse('user-create')
@@ -198,7 +198,7 @@ class UserTestCase(LiveServerTestCase):
         self.assertEqual(new_users_count, second_users_count,
                          'User without email should not be created: {0}'.format(data))
 
-    def test_if_user_can_login(self):
+    def test_user_can_login(self):
         login_url = reverse('login')
         login_data = {
             'username': 'user',
@@ -206,3 +206,8 @@ class UserTestCase(LiveServerTestCase):
         }
         response = self.client.post(login_url, login_data)
         self.assertEqual(response.status_code, 302)
+
+    def test_user_has_parent(self):
+        children = User.objects.create_user(username='children', password='123', email='chidren@gmail.com')
+        children.parent = self.user
+        self.assertEqual(children.parent, self.user, 'User has no field parent')
