@@ -1,5 +1,6 @@
 from django.contrib.auth import hashers
 from rest_framework.viewsets import ModelViewSet
+from rest_framework import filters
 
 from .serializers import UserSerializer
 from .models import User
@@ -8,7 +9,10 @@ from .models import User
 class UserViewSet(ModelViewSet):
     model = User
     serializer_class = UserSerializer
-    filter_backends = ()
+    search_fields = ('username', 'email')
+    filter_backends = (
+        filters.SearchFilter,
+    )
 
     def pre_save(self, obj):
         obj.parent = self.request.user

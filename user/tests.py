@@ -1,10 +1,10 @@
 import copy
+import random
 from datetime import timedelta
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from oauth2_provider.models import Application, AccessToken
-import random
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
 
@@ -38,12 +38,7 @@ class APIGenericTest:
         self.data = self.test_case.data
         self.altered_data = self.test_case.altered_data
         self.url = self.test_case.url
-        data = copy.copy(self.data)
-        try:
-            data['username'] = 'user'
-        except KeyError:
-            pass
-        self.first_object_response = self.test_case.client.post(self.url, data)
+        self.first_object_response = self.test_case.client.post(self.url, self.data)
 
     def set_authorization(self, username='user', random_user=False):
         if random_user:
@@ -101,6 +96,35 @@ class APIGenericTest:
     # TODO Still need to create a generic test for ordering
 
 
+class UserGenericTest(APIGenericTest):
+
+    def __init__(self, test_case, initial_user_is_superuser=False):
+        self.test_case = test_case
+        self.is_superuser = initial_user_is_superuser
+        self.username_or_token = self.set_authorization()
+        self.data = self.test_case.data
+        self.altered_data = self.test_case.altered_data
+        self.url = self.test_case.url
+        data = copy.copy(self.data)
+        try:
+            data['username'] = 'user'
+        except KeyError:
+            pass
+        self.first_object_response = self.test_case.client.post(self.url, data)
+
+    def search_fields(self, search_fields=None):
+        for field in search_fields:
+            filter_parameter = random.randint(1, 999999)
+            self.altered_data.update({'username': filter_parameter + 1})
+            if field == 'email':
+                filter_parameter = '{0}@gm.com'.format(filter_parameter)
+            self.altered_data.update({field: filter_parameter})
+            self.test_case.client.post(self.url, self.altered_data)
+            query_parameter = {'search': filter_parameter}
+            response = self.test_case.client.get(self.url, query_parameter)
+            self.test_case.assertEqual(response.data['count'], 1, 'Field "{0}" not in search fields'.format(field))
+
+
 class UserAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
@@ -108,16 +132,43 @@ class UserAPITestCase(APILiveServerTestCase):
         self.data = {
             'username': 'children',
             'password': '123',
+            'email': 'children@email.com',
         }
         self.altered_data = {
             'username': 'childrenaltered',
             'password': '123altered',
+            'email': 'childrenaltered@email.com',
         }
-        self.api_generic_test = APIGenericTest(self)
+        self.api_generic_test = UserGenericTest(self)
 
     def test_created_user_password(self):
         user = User.objects.get(username='user')
         self.assertNotEqual(user.password, self.data['password'], 'Password is being stored raw')
 
+    def test_required_email(self):
+        data = copy.copy(self.data)
+        data.pop('email')
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_create(self):
         self.api_generic_test.create()
+
+    def test_update(self):
+        self.api_generic_test.update()
+
+    def test_partial_update(self):
+        self.api_generic_test.partial_update()
+
+    def test_list(self):
+        self.api_generic_test.list(count=2)
+
+    def test_retrieve(self):
+        self.api_generic_test.retrieve()
+
+    def test_destroy(self):
+        self.api_generic_test.destroy()
+
+    def test_search_fields(self):
+        search_fields = ['username', 'email']
+        self.api_generic_test.search_fields(search_fields)
