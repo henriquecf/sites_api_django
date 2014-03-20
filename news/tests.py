@@ -1,8 +1,6 @@
-from copy import copy
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
-from rest_framework import status
 
 from publication.tests import PublicationGenericTest
 
@@ -75,16 +73,5 @@ class NewsAPITestCase(APILiveServerTestCase):
     def test_filter_author(self):
         self.publication_generic_test.filter_author()
 
-    def test_if_adds_category(self):
-        data2 = copy(self.data)
-        category_data = {
-            'name': 'Category 1',
-            'model_name': 'news',
-        }
-        category_url = reverse('category-list')
-        response = self.client.post(category_url, category_data)
-        cat1_url = response.data['url']
-        data2.update({'categories': [cat1_url]})
-        response2 = self.client.post(self.url, data2)
-        self.assertEqual(response2.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response2.data['categories'], [cat1_url])
+    def add_category(self):
+        self.publication_generic_test.add_category('news')

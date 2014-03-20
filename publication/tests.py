@@ -52,6 +52,25 @@ class PublicationGenericTest(OwnerGenericTest):
         response2 = self.test_case.client.get(self.url, filter_data)
         self.test_case.assertEqual(response2.data['count'], 0, 'Filter not working')
 
+    def add_category(self, model_name):
+        data2 = copy(self.data)
+        category_data = {
+            'name': 'Category 1',
+            'model_name': model_name,
+        }
+        category_url = reverse('category-list')
+        response = self.test_case.client.post(category_url, category_data)
+        cat1_url = response.data['url']
+        data2.update({'categories': [cat1_url]})
+        response2 = self.test_case.client.post(self.url, data2)
+        self.test_case.assertEqual(response2.status_code, status.HTTP_201_CREATED)
+        try:
+            model_categories = response2.data['categories']
+        except KeyError:
+            model_categories = None
+        self.test_case.assertEqual(model_categories, [cat1_url],
+                                   'Field categories not found in model "{0}"'.format(model_name))
+
 
 class PublicationAPITestCase(APILiveServerTestCase):
     def setUp(self):

@@ -5,6 +5,7 @@ from rest_framework.test import APILiveServerTestCase
 from publication.tests import PublicationGenericTest
 
 
+
 # TODO create model, serializer and viewset
 # TODO link model to Category and check if it adds category
 
@@ -74,3 +75,6 @@ class FileAPITestCase(APILiveServerTestCase):
 
     def test_filter_author(self):
         self.publication_generic_test.filter_author()
+
+    def test_add_category(self):
+        self.publication_generic_test.add_category('file')
