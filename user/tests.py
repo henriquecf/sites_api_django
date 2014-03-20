@@ -112,6 +112,20 @@ class UserGenericTest(APIGenericTest):
             pass
         self.first_object_response = self.test_case.client.post(self.url, data)
 
+    def authorize_children(self, client_type='confidential', grant_type='password'):
+        user = User.objects.get(username=self.first_object_response.data['username'])
+        aplicacao = Application.objects.create(user=user, client_type=client_type, authorization_grant_type=grant_type,
+                                               client_id=user.username)
+        access_token = AccessToken.objects.create(user=user, token=user.username, application=aplicacao,
+                                                  expires=timezone.now() + timedelta(0, 60))
+        self.test_case.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token.token)
+
+    def alter_username(self):
+        username = 'user-{0}'.format(random.randint(1, 999999))
+        self.data.update({
+            'username': username,
+        })
+
     def search_fields(self, search_fields=None):
         for field in search_fields:
             filter_parameter = random.randint(1, 999999)
@@ -124,7 +138,16 @@ class UserGenericTest(APIGenericTest):
             response = self.test_case.client.get(self.url, query_parameter)
             self.test_case.assertEqual(response.data['count'], 1, 'Field "{0}" not in search fields'.format(field))
 
+    def create(self, status_code=status.HTTP_201_CREATED):
+        super(UserGenericTest, self).create(status_code=status_code)
+        self.authorize_children()
+        self.alter_username()
+        super(UserGenericTest, self).create(status_code=status.HTTP_403_FORBIDDEN)
+        self.reset_authorization()
 
+
+# TODO Create tests for children
+# TODO Test filters for retriving just children
 class UserAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
