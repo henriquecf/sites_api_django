@@ -1,3 +1,4 @@
+from django.contrib.auth import hashers
 from rest_framework.viewsets import ModelViewSet
 
 from .serializers import UserSerializer
@@ -11,3 +12,5 @@ class UserViewSet(ModelViewSet):
 
     def pre_save(self, obj):
         obj.parent = self.request.user
+        if not hashers.is_password_usable(obj.password):
+            obj.password = hashers.make_password(obj.password)

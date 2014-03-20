@@ -117,7 +117,6 @@ class UserAPITestCase(APILiveServerTestCase):
 
     def test_created_user_password(self):
         user = User.objects.get(username='user')
-        print(self.data, user.password, user.username)
         self.assertNotEqual(user.password, self.data['password'], 'Password is being stored raw')
 
     def test_create(self):
