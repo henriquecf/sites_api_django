@@ -1,5 +1,7 @@
 from django.conf.urls import patterns, url
-from .views import UserCreateView, UserLoginView
+
+from owner.views import UserLoginView, UserCreateView
+
 
 urlpatterns = patterns('',
 

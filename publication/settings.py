@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'news',
     'file_explorer',
     'newsletter',
+    'owner',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -113,7 +114,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_FILTER_BACKENDS': (
-        'accounts.filters.IsOwnerFilterBackend',
+        'owner.filters.IsOwnerFilterBackend',
         'rest_framework.filters.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
         'rest_framework.filters.OrderingFilter',

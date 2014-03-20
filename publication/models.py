@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
-from accounts.models import Owner
+from owner.models import Owner
 
 
 class Publication(Owner):
