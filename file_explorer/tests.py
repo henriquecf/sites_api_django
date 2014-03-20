@@ -1,31 +1,31 @@
-from copy import copy
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
-from rest_framework import status
 
 from publication.tests import PublicationGenericTest
 
 
-class NewsAPITestCase(APILiveServerTestCase):
+# TODO create model, serializer and viewset
+# TODO link model to Category and check if it adds category
+
+
+class FileAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
-        self.url = reverse('news-list')
+        self.url = reverse('file-list')
         self.data = {
-            'title': 'First news',
+            'title': 'First publication',
             'description': 'First description',
             'slug': 'first-publication',
             'publication_start_date': timezone.now(),
             'publication_end_date': None,
-            'content': 'My first news',
         }
         self.altered_data = {
-            'title': 'First news altered',
+            'title': 'First publication altered',
             'description': 'First description altered',
             'slug': 'first-publication',
             'publication_start_date': timezone.now(),
             'publication_end_date': None,
-            'content': 'My first news altered',
         }
         self.publication_generic_test = PublicationGenericTest(self)
 
@@ -69,22 +69,8 @@ class NewsAPITestCase(APILiveServerTestCase):
         self.publication_generic_test.unpublish()
 
     def test_search_fields(self):
-        search_fields = ('title', 'description', 'content')
+        search_fields = ('title', 'description')
         self.publication_generic_test.search_fields(search_fields)
 
     def test_filter_author(self):
         self.publication_generic_test.filter_author()
-
-    def test_if_adds_category(self):
-        data2 = copy(self.data)
-        category_data = {
-            'name': 'Category 1',
-            'model_name': 'news',
-        }
-        category_url = reverse('category-list')
-        response = self.client.post(category_url, category_data)
-        cat1_url = response.data['url']
-        data2.update({'categories': [cat1_url]})
-        response2 = self.client.post(self.url, data2)
-        self.assertEqual(response2.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response2.data['categories'], [cat1_url])

@@ -1,5 +1,5 @@
 from copy import copy
-from datetime import datetime
+from django.utils import timezone
 from django.core.urlresolvers import reverse
 from django.utils.text import slugify
 from rest_framework.test import APILiveServerTestCase
@@ -60,14 +60,14 @@ class PublicationAPITestCase(APILiveServerTestCase):
             'title': 'First publication',
             'description': 'First description',
             'slug': 'first-publication',
-            'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
+            'publication_start_date': timezone.now(),
             'publication_end_date': None,
         }
         self.altered_data = {
             'title': 'First publication altered',
             'description': 'First description altered',
             'slug': 'first-publication',
-            'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
+            'publication_start_date': timezone.now(),
             'publication_end_date': None,
         }
         self.publication_generic_test = PublicationGenericTest(self)

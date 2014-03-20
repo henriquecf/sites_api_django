@@ -50,6 +50,21 @@ class Publication(Owner):
             return True
 
 
+class Category(MPTTModel, Owner):
+    """
+    This model implements hierarchy.
+    """
+    name = models.CharField(max_length=150)
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+    model_name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = u'Categories'
+
+
 def find_available_slug(model, instance, slug, original_slug, slug_number=2):
     """
     Recursive method that will add underscores to a slug field
@@ -64,15 +79,3 @@ def find_available_slug(model, instance, slug, original_slug, slug_number=2):
         slug_number += 1
         find_available_slug(model, instance, slug, original_slug, slug_number=slug_number)
     return
-
-
-class Category(MPTTModel, Owner):
-    """
-    This model implements hierarchy.
-    """
-    name = models.CharField(max_length=150)
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
-    model_name = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.name
