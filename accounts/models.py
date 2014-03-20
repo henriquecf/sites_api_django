@@ -20,6 +20,12 @@ class Owner(Common):
     """
     owner = models.ForeignKey(User, blank=True)
 
+    def __str__(self):
+        return self.owner.username
+
+    class Meta:
+        verbose_name_plural = u'Owners'
+
 
 class Account(Owner):
     """
@@ -28,3 +34,6 @@ class Account(Owner):
     needed for payment, etc
     """
     expiration_date = models.DateField(editable=False, default=datetime.today()+timedelta(30))
+
+    def __str__(self):
+        return self.owner.username
