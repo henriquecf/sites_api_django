@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'publication',
     'news',
     'file_explorer',
+    'newsletter',
 )
 
 MIDDLEWARE_CLASSES = (
