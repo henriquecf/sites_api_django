@@ -101,21 +101,6 @@ class APIGenericTest:
     # TODO Still need to create a generic test for ordering
 
 
-class ChildrenGenericTest(APIGenericTest):
-
-    def create_children(self):
-        data = {
-            'username': 'children',
-            'password': '123',
-        }
-        url = reverse('user-list')
-        response = self.test_case.client.post(url, data)
-        self.test_case.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-    def create(self, status_code=status.HTTP_201_CREATED):
-        super(ChildrenGenericTest, self).create(status_code=status_code)
-
-
 class UserAPITestCase(APILiveServerTestCase):
 
     def setUp(self):

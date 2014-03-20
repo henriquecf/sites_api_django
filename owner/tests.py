@@ -5,19 +5,19 @@ from django.test import LiveServerTestCase
 from rest_framework import status
 
 from owner.models import Owner, Common
-from user.tests import ChildrenGenericTest
+from user.tests import APIGenericTest
 
 
-class OwnerGenericTest(ChildrenGenericTest):
+class OwnerGenericTest(APIGenericTest):
     def create(self, status_code=status.HTTP_201_CREATED):
-        response = super(OwnerGenericTest, self).create()
+        response = super(OwnerGenericTest, self).create(status_code=status_code)
         self.test_case.client.credentials()
         super(OwnerGenericTest, self).create(status_code=status.HTTP_401_UNAUTHORIZED)
         self.reset_authorization()
         return response
 
     def update(self, status_code=status.HTTP_200_OK, is_altered=True):
-        super(OwnerGenericTest, self).update()
+        super(OwnerGenericTest, self).update(status_code=status_code)
         self.test_case.client.credentials()
         super(OwnerGenericTest, self).update(status_code=status.HTTP_401_UNAUTHORIZED, is_altered=False)
         self.set_authorization(random_user=True)
@@ -25,7 +25,7 @@ class OwnerGenericTest(ChildrenGenericTest):
         self.reset_authorization()
 
     def partial_update(self, status_code=status.HTTP_200_OK, is_altered=True):
-        super(OwnerGenericTest, self).partial_update()
+        super(OwnerGenericTest, self).partial_update(status_code=status_code)
         self.test_case.client.credentials()
         super(OwnerGenericTest, self).partial_update(status_code=status.HTTP_401_UNAUTHORIZED, is_altered=False)
         self.set_authorization(random_user=True)
@@ -33,7 +33,7 @@ class OwnerGenericTest(ChildrenGenericTest):
         self.reset_authorization()
 
     def list(self, count=1, status_code=status.HTTP_200_OK):
-        super(OwnerGenericTest, self).list()
+        super(OwnerGenericTest, self).list(status_code=status_code)
         self.test_case.client.credentials()
         super(OwnerGenericTest, self).list(count=-1, status_code=status.HTTP_401_UNAUTHORIZED)
         self.set_authorization(random_user=True)
@@ -41,7 +41,7 @@ class OwnerGenericTest(ChildrenGenericTest):
         self.reset_authorization()
 
     def retrieve(self, status_code=status.HTTP_200_OK):
-        super(OwnerGenericTest, self).retrieve()
+        super(OwnerGenericTest, self).retrieve(status_code=status_code)
         self.test_case.client.credentials()
         super(OwnerGenericTest, self).retrieve(status_code=status.HTTP_401_UNAUTHORIZED)
         self.set_authorization(random_user=True)
@@ -54,7 +54,7 @@ class OwnerGenericTest(ChildrenGenericTest):
         self.set_authorization(random_user=True)
         super(OwnerGenericTest, self).destroy(status_code=status.HTTP_404_NOT_FOUND)
         self.reset_authorization()
-        super(OwnerGenericTest, self).destroy()
+        super(OwnerGenericTest, self).destroy(status_code=status_code)
 
     def owner_is_request_user(self):
         username = self.set_authorization(random_user=True)
