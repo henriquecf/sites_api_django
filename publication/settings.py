@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'accounts',
     'publication',
     'news',
+    'file_explorer',
     'newsletter',
 )
 

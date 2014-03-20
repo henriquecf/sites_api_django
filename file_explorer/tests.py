@@ -5,25 +5,28 @@ from rest_framework.test import APILiveServerTestCase
 from publication.tests import PublicationGenericTest
 
 
-class NewsAPITestCase(APILiveServerTestCase):
+
+# TODO create model, serializer and viewset
+# TODO link model to Category and check if it adds category
+
+
+class FileAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
-        self.url = reverse('news-list')
+        self.url = reverse('file-list')
         self.data = {
-            'title': 'First news',
+            'title': 'First publication',
             'description': 'First description',
             'slug': 'first-publication',
             'publication_start_date': timezone.now(),
             'publication_end_date': None,
-            'content': 'My first news',
         }
         self.altered_data = {
-            'title': 'First news altered',
+            'title': 'First publication altered',
             'description': 'First description altered',
             'slug': 'first-publication',
             'publication_start_date': timezone.now(),
             'publication_end_date': None,
-            'content': 'My first news altered',
         }
         self.publication_generic_test = PublicationGenericTest(self)
 
@@ -67,11 +70,11 @@ class NewsAPITestCase(APILiveServerTestCase):
         self.publication_generic_test.unpublish()
 
     def test_search_fields(self):
-        search_fields = ('title', 'description', 'content')
+        search_fields = ('title', 'description')
         self.publication_generic_test.search_fields(search_fields)
 
     def test_filter_author(self):
         self.publication_generic_test.filter_author()
 
-    def add_category(self):
-        self.publication_generic_test.add_category('news')
+    def test_add_category(self):
+        self.publication_generic_test.add_category('file')
