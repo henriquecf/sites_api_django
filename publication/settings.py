@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -49,7 +50,10 @@ INSTALLED_APPS = (
     'accounts',
     'publication',
     'news',
+    'file_explorer',
     'newsletter',
+    'owner',
+    'user',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -100,6 +104,16 @@ OAUTH2_PROVIDER = {
     'SCOPES': {'read': 'Read scope', 'write': 'Write scope'}
 }
 
+DJANGO_FILTERS = (
+    'rest_framework.filters.DjangoFilterBackend',
+    'rest_framework.filters.SearchFilter',
+    'rest_framework.filters.OrderingFilter',
+)
+
+OTHER_FILTERS = (
+    'owner.backends.IsOwnerFilterBackend',
+)
+
 REST_FRAMEWORK = {
     'PAGINATE_BY': 10,
     'PAGINATE_BY_PARAM': 'page_size',
@@ -111,10 +125,5 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
-    'DEFAULT_FILTER_BACKENDS': (
-        'accounts.filters.IsOwnerFilterBackend',
-        'rest_framework.filters.DjangoFilterBackend',
-        'rest_framework.filters.SearchFilter',
-        'rest_framework.filters.OrderingFilter',
-    )
+    'DEFAULT_FILTER_BACKENDS': DJANGO_FILTERS + OTHER_FILTERS
 }

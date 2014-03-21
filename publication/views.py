@@ -3,9 +3,9 @@ from django.utils import timezone
 from rest_framework.decorators import link
 from rest_framework.response import Response
 
+from owner.views import OwnerViewSet
 from publication.serializers import CategorySerializer
 from publication.serializers import PublicationSerializer
-from accounts.views import OwnerViewSet
 from .models import find_available_slug, Publication, Category
 from .filtersets import PublicationFilterSet
 
@@ -18,7 +18,8 @@ class CategoryViewSet(OwnerViewSet):
     def get_descendants(self, request, *agrs, **kwargs):
         category = self.get_object()
         return Response(
-            {'descendants': CategorySerializer(category.get_descendants(), context={'request': request}).data})
+            {'descendants': CategorySerializer(category.get_descendants(), context={'request': request},
+                                               many=True).data})
 
 
 class PublicationBaseViewSet(OwnerViewSet):

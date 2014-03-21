@@ -9,7 +9,10 @@ class News(Publication):
     """
     content = models.TextField()
     image = models.ImageField(upload_to='media/news/', null=True, blank=True)
-    categories = models.ManyToManyField(Category, null=True, blank=True, related_name='news_set')
+    categories = models.ManyToManyField(Category, null=True, blank=True, related_name='news')
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name_plural = u'News'
