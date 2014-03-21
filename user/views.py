@@ -1,3 +1,4 @@
+from itertools import chain
 from django.contrib.auth import hashers
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import filters, permissions
@@ -16,7 +17,7 @@ class ChildrenRestriction(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         user = request.user
         if user.is_root_node():
-            return obj in user.get_descendants()
+            return obj == user or obj in user.get_descendants()
 
         return obj == user
 
