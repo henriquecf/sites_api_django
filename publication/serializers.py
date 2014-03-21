@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from accounts.views import OwnerSerializer
+from owner.serializers import OwnerSerializer
 from publication.models import Publication, Category
 
 

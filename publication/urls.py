@@ -7,6 +7,7 @@ from publication import views as publication_views
 from news import views as news_views
 from file_explorer import views as file_explorer_views
 from newsletter import views as newsletter_views
+from user import views as user_views
 
 
 admin.autodiscover()
@@ -19,6 +20,7 @@ router.register(r'account', account_views.AccountViewSet)
 router.register(r'file', file_explorer_views.FileViewSet)
 router.register(r'subscriptions', newsletter_views.SubscriptionsViewSet)
 router.register(r'newsletter', newsletter_views.NewsletterViewSet)
+router.register(r'user', user_views.UserViewSet)
 
 urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
