@@ -4,7 +4,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework import filters, permissions
 from rest_framework.response import Response
 
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserCreateChangeSerializer
 from .models import User
 
 
@@ -24,7 +24,6 @@ class ChildrenRestriction(permissions.BasePermission):
 
 class UserViewSet(ModelViewSet):
     model = User
-    serializer_class = UserSerializer
     search_fields = ('username', 'email')
     filter_backends = (
         filters.SearchFilter,
@@ -33,6 +32,12 @@ class UserViewSet(ModelViewSet):
         permissions.IsAuthenticated,
         ChildrenRestriction,
     )
+
+    def get_serializer_class(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            return UserSerializer
+        else:
+            return UserCreateChangeSerializer
 
     def get_queryset(self):
         user = self.request.user
