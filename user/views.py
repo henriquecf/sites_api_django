@@ -34,6 +34,14 @@ class UserViewSet(ModelViewSet):
         ChildrenRestriction,
     )
 
+    def get_queryset(self):
+        user = self.request.user
+        queryset = super(UserViewSet, self).get_queryset()
+        if user.is_root_node():
+            return user.get_descendants(include_self=True)
+        else:
+            return queryset.filter(id=user.id)
+
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return UserSerializer
