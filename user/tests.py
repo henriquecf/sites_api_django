@@ -9,20 +9,6 @@ from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
 
 
-def oauth2_authorize(client, username_and_token, client_type='confidential', grant_type='password', is_superuser=False):
-    email = '{0}@gmail.com'.format(username_and_token)
-    if is_superuser:
-        user = User.objects.create_superuser(username=username_and_token, email=email, password='123')
-    else:
-        user = User.objects.create_user(username=username_and_token, email=email, password='123')
-    aplicacao = Application.objects.create(user=user, client_type=client_type, authorization_grant_type=grant_type,
-                                           client_id=username_and_token)
-    access_token = AccessToken.objects.create(user=user, token=username_and_token, application=aplicacao,
-                                              expires=timezone.now() + timedelta(0, 60))
-    client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token.token)
-    return access_token.token
-
-
 class APIGenericTest:
     """
     Generic tests for django rest framework api tests.
@@ -34,20 +20,35 @@ class APIGenericTest:
     def __init__(self, test_case, initial_user_is_superuser=False):
         self.test_case = test_case
         self.is_superuser = initial_user_is_superuser
-        self.username_or_token = self.set_authorization()
+        if self.is_superuser:
+            self.user = User.objects.create_superuser(username='firstuser', password='123')
+        else:
+            self.user = User.objects.create_user(username='firstuser', password='123')
+        self.application = Application.objects.create(user=self.user, client_type='confidential',
+                                                      authorization_grant_type='password')
+        self.username_or_token = self.set_authorization(user=self.user)
         self.data = self.test_case.data
         self.altered_data = self.test_case.altered_data
         self.url = self.test_case.url
         self.first_object_response = self.test_case.client.post(self.url, self.data)
 
-    def set_authorization(self, username='user', random_user=False):
+    def set_authorization(self, username='user', random_user=False, user=None):
         if random_user:
             user_number = random.randint(2, 999999)
         else:
             user_number = 1
         new_username = '{0}{1}'.format(username, user_number)
-        oauth2_authorize(self.test_case.client, username_and_token=new_username, is_superuser=self.is_superuser)
-        return new_username
+        if user:
+            new_user = user
+        elif self.is_superuser:
+            new_user = User.objects.create_superuser(username=new_username, password='123')
+        else:
+            new_user = User.objects.create_user(username=new_username, password='123')
+        access_token = AccessToken.objects.create(user=new_user, token=new_user.username,
+                                                  application=self.application,
+                                                  expires=timezone.now() + timedelta(0, 60))
+        self.test_case.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token.token)
+        return access_token.token
 
     def reset_authorization(self, token=None):
         if not token:
@@ -72,7 +73,7 @@ class APIGenericTest:
         response = self.test_case.client.put(self.first_object_response.data['url'], self.altered_data)
         if is_altered:
             self.test_case.assertNotEqual(self.first_object_response.data, response.data)
-        self.test_case.assertEqual(response.status_code, status_code)
+        self.test_case.assertEqual(response.status_code, status_code, response.data)
 
     def partial_update(self, status_code=status.HTTP_200_OK, is_altered=True):
         response = self.test_case.client.patch(self.first_object_response.data['url'], self.altered_data)
@@ -93,36 +94,34 @@ class APIGenericTest:
             response = self.test_case.client.get(self.url, query_parameter)
             self.test_case.assertEqual(response.data['count'], 1, 'Field "{0}" not in search fields'.format(field))
 
-    # TODO Still need to create a generic test for ordering
+            # TODO Still need to create a generic test for ordering
 
 
 class UserGenericTest(APIGenericTest):
-
     def __init__(self, test_case, initial_user_is_superuser=False):
         self.test_case = test_case
         self.is_superuser = initial_user_is_superuser
-        self.username_or_token = self.set_authorization()
+        if self.is_superuser:
+            self.user = User.objects.create_superuser(username='firstuser', password='123')
+        else:
+            self.user = User.objects.create_user(username='firstuser', password='123')
+        self.application = Application.objects.create(user=self.user, client_type='confidential',
+                                                      authorization_grant_type='password')
+        self.username_or_token = self.set_authorization(user=self.user)
         self.data = self.test_case.data
         self.altered_data = self.test_case.altered_data
         self.url = self.test_case.url
-        data = copy.copy(self.data)
-        try:
-            data['username'] = 'user'
-        except KeyError:
-            pass
-        self.first_object_response = self.test_case.client.post(self.url, data)
+        self.alter_username()
+        self.first_object_response = self.test_case.client.post(self.url, self.data)
+        self.children_user = User.objects.get(username=self.first_object_response.data['username'])
 
-    def authorize_children(self, client_type='confidential', grant_type='password'):
-        user = User.objects.get(username=self.first_object_response.data['username'])
-        aplicacao = Application.objects.create(user=user, client_type=client_type, authorization_grant_type=grant_type,
-                                               client_id=user.username)
-        access_token = AccessToken.objects.create(user=user, token=user.username, application=aplicacao,
-                                                  expires=timezone.now() + timedelta(0, 60))
-        self.test_case.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token.token)
-
-    def alter_username(self):
+    def alter_username(self, altered_data=False):
         username = 'user-{0}'.format(random.randint(1, 999999))
-        self.data.update({
+        if altered_data:
+            data = self.altered_data
+        else:
+            data = self.data
+        data.update({
             'username': username,
         })
 
@@ -139,17 +138,60 @@ class UserGenericTest(APIGenericTest):
             self.test_case.assertEqual(response.data['count'], 1, 'Field "{0}" not in search fields'.format(field))
 
     def create(self, status_code=status.HTTP_201_CREATED):
+        self.alter_username()
         super(UserGenericTest, self).create(status_code=status_code)
-        self.authorize_children()
+        self.set_authorization(user=self.children_user)
         self.alter_username()
         super(UserGenericTest, self).create(status_code=status.HTTP_403_FORBIDDEN)
         self.reset_authorization()
+
+    def update(self, status_code=status.HTTP_200_OK, is_altered=True):
+        self.set_authorization(random_user=True)
+        super(UserGenericTest, self).update(status_code=status.HTTP_201_CREATED, is_altered=False)
+        self.set_authorization(user=self.children_user)
+        self.alter_username(altered_data=True)
+        super(UserGenericTest, self).update(status_code=status_code, is_altered=is_altered)
+        self.alter_username(altered_data=True)
+        self.reset_authorization()
+        super(UserGenericTest, self).update(status_code=status_code, is_altered=is_altered)
+
+    def partial_update(self, status_code=status.HTTP_200_OK, is_altered=True):
+        self.set_authorization(random_user=True)
+        super(UserGenericTest, self).partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False)
+        self.set_authorization(user=self.children_user)
+        self.alter_username(altered_data=True)
+        super(UserGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered)
+        self.reset_authorization()
+        self.alter_username(altered_data=True)
+        super(UserGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered)
+
+    def list(self, count=1, status_code=status.HTTP_200_OK):
+        super(UserGenericTest, self).list(count=1, status_code=status_code)
+        self.alter_username()
+        self.test_case.client.post(self.url, self.data)
+        super(UserGenericTest, self).list(count=2, status_code=status_code)
+        self.set_authorization(user=self.children_user)
+        super(UserGenericTest, self).list(count=1, status_code=status_code)
+        self.set_authorization(random_user=True)
+        super(UserGenericTest, self).list(count=0, status_code=status_code)
+
+    def retrieve(self, status_code=status.HTTP_200_OK):
+        super(UserGenericTest, self).retrieve(status_code=status_code)
+        self.set_authorization(random_user=True)
+        super(UserGenericTest, self).retrieve(status_code=status.HTTP_404_NOT_FOUND)
+        self.set_authorization(user=self.children_user)
+        super(UserGenericTest, self).retrieve(status_code=status_code)
+
+    def destroy(self, status_code=status.HTTP_204_NO_CONTENT):
+        self.set_authorization(random_user=True)
+        super(UserGenericTest, self).destroy(status_code=status.HTTP_404_NOT_FOUND)
+        self.set_authorization(user=self.children_user)
+        super(UserGenericTest, self).destroy(status_code=status_code)
 
 
 # TODO Create tests for children
 # TODO Test filters for retriving just children
 class UserAPITestCase(APILiveServerTestCase):
-
     def setUp(self):
         self.url = reverse('user-list')
         self.data = {
@@ -162,10 +204,10 @@ class UserAPITestCase(APILiveServerTestCase):
             'password': '123altered',
             'email': 'childrenaltered@email.com',
         }
-        self.api_generic_test = UserGenericTest(self)
+        self.user_generic_test = UserGenericTest(self)
 
     def test_created_user_password(self):
-        user = User.objects.get(username='user')
+        user = User.objects.get(username=self.user_generic_test.first_object_response.data['username'])
         self.assertNotEqual(user.password, self.data['password'], 'Password is being stored raw')
 
     def test_required_email(self):
@@ -175,23 +217,23 @@ class UserAPITestCase(APILiveServerTestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create(self):
-        self.api_generic_test.create()
+        self.user_generic_test.create()
 
     def test_update(self):
-        self.api_generic_test.update()
+        self.user_generic_test.update()
 
     def test_partial_update(self):
-        self.api_generic_test.partial_update()
+        self.user_generic_test.partial_update()
 
     def test_list(self):
-        self.api_generic_test.list(count=2)
+        self.user_generic_test.list(count=2)
 
     def test_retrieve(self):
-        self.api_generic_test.retrieve()
+        self.user_generic_test.retrieve()
 
     def test_destroy(self):
-        self.api_generic_test.destroy()
+        self.user_generic_test.destroy()
 
     def test_search_fields(self):
         search_fields = ['username', 'email']
-        self.api_generic_test.search_fields(search_fields)
+        self.user_generic_test.search_fields(search_fields)
