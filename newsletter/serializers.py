@@ -11,6 +11,7 @@ class SubscriptionsSerializer(OwnerSerializer):
 
 
 class NewsletterSerializer(PublicationSerializer):
+    send_newsletter = serializers.HyperlinkedIdentityField(view_name='newsletter-send-newsletter')
 
     class Meta(PublicationSerializer.Meta):
         model = Newsletter

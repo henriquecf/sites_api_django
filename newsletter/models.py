@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.mail import EmailMultiAlternatives
 from publication.models import Publication
 from accounts.models import Owner
 
@@ -15,3 +16,13 @@ class Newsletter(Publication):
     This model implements newsletter as a publication.
     """
     content = models.TextField()
+
+    def send_newsletter(self, user):
+        subscriptions = Subscriptions.objects.filter(owner=user)
+        for subscription in subscriptions:
+            message = EmailMultiAlternatives(self.title,
+                                             self.content,
+                                             'localhost',
+                                             subscription.email)
+            message.send()
+        return True

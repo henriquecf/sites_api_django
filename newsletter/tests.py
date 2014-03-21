@@ -3,6 +3,7 @@
 from datetime import datetime
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
+from rest_framework import status
 from publication.tests import PublicationGenericTest
 from accounts.tests import OwnerGenericTest
 
@@ -124,5 +125,24 @@ class NewsletterAPITestCase(APILiveServerTestCase):
     def test_filter_author(self):
         self.publication_generic_test.filter_author()
 
-    #TODO: Test submit action submits newsletter to all subscribers
+    def test_send_newsletter(self):
+        request = self.client.post(self.url, self.data)
+        send_url = request.data['send_newsletter']
+        request2 = self.client.get(send_url)
+        self.assertEqual(request2.status_code, status.HTTP_200_OK)
+        response = self.client.post(self.url, self.data)
+        send_url = response.data['send_newsletter']
+        response2 = self.client.get(send_url)
+        self.assertEqual(response2.status_code, status.HTTP_200_OK)
+
+    def test_send_newsletter_just_to_own_subscribers(self):
+        response = self.client.post(self.url, self.data)
+        send_url = response.data['send_newsletter']
+
+    #TODO: Remove publication dependency of newsletter
+    #TODO: Test submissions creation when newsletter is sent
+    #TODO: Test submission status equal to fail when fail to send
+    #TODO: Test submission status equal to sent when succeeds to send
+    #TODO: Test submission resend just send fail submissions
+    #TODO: Test submit action submits newsletter to just own subscribers
     #TODO: Test just owner can submit a newsletter
