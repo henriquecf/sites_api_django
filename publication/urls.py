@@ -18,7 +18,7 @@ router.register(r'category', publication_views.CategoryViewSet)
 router.register(r'news', news_views.NewsViewSet)
 router.register(r'account', account_views.AccountViewSet)
 router.register(r'file', file_explorer_views.FileViewSet)
-router.register(r'subscriptions', newsletter_views.SubscriptionsViewSet)
+router.register(r'subscription', newsletter_views.SubscriptionViewSet)
 router.register(r'newsletter', newsletter_views.NewsletterViewSet)
 router.register(r'user', user_views.UserViewSet)
 

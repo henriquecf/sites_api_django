@@ -1,13 +1,13 @@
 from rest_framework import serializers
 from publication.serializers import PublicationSerializer
-from accounts.serializers import OwnerSerializer
-from .models import Subscriptions, Newsletter
+from owner.serializers import OwnerSerializer
+from .models import Subscription, Newsletter
 
 
-class SubscriptionsSerializer(OwnerSerializer):
+class SubscriptionSerializer(OwnerSerializer):
 
     class Meta(OwnerSerializer.Meta):
-        model = Subscriptions
+        model = Subscription
 
 
 class NewsletterSerializer(PublicationSerializer):

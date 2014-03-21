@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
+from django.utils import timezone
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 from publication.tests import PublicationGenericTest
-from accounts.tests import OwnerGenericTest
+from owner.tests import OwnerGenericTest
 
 #TODO: Test just owner can destroy or user with unsubscription code can destroy
 
-class SubscpritionsAPITestCase(APILiveServerTestCase):
+class SubscpritionAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
-        self.url = reverse('subscriptions-list')
+        self.url = reverse('subscription-list')
         self.data = {
             'name': 'Idan',
             'email': 'ivan.eng.controle@gmail.com',
@@ -65,7 +65,7 @@ class NewsletterAPITestCase(APILiveServerTestCase):
             'title': 'First newsletter',
             'description': 'First description',
             'slug': 'first-newsletter',
-            'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
+            'publication_start_date': timezone.now(),
             'publication_end_date': None,
             'content': 'My content',
         }
@@ -73,7 +73,7 @@ class NewsletterAPITestCase(APILiveServerTestCase):
             'title': 'First newsletter altered',
             'description': 'First description altered',
             'slug': 'first-newsletter',
-            'publication_start_date': datetime(2014, 1, 29, 19, 10, 7),
+            'publication_start_date': timezone.now(),
             'publication_end_date': None,
             'content': 'My content altered',
         }

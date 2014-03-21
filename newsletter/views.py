@@ -2,15 +2,15 @@
 from rest_framework.decorators import link
 from rest_framework.response import Response
 from publication.views import PublicationBaseViewSet
-from accounts.views import OwnerViewSet
-from .serializers import SubscriptionsSerializer, NewsletterSerializer
-from .models import Subscriptions, Newsletter
+from owner.views import OwnerViewSet
+from .serializers import SubscriptionSerializer, NewsletterSerializer
+from .models import Subscription, Newsletter
 from .filtersets import NewsletterFilterSet
 
 
-class SubscriptionsViewSet(OwnerViewSet):
-    serializer_class = SubscriptionsSerializer
-    model = Subscriptions
+class SubscriptionViewSet(OwnerViewSet):
+    serializer_class = SubscriptionSerializer
+    model = Subscription
 
 
 class NewsletterViewSet(PublicationBaseViewSet):

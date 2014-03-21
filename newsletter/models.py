@@ -1,9 +1,9 @@
 from django.db import models
 from django.core.mail import EmailMultiAlternatives
 from publication.models import Publication
-from accounts.models import Owner
+from owner.models import Owner
 
-class Subscriptions(Owner):
+class Subscription(Owner):
     """
     This class holds the newsletter subscribers
     """
@@ -18,7 +18,7 @@ class Newsletter(Publication):
     content = models.TextField()
 
     def send_newsletter(self, user):
-        subscriptions = Subscriptions.objects.filter(owner=user)
+        subscriptions = Subscription.objects.filter(owner=user)
         for subscription in subscriptions:
             message = EmailMultiAlternatives(self.title,
                                              self.content,
