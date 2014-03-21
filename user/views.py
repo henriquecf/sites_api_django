@@ -34,7 +34,7 @@ class UserViewSet(ModelViewSet):
     )
 
     def get_serializer_class(self):
-        if self.request.method in permissions.SAFE_METHODS:
+        if self.request.method == 'GET':
             return UserSerializer
         else:
             return UserCreateChangeSerializer
