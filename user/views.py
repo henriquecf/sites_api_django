@@ -49,17 +49,10 @@ class UserViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         user = request.user
         if not user.is_root_node():
-            return Response({'detail': 'You do not have permission to perform this action.'}, status=403)
+            return Response({u'detail': u'You do not have permission to perform this action.'}, status=403)
         return super(UserViewSet, self).create(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
-        user = request.user
-        if user.is_root_node():
-            users = list(user.get_descendants())
-            users.insert(0, user)
-        else:
-            users = list(user)
-        serialized_users = UserSerializer(users, context={'request': request}, many=True)
-        response = super(UserViewSet, self).list(request, *args, **kwargs)
-        response.data['results'] = serialized_users.data
-        return response
+        if not request.user.is_root_node():
+            return Response(data={u'detail': u'You do not have permission to perform this action.'}, status=403)
+        return super(UserViewSet, self).list(request, *args, **kwargs)

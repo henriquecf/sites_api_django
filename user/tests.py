@@ -98,6 +98,7 @@ class APIGenericTest:
 
 
 class UserGenericTest(APIGenericTest):
+
     def __init__(self, test_case, initial_user_is_superuser=False):
         self.test_case = test_case
         self.is_superuser = initial_user_is_superuser
@@ -147,7 +148,7 @@ class UserGenericTest(APIGenericTest):
 
     def update(self, status_code=status.HTTP_200_OK, is_altered=True):
         self.set_authorization(random_user=True)
-        super(UserGenericTest, self).update(status_code=status.HTTP_201_CREATED, is_altered=False)
+        super(UserGenericTest, self).update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False)
         self.set_authorization(user=self.children_user)
         self.alter_username(altered_data=True)
         super(UserGenericTest, self).update(status_code=status_code, is_altered=is_altered)
@@ -157,7 +158,7 @@ class UserGenericTest(APIGenericTest):
 
     def partial_update(self, status_code=status.HTTP_200_OK, is_altered=True):
         self.set_authorization(random_user=True)
-        super(UserGenericTest, self).partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False)
+        super(UserGenericTest, self).partial_update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False)
         self.set_authorization(user=self.children_user)
         self.alter_username(altered_data=True)
         super(UserGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered)
@@ -166,25 +167,25 @@ class UserGenericTest(APIGenericTest):
         super(UserGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered)
 
     def list(self, count=1, status_code=status.HTTP_200_OK):
-        super(UserGenericTest, self).list(count=1, status_code=status_code)
+        super(UserGenericTest, self).list(count=count, status_code=status_code)
         self.alter_username()
         self.test_case.client.post(self.url, self.data)
-        super(UserGenericTest, self).list(count=2, status_code=status_code)
+        super(UserGenericTest, self).list(count=count+1, status_code=status_code)
         self.set_authorization(user=self.children_user)
-        super(UserGenericTest, self).list(count=1, status_code=status_code)
+        super(UserGenericTest, self).list(count=-1, status_code=status.HTTP_403_FORBIDDEN)
         self.set_authorization(random_user=True)
         super(UserGenericTest, self).list(count=0, status_code=status_code)
 
     def retrieve(self, status_code=status.HTTP_200_OK):
         super(UserGenericTest, self).retrieve(status_code=status_code)
         self.set_authorization(random_user=True)
-        super(UserGenericTest, self).retrieve(status_code=status.HTTP_404_NOT_FOUND)
+        super(UserGenericTest, self).retrieve(status_code=status.HTTP_403_FORBIDDEN)
         self.set_authorization(user=self.children_user)
         super(UserGenericTest, self).retrieve(status_code=status_code)
 
     def destroy(self, status_code=status.HTTP_204_NO_CONTENT):
         self.set_authorization(random_user=True)
-        super(UserGenericTest, self).destroy(status_code=status.HTTP_404_NOT_FOUND)
+        super(UserGenericTest, self).destroy(status_code=status.HTTP_403_FORBIDDEN)
         self.set_authorization(user=self.children_user)
         super(UserGenericTest, self).destroy(status_code=status_code)
 
