@@ -31,7 +31,6 @@ class PublicationGenericTest(OwnerGenericTest):
 
     def get_action_response(self, action_name, status_code=status.HTTP_200_OK):
         action_url = self.first_object_response.data[action_name]
-        print(action_url)
         response = self.test_case.client.get(action_url)
         self.test_case.assertEqual(response.status_code, status_code)
         return response
