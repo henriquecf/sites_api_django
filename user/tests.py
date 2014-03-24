@@ -65,24 +65,32 @@ class APIGenericTest:
             self.test_case.assertEqual(response.data['count'], count)
         self.test_case.assertEqual(response.status_code, status_code, response.data)
 
-    def retrieve(self, status_code=status.HTTP_200_OK):
-        response = self.test_case.client.get(self.first_object_response.data['url'])
+    def retrieve(self, status_code=status.HTTP_200_OK, url=None):
+        if not url:
+            url = self.first_object_response.data['url']
+        response = self.test_case.client.get(url)
         self.test_case.assertEqual(response.status_code, status_code)
 
-    def update(self, status_code=status.HTTP_200_OK, is_altered=True):
-        response = self.test_case.client.put(self.first_object_response.data['url'], self.altered_data)
+    def update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
+        if not url:
+            url = self.first_object_response.data['url']
+        response = self.test_case.client.put(url, self.altered_data)
         if is_altered:
             self.test_case.assertNotEqual(self.first_object_response.data, response.data)
         self.test_case.assertEqual(response.status_code, status_code, response.data)
 
-    def partial_update(self, status_code=status.HTTP_200_OK, is_altered=True):
-        response = self.test_case.client.patch(self.first_object_response.data['url'], self.altered_data)
+    def partial_update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
+        if not url:
+            url = self.first_object_response.data['url']
+        response = self.test_case.client.patch(url, self.altered_data)
         if is_altered:
             self.test_case.assertNotEqual(self.first_object_response.data, response.data)
         self.test_case.assertEqual(response.status_code, status_code)
 
-    def destroy(self, status_code=status.HTTP_204_NO_CONTENT):
-        response = self.test_case.client.delete(self.first_object_response.data['url'])
+    def destroy(self, status_code=status.HTTP_204_NO_CONTENT, url=None):
+        if not url:
+            url = self.first_object_response.data['url']
+        response = self.test_case.client.delete(url)
         self.test_case.assertEqual(response.status_code, status_code)
 
     def search_fields(self, search_fields=None):

@@ -1,10 +1,10 @@
 import datetime
 
 from accounts.models import Account
-from owner.views import OwnerViewSet
+from owner.views import OwnerChildrenViewSet
 
 
-class AccountViewSet(OwnerViewSet):
+class AccountViewSet(OwnerChildrenViewSet):
     model = Account
 
     def pre_save(self, obj):

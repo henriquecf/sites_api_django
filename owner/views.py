@@ -35,8 +35,14 @@ class UserCreateView(CreateView):
 
 
 class OwnerViewSet(viewsets.ModelViewSet):
-    serializer_class = OwnerSerializer
     model = Owner
+    serializer_class = OwnerSerializer
+
+    def pre_save(self, obj):
+        obj.owner = self.request.user
+
+
+class OwnerChildrenViewSet(OwnerViewSet):
 
     def pre_save(self, obj):
         user = self.request.user
