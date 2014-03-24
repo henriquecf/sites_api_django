@@ -5,8 +5,6 @@ from rest_framework.test import APILiveServerTestCase
 from publication.tests import PublicationGenericTest
 
 
-
-# TODO link model to Category and check if it adds category
 class FileAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
