@@ -1,10 +1,9 @@
 
 from rest_framework.decorators import link
 from rest_framework.response import Response
-from publication.views import PublicationBaseViewSet
 from owner.views import OwnerViewSet
-from .serializers import SubscriptionSerializer, NewsletterSerializer
-from .models import Subscription, Newsletter
+from .serializers import SubscriptionSerializer, NewsletterSerializer, SubmissionSerializer
+from .models import Subscription, Newsletter, Submission
 from .filtersets import NewsletterFilterSet
 
 
@@ -13,7 +12,7 @@ class SubscriptionViewSet(OwnerViewSet):
     model = Subscription
 
 
-class NewsletterViewSet(PublicationBaseViewSet):
+class NewsletterViewSet(OwnerViewSet):
     serializer_class = NewsletterSerializer
     model = Newsletter
     filter_class = NewsletterFilterSet
@@ -24,3 +23,8 @@ class NewsletterViewSet(PublicationBaseViewSet):
         status = newsletter.send_newsletter()
         if status:
             return Response(status=200)
+
+
+class SubmissionViewSet(OwnerViewSet):
+    serializer_class = SubmissionSerializer
+    model = Submission

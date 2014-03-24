@@ -5,10 +5,11 @@ from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 from publication.tests import PublicationGenericTest
+from owner.models import User
 from owner.tests import OwnerAndChildrenGenericTest
+from .models import Newsletter, Subscription
 
 #TODO: Test just owner can destroy or user with unsubscription code can destroy
-
 class SubscpritionAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
@@ -43,57 +44,6 @@ class SubscpritionAPITestCase(APILiveServerTestCase):
 
     def test_owner_is_user_request(self):
         self.owner_generic_test.owner_or_children_is_request_user()
-'''
-    def test_user_destroy(self):
-        response = self.client.post(self.url, self.data)
-        subscription = Subscriptions.objects.get(email=response.data['email'])
-        self.owner_generic_test.set_authorization(random_user=True)
-        response2 = self.client.get(response.data['unsubscribe'], {'code': subscription.code})
-        self.assertEqual(response2.status_code, status.HTTP_404_NOT_FOUND)
-        self.owner_generic_test.reset_authorization()
-        response2 = self.client.get(response.data['unsubscribe'], {'code': 'ASPO29348734582j'})
-        self.assertEqual(response2.status_code, status.HTTP_403_FORBIDDEN)
-        response2 = self.client.get(response.data['unsubscribe'], {'code': subscription.code})
-        self.assertEqual(response2.status_code, status.HTTP_204_NO_CONTENT)
-'''
-
-
-class SubmissionAPITestCase(APILiveServerTestCase):
-
-    def setUp(self):
-        self.url = reverse('subscription-list')
-        self.data = {
-            'subscription': '',
-            'newsletter': '',
-            'status': 'Not Sent',
-        }
-        self.altered_data = {
-            'subscription': '',
-            'newsletter': '',
-            'status': 'Sent',
-        }
-        self.owner_generic_test = OwnerGenericTest(self)
-
-    def test_create(self):
-        self.owner_generic_test.create()
-
-    def test_list(self):
-        self.owner_generic_test.list()
-
-    def test_retrieve(self):
-        self.owner_generic_test.retrieve()
-
-    def test_update(self):
-        self.owner_generic_test.update()
-
-    def test_partial_update(self):
-        self.owner_generic_test.partial_update()
-
-    def test_destroy(self):
-        self.owner_generic_test.destroy()
-
-    def test_owner_is_user_request(self):
-        self.owner_generic_test.owner_is_request_user()
 
 
 class NewsletterAPITestCase(APILiveServerTestCase):
@@ -101,78 +51,35 @@ class NewsletterAPITestCase(APILiveServerTestCase):
     def setUp(self):
         self.url = reverse('newsletter-list')
         self.data = {
-            'title': 'First newsletter',
-            'description': 'First description',
-            'slug': 'first-newsletter',
-            'publication_start_date': timezone.now(),
-            'publication_end_date': None,
+            'subject': 'First newsletter',
             'content': 'My content',
         }
         self.altered_data = {
-            'title': 'First newsletter altered',
-            'description': 'First description altered',
-            'slug': 'first-newsletter',
-            'publication_start_date': timezone.now(),
-            'publication_end_date': None,
+            'subject': 'First newsletter altered',
             'content': 'My content altered',
         }
-        self.owner_generic_test = OwnerGenericTest(self)
+        self.owner_and_children_generic_test = OwnerAndChildrenGenericTest(self)
 
     def test_create(self):
-        self.owner_generic_test.create()
+        self.owner_and_children_generic_test.create()
 
     def test_list(self):
-        self.owner_generic_test.list()
+        self.owner_and_children_generic_test.list()
 
     def test_retrieve(self):
-        self.owner_generic_test.retrieve()
+        self.owner_and_children_generic_test.retrieve()
 
     def test_update(self):
-        self.owner_generic_test.update()
+        self.owner_and_children_generic_test.update()
 
     def test_partial_update(self):
-        self.owner_generic_test.partial_update()
+        self.owner_and_children_generic_test.partial_update()
 
     def test_destroy(self):
-        self.owner_generic_test.destroy()
+        self.owner_and_children_generic_test.destroy()
 
     def test_owner_is_request_user(self):
-        self.publication_generic_test.owner_is_request_user()
-
-    def test_slug_is_slugified_title(self):
-        self.publication_generic_test.slug_is_slugified_title()
-
-    def test_slug_is_unique(self):
-        self.publication_generic_test.slug_is_unique()
-
-    def test_has_author(self):
-        self.publication_generic_test.has_author()
-
-    def test_is_published_default_true(self):
-        self.publication_generic_test.is_published_default_true()
-
-    def test_publish(self):
-        self.publication_generic_test.publish()
-
-    def test_unpublish(self):
-        self.publication_generic_test.unpublish()
-
-    def test_search_fields(self):
-        search_fields = ('title', 'description')
-        self.publication_generic_test.search_fields(search_fields)
-
-    def test_filter_author(self):
-        self.publication_generic_test.filter_author()
-
-    def test_send_newsletter(self):
-        request = self.client.post(self.url, self.data)
-        send_url = request.data['send_newsletter']
-        request2 = self.client.get(send_url)
-        self.assertEqual(request2.status_code, status.HTTP_200_OK)
-        response = self.client.post(self.url, self.data)
-        send_url = response.data['send_newsletter']
-        response2 = self.client.get(send_url)
-        self.assertEqual(response2.status_code, status.HTTP_200_OK)
+        self.owner_and_children_generic_test.owner_or_children_is_request_user()
 
     def test_send_newsletter_just_to_own_subscribers(self):
         response = self.client.post(self.url, self.data)

@@ -11,10 +11,11 @@ class Subscription(Owner):
     email = models.EmailField(max_length=200)
 
 
-class Newsletter(Publication):
+class Newsletter(Owner):
     """
     This model implements newsletter as a publication.
     """
+    subject = models.CharField(max_length=200)
     content = models.TextField()
 
     def send_newsletter(self, user):
@@ -25,4 +26,20 @@ class Newsletter(Publication):
                                              'localhost',
                                              subscription.email)
             message.send()
+        return True
+
+
+class Submission(Owner):
+    """
+    This class holds the submission of a newsletter to a subscriber
+    """
+    subscription = models.ForeignKey(Subscription)
+    newsletter = models.ForeignKey(Newsletter)
+
+    def send_newsletter(self, user):
+        message = EmailMultiAlternatives(self.title,
+                                         self.newsletter.content,
+                                         'localhost',
+                                         self.subscription.email)
+        message.send()
         return True

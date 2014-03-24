@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from publication.serializers import PublicationSerializer
 from owner.serializers import OwnerSerializer
-from .models import Subscription, Newsletter
+from .models import Subscription, Newsletter, Submission
 
 
 class SubscriptionSerializer(OwnerSerializer):
@@ -10,8 +9,13 @@ class SubscriptionSerializer(OwnerSerializer):
         model = Subscription
 
 
-class NewsletterSerializer(PublicationSerializer):
+class NewsletterSerializer(OwnerSerializer):
     send_newsletter = serializers.HyperlinkedIdentityField(view_name='newsletter-send-newsletter')
 
-    class Meta(PublicationSerializer.Meta):
+    class Meta(OwnerSerializer.Meta):
         model = Newsletter
+
+class SubmissionSerializer(OwnerSerializer):
+
+    class Meta(OwnerSerializer.Meta):
+        model = Submission
