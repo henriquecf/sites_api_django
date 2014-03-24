@@ -9,4 +9,4 @@ class OwnerSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Account
-        exclude = ['owner']
+        exclude = ['owner', 'children']
