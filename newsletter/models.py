@@ -1,3 +1,4 @@
+import random
 from django.db import models
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.mail import EmailMultiAlternatives
@@ -10,6 +11,7 @@ class Subscription(Owner):
     """
     name = models.CharField(max_length=50)
     email = models.EmailField(max_length=200)
+    token = models.CharField(max_length=30, editable=False)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -17,6 +19,7 @@ class Subscription(Owner):
         for subscription in equal_subscriptions:
             if not subscription == self:
                 subscription.delete()
+        self.token = random.randint(948284593853, 958272838472748584737484748234)
         return super(Subscription, self).save()
 
     def __str__(self):

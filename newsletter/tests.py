@@ -30,7 +30,8 @@ class SubscpritionAPITestCase(APILiveServerTestCase):
         self.owner_generic_test.create()
 
     def test_list(self):
-        self.owner_generic_test.list()
+        self.data.update({'email': 'ivan2@ivan2.com'})
+        self.owner_generic_test.list(count=1)
 
     def test_retrieve(self):
         self.owner_generic_test.retrieve()
@@ -48,8 +49,10 @@ class SubscpritionAPITestCase(APILiveServerTestCase):
         self.owner_generic_test.owner_or_children_is_request_user()
 
     def test_email_is_unique(self):
-        response = self.client.post(self.url, self.data)
-        self.assertEqual(response.data['email'], '[Subscription with this Email already exists.]')
+        count = Subscription.objects.count()
+        self.client.post(self.url, self.data)
+        count_again = Subscription.objects.count()
+        self.assertEqual(count, count_again)
 
     def test_generate_token(self):
         self.owner_generic_test.create()
