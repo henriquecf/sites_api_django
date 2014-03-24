@@ -8,61 +8,88 @@ from owner.models import Owner, Common
 from user.tests import APIGenericTest
 
 
-class OwnerGenericTest(APIGenericTest):
+class OwnerAndChildrenGenericTest(APIGenericTest):
+    def __init__(self, test_case, initial_user_is_superuser=False):
+        super(OwnerAndChildrenGenericTest, self).__init__(test_case,
+                                                          initial_user_is_superuser=initial_user_is_superuser)
+        self.children_user = User.objects.create_user(username='children', password='123', email='children@gm.com',
+                                                      parent=self.user)
+
     def create(self, status_code=status.HTTP_201_CREATED):
-        response = super(OwnerGenericTest, self).create(status_code=status_code)
+        super(OwnerAndChildrenGenericTest, self).create(status_code=status_code)
+        self.set_authorization(user=self.children_user)
+        super(OwnerAndChildrenGenericTest, self).create(status_code=status_code)
         self.test_case.client.credentials()
-        super(OwnerGenericTest, self).create(status_code=status.HTTP_401_UNAUTHORIZED)
+        super(OwnerAndChildrenGenericTest, self).create(status_code=status.HTTP_401_UNAUTHORIZED)
         self.reset_authorization()
-        return response
 
     def update(self, status_code=status.HTTP_200_OK, is_altered=True):
-        super(OwnerGenericTest, self).update(status_code=status_code)
+        super(OwnerAndChildrenGenericTest, self).update(status_code=status_code)
         self.test_case.client.credentials()
-        super(OwnerGenericTest, self).update(status_code=status.HTTP_401_UNAUTHORIZED, is_altered=False)
+        super(OwnerAndChildrenGenericTest, self).update(status_code=status.HTTP_401_UNAUTHORIZED, is_altered=False)
         self.set_authorization(random_user=True)
-        super(OwnerGenericTest, self).update(status_code=status.HTTP_201_CREATED)
+        super(OwnerAndChildrenGenericTest, self).update(status_code=status.HTTP_201_CREATED)
+        self.set_authorization(user=self.children_user)
+        super(OwnerAndChildrenGenericTest, self).update(status_code=status.HTTP_201_CREATED)
         self.reset_authorization()
 
     def partial_update(self, status_code=status.HTTP_200_OK, is_altered=True):
-        super(OwnerGenericTest, self).partial_update(status_code=status_code)
+        super(OwnerAndChildrenGenericTest, self).partial_update(status_code=status_code)
         self.test_case.client.credentials()
-        super(OwnerGenericTest, self).partial_update(status_code=status.HTTP_401_UNAUTHORIZED, is_altered=False)
+        super(OwnerAndChildrenGenericTest, self).partial_update(status_code=status.HTTP_401_UNAUTHORIZED,
+                                                                is_altered=False)
         self.set_authorization(random_user=True)
-        super(OwnerGenericTest, self).partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False)
+        super(OwnerAndChildrenGenericTest, self).partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False)
+        self.set_authorization(user=self.children_user)
+        super(OwnerAndChildrenGenericTest, self).partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False)
         self.reset_authorization()
 
     def list(self, count=1, status_code=status.HTTP_200_OK):
-        super(OwnerGenericTest, self).list(status_code=status_code)
+        super(OwnerAndChildrenGenericTest, self).list(count=count, status_code=status_code)
         self.test_case.client.credentials()
-        super(OwnerGenericTest, self).list(count=-1, status_code=status.HTTP_401_UNAUTHORIZED)
+        super(OwnerAndChildrenGenericTest, self).list(count=-1, status_code=status.HTTP_401_UNAUTHORIZED)
         self.set_authorization(random_user=True)
-        super(OwnerGenericTest, self).list(count=0)
+        super(OwnerAndChildrenGenericTest, self).list(count=0, status_code=status_code)
+        self.set_authorization(user=self.children_user)
+        self.test_case.client.post(self.url, self.data)
+        super(OwnerAndChildrenGenericTest, self).list(count=1, status_code=status_code)
+        self.reset_authorization()
+        super(OwnerAndChildrenGenericTest, self).list(count=count+1, status_code=status_code)
         self.reset_authorization()
 
     def retrieve(self, status_code=status.HTTP_200_OK):
-        super(OwnerGenericTest, self).retrieve(status_code=status_code)
+        super(OwnerAndChildrenGenericTest, self).retrieve(status_code=status_code)
         self.test_case.client.credentials()
-        super(OwnerGenericTest, self).retrieve(status_code=status.HTTP_401_UNAUTHORIZED)
+        super(OwnerAndChildrenGenericTest, self).retrieve(status_code=status.HTTP_401_UNAUTHORIZED)
         self.set_authorization(random_user=True)
-        super(OwnerGenericTest, self).retrieve(status_code=status.HTTP_404_NOT_FOUND)
+        super(OwnerAndChildrenGenericTest, self).retrieve(status_code=status.HTTP_404_NOT_FOUND)
+        self.set_authorization(user=self.children_user)
+        super(OwnerAndChildrenGenericTest, self).retrieve(status_code=status.HTTP_404_NOT_FOUND)
         self.reset_authorization()
 
     def destroy(self, status_code=status.HTTP_204_NO_CONTENT):
         self.test_case.client.credentials()
-        super(OwnerGenericTest, self).destroy(status_code=status.HTTP_401_UNAUTHORIZED)
+        super(OwnerAndChildrenGenericTest, self).destroy(status_code=status.HTTP_401_UNAUTHORIZED)
         self.set_authorization(random_user=True)
-        super(OwnerGenericTest, self).destroy(status_code=status.HTTP_404_NOT_FOUND)
+        super(OwnerAndChildrenGenericTest, self).destroy(status_code=status.HTTP_404_NOT_FOUND)
+        self.set_authorization(user=self.children_user)
+        super(OwnerAndChildrenGenericTest, self).destroy(status_code=status.HTTP_404_NOT_FOUND)
         self.reset_authorization()
-        super(OwnerGenericTest, self).destroy(status_code=status_code)
+        super(OwnerAndChildrenGenericTest, self).destroy(status_code=status_code)
 
-    def owner_is_request_user(self):
+    def owner_or_children_is_request_user(self):
         username = self.set_authorization(random_user=True)
         response = self.test_case.client.post(self.url, self.data)
         owner_id = response.data['url'].split('/')[-2]
         owner_obj = Owner.objects.get(id=owner_id)
         user = User.objects.get(username=username)
         self.test_case.assertEqual(user, owner_obj.owner)
+        username = self.set_authorization(user=self.children_user)
+        response = self.test_case.client.post(self.url, self.data)
+        owner_id = response.data['url'].split('/')[-2]
+        owner_obj = Owner.objects.get(id=owner_id)
+        user = User.objects.get(username=username)
+        self.test_case.assertEqual(user, owner_obj.children)
         self.reset_authorization()
 
 

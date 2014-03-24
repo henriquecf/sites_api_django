@@ -2,7 +2,7 @@ import datetime
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 
-from owner.tests import OwnerGenericTest
+from owner.tests import OwnerAndChildrenGenericTest
 
 
 class AccountAPITestCase(APILiveServerTestCase):
@@ -10,7 +10,7 @@ class AccountAPITestCase(APILiveServerTestCase):
         self.url = reverse('account-list')
         self.data = {}
         self.altered_data = {}
-        self.owner_generic_test = OwnerGenericTest(self)
+        self.owner_generic_test = OwnerAndChildrenGenericTest(self)
 
     def test_create(self):
         self.owner_generic_test.create()
@@ -31,7 +31,7 @@ class AccountAPITestCase(APILiveServerTestCase):
         self.owner_generic_test.destroy()
 
     def test_owner_is_user_request(self):
-        self.owner_generic_test.owner_is_request_user()
+        self.owner_generic_test.owner_or_children_is_request_user()
 
     def test_default_expiration_date(self):
         response = self.client.post(self.url, self.data)

@@ -39,4 +39,9 @@ class OwnerViewSet(viewsets.ModelViewSet):
     model = Owner
 
     def pre_save(self, obj):
-        obj.owner = self.request.user
+        user = self.request.user
+        if user.is_root_node():
+            obj.owner = user
+        else:
+            obj.owner = user.get_root()
+            obj.children = user

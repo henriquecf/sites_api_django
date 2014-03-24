@@ -17,9 +17,12 @@ class Owner(Common):
     To use this behavior, the application must inherit the model,
     serializer and viewset
     """
-    owner = models.ForeignKey(User, blank=True)
+    owner = models.ForeignKey(User, blank=True, related_name='owners')
+    children = models.ForeignKey(User, null=True, blank=True)
 
     def __str__(self):
+        if self.children:
+            return self.children.username
         return self.owner.username
 
     class Meta:

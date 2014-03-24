@@ -55,7 +55,7 @@ class Category(MPTTModel, Owner):
     This model implements hierarchy.
     """
     name = models.CharField(max_length=150)
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children_set')
     model_name = models.CharField(max_length=50)
 
     def __str__(self):

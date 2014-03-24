@@ -5,10 +5,10 @@ from django.utils.text import slugify
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 
-from owner.tests import OwnerGenericTest
+from owner.tests import OwnerAndChildrenGenericTest
 
 
-class PublicationGenericTest(OwnerGenericTest):
+class PublicationGenericTest(OwnerAndChildrenGenericTest):
     def slug_is_slugified_title(self, slug_repeat_number='-2'):
         response = self.test_case.client.post(self.url, self.data)
         self.test_case.assertEqual(response.data['slug'], slugify(response.data['title']) + slug_repeat_number,
@@ -109,7 +109,7 @@ class PublicationAPITestCase(APILiveServerTestCase):
         self.publication_generic_test.destroy()
 
     def test_owner_is_request_user(self):
-        self.publication_generic_test.owner_is_request_user()
+        self.publication_generic_test.owner_or_children_is_request_user()
 
     def test_slug_is_slugified_title(self):
         self.publication_generic_test.slug_is_slugified_title()
@@ -148,7 +148,7 @@ class CategoryAPITestCase(APILiveServerTestCase):
             'name': 'Category 1 Altered',
             'model_name': 'news',
         }
-        self.owner_generic_test = OwnerGenericTest(self)
+        self.owner_generic_test = OwnerAndChildrenGenericTest(self)
 
     def test_create(self):
         self.owner_generic_test.create()
@@ -169,7 +169,7 @@ class CategoryAPITestCase(APILiveServerTestCase):
         self.owner_generic_test.destroy()
 
     def test_owner_is_request_user(self):
-        self.owner_generic_test.owner_is_request_user()
+        self.owner_generic_test.owner_or_children_is_request_user()
 
     def test_if_creates_with_parent(self):
         response = self.client.post(self.url, self.data)

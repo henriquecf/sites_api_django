@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 from publication.tests import PublicationGenericTest
-from owner.tests import OwnerGenericTest
+from owner.tests import OwnerAndChildrenGenericTest
 
 #TODO: Test just owner can destroy or user with unsubscription code can destroy
 
@@ -21,7 +21,7 @@ class SubscpritionAPITestCase(APILiveServerTestCase):
             'name': 'Ivan',
             'email': 'ivan_morais@yahoo.com.br',
         }
-        self.owner_generic_test = OwnerGenericTest(self)
+        self.owner_generic_test = OwnerAndChildrenGenericTest(self)
 
     def test_create(self):
         self.owner_generic_test.create()
@@ -42,7 +42,7 @@ class SubscpritionAPITestCase(APILiveServerTestCase):
         self.owner_generic_test.destroy()
 
     def test_owner_is_user_request(self):
-        self.owner_generic_test.owner_is_request_user()
+        self.owner_generic_test.owner_or_children_is_request_user()
 '''
     def test_user_destroy(self):
         response = self.client.post(self.url, self.data)
@@ -98,7 +98,7 @@ class NewsletterAPITestCase(APILiveServerTestCase):
         self.publication_generic_test.destroy()
 
     def test_owner_is_request_user(self):
-        self.publication_generic_test.owner_is_request_user()
+        self.publication_generic_test.owner_or_children_is_request_user()
 
     def test_slug_is_slugified_title(self):
         self.publication_generic_test.slug_is_slugified_title()
