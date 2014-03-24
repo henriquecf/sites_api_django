@@ -57,6 +57,45 @@ class SubscpritionAPITestCase(APILiveServerTestCase):
         self.assertEqual(response2.status_code, status.HTTP_204_NO_CONTENT)
 '''
 
+
+class SubmissionAPITestCase(APILiveServerTestCase):
+
+    def setUp(self):
+        self.url = reverse('subscription-list')
+        self.data = {
+            'subscription': '',
+            'newsletter': '',
+            'status': 'Not Sent',
+        }
+        self.altered_data = {
+            'subscription': '',
+            'newsletter': '',
+            'status': 'Sent',
+        }
+        self.owner_generic_test = OwnerGenericTest(self)
+
+    def test_create(self):
+        self.owner_generic_test.create()
+
+    def test_list(self):
+        self.owner_generic_test.list()
+
+    def test_retrieve(self):
+        self.owner_generic_test.retrieve()
+
+    def test_update(self):
+        self.owner_generic_test.update()
+
+    def test_partial_update(self):
+        self.owner_generic_test.partial_update()
+
+    def test_destroy(self):
+        self.owner_generic_test.destroy()
+
+    def test_owner_is_user_request(self):
+        self.owner_generic_test.owner_is_request_user()
+
+
 class NewsletterAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
@@ -77,28 +116,28 @@ class NewsletterAPITestCase(APILiveServerTestCase):
             'publication_end_date': None,
             'content': 'My content altered',
         }
-        self.publication_generic_test = PublicationGenericTest(self)
+        self.owner_generic_test = OwnerGenericTest(self)
 
     def test_create(self):
-        self.publication_generic_test.create()
+        self.owner_generic_test.create()
 
     def test_list(self):
-        self.publication_generic_test.list()
+        self.owner_generic_test.list()
 
     def test_retrieve(self):
-        self.publication_generic_test.retrieve()
+        self.owner_generic_test.retrieve()
 
     def test_update(self):
-        self.publication_generic_test.update()
+        self.owner_generic_test.update()
 
     def test_partial_update(self):
-        self.publication_generic_test.partial_update()
+        self.owner_generic_test.partial_update()
 
     def test_destroy(self):
-        self.publication_generic_test.destroy()
+        self.owner_generic_test.destroy()
 
     def test_owner_is_request_user(self):
-        self.publication_generic_test.owner_or_children_is_request_user()
+        self.publication_generic_test.owner_is_request_user()
 
     def test_slug_is_slugified_title(self):
         self.publication_generic_test.slug_is_slugified_title()
