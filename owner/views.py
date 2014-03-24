@@ -3,7 +3,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.views.generic import FormView, CreateView
 from rest_framework import viewsets
-
+from rest_framework import filters
+from owner.backends import IsOwnerFilterBackend
 from owner.forms import UserCreationFormWithEmail
 from owner.models import Owner
 from owner.serializers import OwnerSerializer
@@ -34,15 +35,22 @@ class UserCreateView(CreateView):
     success_url = '/'
 
 
-class OwnerViewSet(viewsets.ModelViewSet):
+class OwnerBaseViewSet(viewsets.ModelViewSet):
     model = Owner
     serializer_class = OwnerSerializer
+
+
+class OwnerViewSet(OwnerBaseViewSet):
+    filter_backends = (
+        IsOwnerFilterBackend,
+        filters.SearchFilter,
+    )
 
     def pre_save(self, obj):
         obj.owner = self.request.user
 
 
-class OwnerChildrenViewSet(OwnerViewSet):
+class OwnerChildrenViewSet(OwnerBaseViewSet):
 
     def pre_save(self, obj):
         user = self.request.user
