@@ -10,6 +10,8 @@ from owner.tests import OwnerAndChildrenGenericTest
 from .models import Newsletter, Subscription
 
 #TODO: Test just owner can destroy or user with unsubscription code can destroy
+
+
 class SubscpritionAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
@@ -44,6 +46,15 @@ class SubscpritionAPITestCase(APILiveServerTestCase):
 
     def test_owner_is_user_request(self):
         self.owner_generic_test.owner_or_children_is_request_user()
+
+    def test_email_is_unique(self):
+        response = self.client.post(self.url, self.data)
+        self.assertEqual(response.data['email'], '[Subscription with this Email already exists.]')
+
+    def test_generate_token(self):
+        self.owner_generic_test.create()
+        subscription = Subscription.objects.get(email='ivan.eng.controle@gmail.com')
+        self.assertTrue(subscription.token)
 
 
 class NewsletterAPITestCase(APILiveServerTestCase):

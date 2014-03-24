@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.mail import EmailMultiAlternatives
 from publication.models import Publication
 from owner.models import Owner
@@ -9,6 +10,17 @@ class Subscription(Owner):
     """
     name = models.CharField(max_length=50)
     email = models.EmailField(max_length=200)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        equal_subscriptions = Subscription.objects.filter(owner_id=self.owner.id, email=self.email)
+        for subscription in equal_subscriptions:
+            if not subscription == self:
+                subscription.delete()
+        return super(Subscription, self).save()
+
+    def __str__(self):
+        return self.name
 
 
 class Newsletter(Owner):
