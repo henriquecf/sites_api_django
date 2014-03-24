@@ -3,14 +3,14 @@ from django.utils import timezone
 from rest_framework.decorators import link
 from rest_framework.response import Response
 
-from owner.views import OwnerViewSet
+from owner.views import OwnerChildrenViewSet
 from publication.serializers import CategorySerializer
 from publication.serializers import PublicationSerializer
 from .models import find_available_slug, Publication, Category
 from .filtersets import PublicationFilterSet
 
 
-class CategoryViewSet(OwnerViewSet):
+class CategoryViewSet(OwnerChildrenViewSet):
     serializer_class = CategorySerializer
     model = Category
 
@@ -22,7 +22,7 @@ class CategoryViewSet(OwnerViewSet):
                                                many=True).data})
 
 
-class PublicationBaseViewSet(OwnerViewSet):
+class PublicationBaseViewSet(OwnerChildrenViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.

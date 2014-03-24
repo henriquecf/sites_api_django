@@ -111,7 +111,7 @@ DJANGO_FILTERS = (
 )
 
 OTHER_FILTERS = (
-    'owner.backends.IsOwnerFilterBackend',
+    'owner.backends.IsOwnerChildrenFilterBackend',
 )
 
 REST_FRAMEWORK = {

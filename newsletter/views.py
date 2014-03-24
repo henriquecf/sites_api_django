@@ -1,18 +1,18 @@
 
 from rest_framework.decorators import link
 from rest_framework.response import Response
-from owner.views import OwnerViewSet
+from owner.views import OwnerChildrenViewSet
 from .serializers import SubscriptionSerializer, NewsletterSerializer, SubmissionSerializer
 from .models import Subscription, Newsletter, Submission
 from .filtersets import NewsletterFilterSet
 
 
-class SubscriptionViewSet(OwnerViewSet):
+class SubscriptionViewSet(OwnerChildrenViewSet):
     serializer_class = SubscriptionSerializer
     model = Subscription
 
 
-class NewsletterViewSet(OwnerViewSet):
+class NewsletterViewSet(OwnerChildrenViewSet):
     serializer_class = NewsletterSerializer
     model = Newsletter
     filter_class = NewsletterFilterSet
@@ -25,6 +25,6 @@ class NewsletterViewSet(OwnerViewSet):
             return Response(status=200)
 
 
-class SubmissionViewSet(OwnerViewSet):
+class SubmissionViewSet(OwnerChildrenViewSet):
     serializer_class = SubmissionSerializer
     model = Submission
