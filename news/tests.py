@@ -73,5 +73,5 @@ class NewsAPITestCase(APILiveServerTestCase):
     def test_filter_author(self):
         self.publication_generic_test.filter_author()
 
-    def add_category(self):
+    def test_add_category(self):
         self.publication_generic_test.add_category('news')

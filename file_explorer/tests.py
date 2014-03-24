@@ -6,10 +6,7 @@ from publication.tests import PublicationGenericTest
 
 
 
-# TODO create model, serializer and viewset
 # TODO link model to Category and check if it adds category
-
-
 class FileAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
