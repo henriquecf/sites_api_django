@@ -71,6 +71,10 @@ class SubscpritionAPITestCase(APILiveServerTestCase):
         self.assertEqual(unsubscribe_response.status_code, status.HTTP_202_ACCEPTED)
         subscription = Subscription.objects.get(email='ivan_morais@yahoo.com.br')
         self.assertFalse(subscription.active)
+        response = self.client.post(self.url, self.altered_data)
+        subscription = Subscription.objects.get(email='ivan_morais@yahoo.com.br')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(subscription.active)
 
 
 class NewsletterAPITestCase(APILiveServerTestCase):

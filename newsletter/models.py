@@ -19,10 +19,8 @@ class Subscription(Owner):
         active = self.active
         for subscription in equal_subscriptions:
             if not subscription == self:
-                active = subscription.active
                 subscription.delete()
         self.token = random.randint(948284593853, 958272838472748584737484748234)
-        self.active = active
         return super(Subscription, self).save()
 
     def __str__(self):
