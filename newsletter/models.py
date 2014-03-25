@@ -1,8 +1,6 @@
 import random
 from django.db import models
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.mail import EmailMultiAlternatives
-from publication.models import Publication
 from owner.models import Owner
 
 
