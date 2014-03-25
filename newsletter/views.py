@@ -1,5 +1,6 @@
 
-from rest_framework.decorators import link
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.decorators import link, action
 from rest_framework.response import Response
 from owner.views import OwnerChildrenViewSet
 from .serializers import SubscriptionSerializer, NewsletterSerializer, SubmissionSerializer
@@ -10,6 +11,16 @@ from .filtersets import NewsletterFilterSet
 class SubscriptionViewSet(OwnerChildrenViewSet):
     serializer_class = SubscriptionSerializer
     model = Subscription
+
+    @link()
+    def unsubscribe(self, request, *args, **kwargs):
+        subscription = self.get_object()
+        if subscription.token == request.GET['token']:
+            subscription.active = False
+            subscription.save()
+            return Response(status=202)
+        else:
+            return Response(status=401)
 
 
 class NewsletterViewSet(OwnerChildrenViewSet):

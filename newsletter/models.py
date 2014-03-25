@@ -5,6 +5,7 @@ from django.core.mail import EmailMultiAlternatives
 from publication.models import Publication
 from owner.models import Owner
 
+
 class Subscription(Owner):
     """
     This class holds the newsletter subscribers
@@ -12,14 +13,18 @@ class Subscription(Owner):
     name = models.CharField(max_length=50)
     email = models.EmailField(max_length=200)
     token = models.CharField(max_length=30, editable=False)
+    active = models.BooleanField(default=True, editable=False)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         equal_subscriptions = Subscription.objects.filter(owner_id=self.owner.id, email=self.email)
+        active = self.active
         for subscription in equal_subscriptions:
             if not subscription == self:
+                active = subscription.active
                 subscription.delete()
         self.token = random.randint(948284593853, 958272838472748584737484748234)
+        self.active = active
         return super(Subscription, self).save()
 
     def __str__(self):

@@ -59,6 +59,19 @@ class SubscpritionAPITestCase(APILiveServerTestCase):
         subscription = Subscription.objects.get(email='ivan.eng.controle@gmail.com')
         self.assertTrue(subscription.token)
 
+    def test_deactivate(self):
+        response = self.client.post(self.url, self.altered_data)
+        subscription = Subscription.objects.get(email='ivan_morais@yahoo.com.br')
+        self.assertTrue(subscription.active)
+        unsubscribe_response = self.client.get(response.data['unsubscribe'], data={'token': 928374869287348972})
+        self.assertEqual(unsubscribe_response.status_code, status.HTTP_401_UNAUTHORIZED)
+        subscription = Subscription.objects.get(email='ivan_morais@yahoo.com.br')
+        self.assertTrue(subscription.active)
+        unsubscribe_response = self.client.get(response.data['unsubscribe'], data={'token': subscription.token})
+        self.assertEqual(unsubscribe_response.status_code, status.HTTP_202_ACCEPTED)
+        subscription = Subscription.objects.get(email='ivan_morais@yahoo.com.br')
+        self.assertFalse(subscription.active)
+
 
 class NewsletterAPITestCase(APILiveServerTestCase):
 

@@ -4,6 +4,7 @@ from .models import Subscription, Newsletter, Submission
 
 
 class SubscriptionSerializer(OwnerSerializer):
+    unsubscribe = serializers.HyperlinkedIdentityField(view_name='subscription-unsubscribe')
 
     class Meta(OwnerSerializer.Meta):
         model = Subscription
