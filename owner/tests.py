@@ -1,5 +1,5 @@
 import copy
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from django.core.urlresolvers import reverse
 from django.test import LiveServerTestCase
 from rest_framework import status
@@ -161,3 +161,29 @@ class UserTestCase(LiveServerTestCase):
         children = User.objects.create_user(username='children', password='123', email='chidren@gmail.com')
         children.parent = self.user
         self.assertEqual(children.parent, self.user, 'User has no field parent')
+
+
+class PermissionGenericTestCase:
+
+    def __init__(self, test_case):
+        self.test_case = test_case
+
+    def model_has_custom_permission(self):
+        app_label = self.test_case.model._meta.app_label
+        model_name = self.test_case.model._meta.model_name
+        permission_labels = ['read', 'add', 'change', 'delete']
+        permissions = ['{0}_global_{1}'.format(permission_label, model_name) for permission_label in permission_labels]
+        read_nonglobal_permission = 'read_{0}'.format(model_name)
+        permissions.append(read_nonglobal_permission)
+        database_permissions = Permission.objects.filter(codename__endswith=model_name).values_list('codename')
+        self.test_case.assertIn(permissions, database_permissions)
+
+
+class OwnerPermissionTestCase(LiveServerTestCase):
+    model = Owner
+
+    def setUp(self):
+        self.permission_test_case = PermissionGenericTestCase(self)
+
+    def test_model_has_custom_permission(self):
+        self.permission_test_case.model_has_custom_permission()
