@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from rest_framework import filters, permissions
 
+# TODO Refactor this into separate sets
 custom_permissions_map = {
     'GET': ['%(app_label)s.read_%(model_name)s', '%(app_label)s.read_global_%(model_name)s'],
     'OPTIONS': ['%(app_label)s.read_%(model_name)s', '%(app_label)s.read_global_%(model_name)s'],
@@ -59,7 +60,7 @@ class OwnerPermissionFilterBackend(filters.BaseFilterBackend):
     If the user has non global permission for the method, the filter is applied to the children.
     The only exception is when the user is the owner itself. In this case, the owner filter applies anyway.
     """
-
+    # TODO The the way comparing has_perm to compare directly with separate sets and eliminate get_required_permissions
     def filter_queryset(self, request, queryset, view):
         user = request.user
         if user.is_root_node():
