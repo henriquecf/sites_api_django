@@ -18,9 +18,9 @@ class AccountUserViewSet(ModelViewSet):
 
     # TODO insert account of the owner and get right user
     def pre_save(self, obj):
-        obj.account = self.request.user.account
+        print('Ok')
+        obj.account = self.request.user.get_profile().account
         obj.user = self.request.user
-        print(self.request.user, obj.account, obj.user)
 
 
 class UserViewSet(ModelViewSet):

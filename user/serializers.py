@@ -5,10 +5,11 @@ from .models import AccountUser
 
 
 class AccountUserSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.HyperlinkedIdentityField(view_name='user-list')
+    account = serializers.HyperlinkedIdentityField(view_name='account-list')
 
     class Meta:
         model = AccountUser
-        fields = ['url', 'user', 'account']
 
 
 class UserCreateChangeSerializer(serializers.HyperlinkedModelSerializer):

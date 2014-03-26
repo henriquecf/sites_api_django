@@ -164,7 +164,7 @@ class UserGenericTest(APIGenericTest):
         self.set_authorization_bearer(self.account_user_token)
         super(UserGenericTest, self).destroy(status_code=status_code)
 
-'''
+
 # TODO Create tests for children
 # TODO Test filters for retriving just children
 class UserAPITestCase(APILiveServerTestCase):
@@ -198,4 +198,4 @@ class UserAPITestCase(APILiveServerTestCase):
         self.user_generic_test.retrieve()
 
     def test_destroy(self):
-        self.user_generic_test.destroy()'''
+        self.user_generic_test.destroy()
