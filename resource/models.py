@@ -16,12 +16,3 @@ class Resource(Common):
 
     def __str__(self):
         return self.creator.username
-
-    class Meta:
-        permissions = (
-            ('read_resource', 'Can read resource'),
-            ('read_global_resource', 'Can read all resources'),
-            ('add_global_resource', 'Can add all resources'),
-            ('change_global_resource', 'Can change all resources'),
-            ('delete_global_resource', 'Can delete all resources'),
-        )

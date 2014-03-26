@@ -1,8 +1,11 @@
+from django.db import models
 from django.contrib.auth.models import User
-import mptt
-from mptt.fields import TreeForeignKey
+from accounts.models import Account, Common
 
-# add a parent foreign key
-TreeForeignKey(User, blank=True, null=True).contribute_to_class(User, 'parent')
 
-mptt.register(User, order_insertion_by=['username'])
+class AccountUser(Common):
+    user = models.OneToOneField(User, blank=True)
+    account = models.ForeignKey(Account, blank=True)
+
+    def __str__(self):
+        return '{0} - {1}'.format(self.account, self.user)

@@ -9,6 +9,8 @@ class AccountAPITestCase(APILiveServerTestCase):
         self.url = reverse('account-list')
         self.data = {}
         self.altered_data = {}
+        # TODO refactor authorization
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ivan')
 
     def test_default_expiration_date(self):
         response = self.client.post(self.url, self.data)

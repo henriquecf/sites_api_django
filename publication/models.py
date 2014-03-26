@@ -4,7 +4,6 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
-
 from resource.models import Resource
 
 
@@ -60,9 +59,6 @@ class Category(MPTTModel, Resource):
 
     def __str__(self):
         return self.name
-
-    class Meta:
-        verbose_name_plural = u'Categories'
 
 
 def find_available_slug(model, instance, slug, original_slug, slug_number=2):

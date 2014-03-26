@@ -43,9 +43,6 @@ class FileAPITestCase(APILiveServerTestCase):
     def test_destroy(self):
         self.publication_generic_test.destroy()
 
-    def test_owner_is_request_user(self):
-        self.publication_generic_test.owner_or_children_is_request_user()
-
     def test_slug_is_slugified_title(self):
         self.publication_generic_test.slug_is_slugified_title()
 

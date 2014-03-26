@@ -5,10 +5,10 @@ from django.utils.text import slugify
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 
-from resource.tests import ResourceAndChildrenGenericTest
+from resource.tests import ResourceGenericTest
 
 
-class PublicationGenericTest(ResourceAndChildrenGenericTest):
+class PublicationGenericTest(ResourceGenericTest):
     def slug_is_slugified_title(self, slug_repeat_number='-2'):
         response = self.test_case.client.post(self.url, self.data)
         self.test_case.assertEqual(response.data['slug'], slugify(response.data['title']) + slug_repeat_number,
@@ -21,7 +21,7 @@ class PublicationGenericTest(ResourceAndChildrenGenericTest):
 
     def has_author(self):
         self.test_case.assertIn('author', self.first_object_response.data, 'Response has no field "author"')
-        self.test_case.assertEqual(self.first_object_response.data['author'], self.username_or_token,
+        self.test_case.assertEqual(self.first_object_response.data['author'], self.owner_token,
                                    'Unexpected author name returned')
 
     def is_published_default_true(self):
@@ -44,7 +44,7 @@ class PublicationGenericTest(ResourceAndChildrenGenericTest):
         self.test_case.assertTrue(response.data['is_published'], 'Is_published return must be True')
 
     def filter_author(self):
-        filter_data = {'author': self.username_or_token}
+        filter_data = {'author': self.owner_token}
         response = self.test_case.client.get(self.url, filter_data)
         self.test_case.assertEqual(response.data['count'], 1)
         filter_data.update({'author': 'another_author'})
@@ -108,9 +108,6 @@ class PublicationAPITestCase(APILiveServerTestCase):
     def test_destroy(self):
         self.publication_generic_test.destroy()
 
-    def test_owner_is_request_user(self):
-        self.publication_generic_test.owner_or_children_is_request_user()
-
     def test_slug_is_slugified_title(self):
         self.publication_generic_test.slug_is_slugified_title()
 
@@ -148,7 +145,7 @@ class CategoryAPITestCase(APILiveServerTestCase):
             'name': 'Category 1 Altered',
             'model_name': 'news',
         }
-        self.owner_generic_test = ResourceAndChildrenGenericTest(self)
+        self.owner_generic_test = ResourceGenericTest(self)
 
     def test_create(self):
         self.owner_generic_test.create()
@@ -167,9 +164,6 @@ class CategoryAPITestCase(APILiveServerTestCase):
 
     def test_destroy(self):
         self.owner_generic_test.destroy()
-
-    def test_owner_is_request_user(self):
-        self.owner_generic_test.owner_or_children_is_request_user()
 
     def test_if_creates_with_parent(self):
         response = self.client.post(self.url, self.data)

@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Common(models.Model):
@@ -9,6 +10,9 @@ class Common(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     last_modification_date = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        abstract = True
+
 
 class Account(Common):
     """
@@ -17,5 +21,8 @@ class Account(Common):
     needed for payment, etc
     """
     expiration_date = models.DateField(editable=False, default=datetime.today()+timedelta(30))
-    # TODO implement owner and clients field
+    owner = models.OneToOneField(User, blank=True, related_name='account')
     # TODO include is owner filter
+
+    def __str__(self):
+        return self.owner.username

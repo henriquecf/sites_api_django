@@ -6,7 +6,7 @@ from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 from publication.tests import PublicationGenericTest
 from resource.models import User
-from resource.tests import ResourceAndChildrenGenericTest
+from resource.tests import ResourceGenericTest
 from .models import Newsletter, Subscription
 
 #TODO: Test just resource can destroy or user with unsubscription code can destroy
@@ -24,7 +24,7 @@ class SubscpritionAPITestCase(APILiveServerTestCase):
             'name': 'Ivan',
             'email': 'ivan_morais@yahoo.com.br',
         }
-        self.owner_generic_test = ResourceAndChildrenGenericTest(self)
+        self.owner_generic_test = ResourceGenericTest(self)
 
     def test_create(self):
         self.owner_generic_test.create()
@@ -44,9 +44,6 @@ class SubscpritionAPITestCase(APILiveServerTestCase):
 
     def test_destroy(self):
         self.owner_generic_test.destroy()
-
-    def test_owner_is_user_request(self):
-        self.owner_generic_test.owner_or_children_is_request_user()
 
     def test_email_is_unique(self):
         count = Subscription.objects.count()
@@ -89,7 +86,7 @@ class NewsletterAPITestCase(APILiveServerTestCase):
             'subject': 'First newsletter altered',
             'content': 'My content altered',
         }
-        self.owner_and_children_generic_test = ResourceAndChildrenGenericTest(self)
+        self.owner_and_children_generic_test = ResourceGenericTest(self)
 
     def test_create(self):
         self.owner_and_children_generic_test.create()
@@ -108,9 +105,6 @@ class NewsletterAPITestCase(APILiveServerTestCase):
 
     def test_destroy(self):
         self.owner_and_children_generic_test.destroy()
-
-    def test_owner_is_request_user(self):
-        self.owner_and_children_generic_test.owner_or_children_is_request_user()
 
     def test_send_newsletter_just_to_own_subscribers(self):
         response = self.client.post(self.url, self.data)
