@@ -4,10 +4,10 @@ from django.contrib.auth.models import User
 from django.views.generic import FormView, CreateView
 from rest_framework import viewsets
 from rest_framework import filters
-from owner.backends import IsOwnerFilterBackend
-from owner.forms import UserCreationFormWithEmail
-from owner.models import Owner
-from owner.serializers import OwnerSerializer
+from resource.backends import IsResourceFilterBackend
+from resource.forms import UserCreationFormWithEmail
+from resource.models import Resource
+from resource.serializers import ResourceSerializer
 
 
 class UserLoginView(FormView):
@@ -35,14 +35,14 @@ class UserCreateView(CreateView):
     success_url = '/'
 
 
-class OwnerBaseViewSet(viewsets.ModelViewSet):
-    model = Owner
-    serializer_class = OwnerSerializer
+class ResourceBaseViewSet(viewsets.ModelViewSet):
+    model = Resource
+    serializer_class = ResourceSerializer
 
 
-class OwnerViewSet(OwnerBaseViewSet):
+class ResourceViewSet(ResourceBaseViewSet):
     filter_backends = (
-        IsOwnerFilterBackend,
+        IsResourceFilterBackend,
         filters.SearchFilter,
     )
 
@@ -50,7 +50,7 @@ class OwnerViewSet(OwnerBaseViewSet):
         obj.owner = self.request.user
 
 
-class OwnerChildrenViewSet(OwnerBaseViewSet):
+class ResourceChildrenViewSet(ResourceBaseViewSet):
 
     def pre_save(self, obj):
         user = self.request.user

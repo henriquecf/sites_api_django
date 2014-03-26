@@ -5,11 +5,11 @@ from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 from publication.tests import PublicationGenericTest
-from owner.models import User
-from owner.tests import OwnerAndChildrenGenericTest
+from resource.models import User
+from resource.tests import OwnerAndChildrenGenericTest
 from .models import Newsletter, Subscription
 
-#TODO: Test just owner can destroy or user with unsubscription code can destroy
+#TODO: Test just resource can destroy or user with unsubscription code can destroy
 
 
 class SubscpritionAPITestCase(APILiveServerTestCase):
@@ -116,12 +116,12 @@ class NewsletterAPITestCase(APILiveServerTestCase):
         response = self.client.post(self.url, self.data)
         send_url = response.data['send_newsletter']
 
-#TODO: This app is composed of subscribers, newsletters and submissions. All them need to implement Owner behaviour.
+#TODO: This app is composed of subscribers, newsletters and submissions. All them need to implement Resource behaviour.
 #TODO: The newsletter must define a subject and a content.
 #TODO: The subscription must define a name and a email.
 #TODO: The submission must define foreign keys for the other two models and status field to show the attempt status to send.
 #TODO: The subscriptions generates a token needed for subscriber to unsubscribe.
-#TODO: When a subscriber unsubscribe, your subscrition is deactivated. It is deleted only when the owner decides to remove it removing related sumbissions too.
+#TODO: When a subscriber unsubscribe, your subscrition is deactivated. It is deleted only when the resource decides to remove it removing related sumbissions too.
 #TODO: If someone attempt to subscribe with an existing email, a simple 200 status code is returned and if the subscription was deactivated it will be reactivated.
 #TODO: There must be an action in submission to send newsletter to the corresponding subscription.
 #TODO: When the submission is created it should attempt to send the newsletter and hold the status. If it fail, it must be possible to try again later.

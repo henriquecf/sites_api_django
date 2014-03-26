@@ -1,10 +1,10 @@
 from datetime import datetime, timedelta
 from django.db import models
 
-from owner.models import Owner
+from resource.models import Resource
 
 
-class Account(Owner):
+class Account(Resource):
     """
     This model must save any data related to the account of a person,
     including payment data, signature date controls, contact fields

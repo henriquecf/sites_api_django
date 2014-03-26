@@ -2,7 +2,7 @@ import datetime
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 
-from owner.tests import OwnerAndChildrenGenericTest
+from resource.tests import OwnerAndChildrenGenericTest
 
 
 class AccountAPITestCase(APILiveServerTestCase):

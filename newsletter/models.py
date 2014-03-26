@@ -1,10 +1,10 @@
 import random
 from django.db import models
 from django.core.mail import EmailMultiAlternatives
-from owner.models import Owner
+from resource.models import Resource
 
 
-class Subscription(Owner):
+class Subscription(Resource):
     """
     This class holds the newsletter subscribers
     """
@@ -27,7 +27,7 @@ class Subscription(Owner):
         return self.name
 
 
-class Newsletter(Owner):
+class Newsletter(Resource):
     """
     This model implements newsletter as a publication.
     """
@@ -45,7 +45,7 @@ class Newsletter(Owner):
         return True
 
 
-class Submission(Owner):
+class Submission(Resource):
     """
     This class holds the submission of a newsletter to a subscriber
     """

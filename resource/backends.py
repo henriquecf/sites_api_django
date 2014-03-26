@@ -21,7 +21,7 @@ def get_required_permissions(method, model_cls):
     return [perm % kwargs for perm in custom_permissions_map[method]]
 
 
-class DjangoModelCustomPermissions(permissions.DjangoModelPermissions):
+class CustomDjangoModelPermissions(permissions.DjangoModelPermissions):
     """
     Customization of DjangoModelPermissions including restriction for GET calls in the API.
     For this restriction to apply, the read permission must be in the model.
@@ -53,12 +53,12 @@ class DjangoModelCustomPermissions(permissions.DjangoModelPermissions):
                 (request.user.has_perm(global_permission) or request.user.has_perm(non_global_permission)))
 
 
-class OwnerPermissionFilterBackend(filters.BaseFilterBackend):
+class ResourcePermissionFilterBackend(filters.BaseFilterBackend):
     """
     This filter analise the user and its permissions.
-    If the user has global permission for the method, the filter is applied to the owner.
+    If the user has global permission for the method, the filter is applied to the resource.
     If the user has non global permission for the method, the filter is applied to the children.
-    The only exception is when the user is the owner itself. In this case, the owner filter applies anyway.
+    The only exception is when the user is the resource itself. In this case, the resource filter applies anyway.
     """
     # TODO The the way comparing has_perm to compare directly with separate sets and eliminate get_required_permissions
     def filter_queryset(self, request, queryset, view):
@@ -79,7 +79,7 @@ class OwnerPermissionFilterBackend(filters.BaseFilterBackend):
                 return queryset.filter(children=user)
 
 
-class IsOwnerFilterBackend(filters.BaseFilterBackend):
+class IsResourceFilterBackend(filters.BaseFilterBackend):
     """
     Filter for shared databases.
     Allow just to see data he owns.
@@ -89,7 +89,7 @@ class IsOwnerFilterBackend(filters.BaseFilterBackend):
         return queryset.filter(owner=request.user)
 
 
-class IsOwnerChildrenFilterBackend(filters.BaseFilterBackend):
+class IsResourceChildrenFilterBackend(filters.BaseFilterBackend):
     """
     Filter for shared databases.
     Filter that only allows owners to see its data and its children data,

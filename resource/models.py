@@ -10,10 +10,10 @@ class Common(models.Model):
     last_modification_date = models.DateTimeField(auto_now=True)
 
 
-class Owner(Common):
+class Resource(Common):
     """
-    The owner class, together with its serializer and viewset,
-    are the base of any api that can be accessed just by its owner.
+    The resource class, together with its serializer and viewset,
+    are the base of any api that can be accessed just by its resource.
     To use this behavior, the application must inherit the model,
     serializer and viewset
     """
@@ -26,11 +26,10 @@ class Owner(Common):
         return self.owner.username
 
     class Meta:
-        verbose_name_plural = u'Owners'
         permissions = (
-            ('read_owner', 'Can read owner'),
-            ('read_global_owner', 'Can read all owners'),
-            ('add_global_owner', 'Can add all owners'),
-            ('change_global_owner', 'Can change all owners'),
-            ('delete_global_owner', 'Can delete all owners'),
+            ('read_resource', 'Can read resource'),
+            ('read_global_resource', 'Can read all resources'),
+            ('add_global_resource', 'Can add all resources'),
+            ('change_global_resource', 'Can change all resources'),
+            ('delete_global_resource', 'Can delete all resources'),
         )

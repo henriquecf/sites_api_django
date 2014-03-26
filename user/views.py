@@ -12,7 +12,7 @@ from .models import User
 class ChildrenRestriction(permissions.BasePermission):
     """
     Object-level permission to only allow owners of an object to edit it.
-    Assumes the model instance has an `owner` attribute.
+    Assumes the model instance has an `resource` attribute.
     """
 
     def has_object_permission(self, request, view, obj):

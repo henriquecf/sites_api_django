@@ -52,7 +52,7 @@ INSTALLED_APPS = (
     'news',
     'file_explorer',
     'newsletter',
-    'owner',
+    'resource',
     'user',
 )
 
@@ -111,7 +111,7 @@ DJANGO_FILTERS = (
 )
 
 OTHER_FILTERS = (
-    'owner.backends.IsOwnerChildrenFilterBackend',
+    'resource.backends.IsResourceChildrenFilterBackend',
 )
 
 REST_FRAMEWORK = {

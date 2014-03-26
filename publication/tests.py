@@ -5,7 +5,7 @@ from django.utils.text import slugify
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 
-from owner.tests import OwnerAndChildrenGenericTest
+from resource.tests import OwnerAndChildrenGenericTest
 
 
 class PublicationGenericTest(OwnerAndChildrenGenericTest):

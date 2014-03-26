@@ -5,10 +5,10 @@ from django.contrib.auth.models import User
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
-from owner.models import Owner
+from resource.models import Resource
 
 
-class Publication(Owner):
+class Publication(Resource):
     """
     This model was intended to be inherited by every model that is publishable,
     can be published, unpublished, has an author, title and slug for the url
@@ -50,7 +50,7 @@ class Publication(Owner):
             return True
 
 
-class Category(MPTTModel, Owner):
+class Category(MPTTModel, Resource):
     """
     This model implements hierarchy.
     """

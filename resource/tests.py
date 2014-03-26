@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.test import LiveServerTestCase
 from rest_framework import status
 
-from owner.models import Owner, Common
+from resource.models import Resource, Common
 from user.tests import APIGenericTest
 
 
@@ -39,12 +39,13 @@ class OwnerGenericTest(APIGenericTest):
         username = self.set_authorization(random_user=True)
         response = self.test_case.client.post(self.url, self.data)
         owner_id = response.data['url'].split('/')[-2]
-        owner_obj = Owner.objects.get(id=owner_id)
+        owner_obj = Resource.objects.get(id=owner_id)
         user = User.objects.get(username=username)
         self.test_case.assertEqual(user, owner_obj.owner)
 
 
 class OwnerAndChildrenGenericTest(OwnerGenericTest):
+
     def __init__(self, test_case, initial_user_is_superuser=False):
         super(OwnerAndChildrenGenericTest, self).__init__(test_case,
                                                           initial_user_is_superuser=initial_user_is_superuser)
@@ -100,7 +101,7 @@ class OwnerAndChildrenGenericTest(OwnerGenericTest):
         username = self.set_authorization(user=self.children_user)
         response = self.test_case.client.post(self.url, self.data)
         owner_id = response.data['url'].split('/')[-2]
-        owner_obj = Owner.objects.get(id=owner_id)
+        owner_obj = Resource.objects.get(id=owner_id)
         user = User.objects.get(username=username)
         self.test_case.assertEqual(user, owner_obj.children)
         self.reset_authorization()
@@ -180,7 +181,7 @@ class PermissionGenericTestCase:
 
 
 class OwnerPermissionTestCase(LiveServerTestCase):
-    model = Owner
+    model = Resource
 
     def setUp(self):
         self.permission_test_case = PermissionGenericTestCase(self)

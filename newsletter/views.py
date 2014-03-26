@@ -2,13 +2,13 @@
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import link, action
 from rest_framework.response import Response
-from owner.views import OwnerChildrenViewSet
+from resource.views import ResourceChildrenViewSet
 from .serializers import SubscriptionSerializer, NewsletterSerializer, SubmissionSerializer
 from .models import Subscription, Newsletter, Submission
 from .filtersets import NewsletterFilterSet
 
 
-class SubscriptionViewSet(OwnerChildrenViewSet):
+class SubscriptionViewSet(ResourceChildrenViewSet):
     serializer_class = SubscriptionSerializer
     model = Subscription
 
@@ -23,7 +23,7 @@ class SubscriptionViewSet(OwnerChildrenViewSet):
             return Response(status=401)
 
 
-class NewsletterViewSet(OwnerChildrenViewSet):
+class NewsletterViewSet(ResourceChildrenViewSet):
     serializer_class = NewsletterSerializer
     model = Newsletter
     filter_class = NewsletterFilterSet
@@ -36,6 +36,6 @@ class NewsletterViewSet(OwnerChildrenViewSet):
             return Response(status=200)
 
 
-class SubmissionViewSet(OwnerChildrenViewSet):
+class SubmissionViewSet(ResourceChildrenViewSet):
     serializer_class = SubmissionSerializer
     model = Submission
