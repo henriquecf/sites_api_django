@@ -15,7 +15,7 @@ class Subscription(Resource):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        equal_subscriptions = Subscription.objects.filter(owner_id=self.owner.id, email=self.email)
+        equal_subscriptions = Subscription.objects.filter(creator_id=self.creator.id, email=self.email)
         active = self.active
         for subscription in equal_subscriptions:
             if not subscription == self:

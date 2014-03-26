@@ -5,10 +5,10 @@ from django.utils.text import slugify
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 
-from resource.tests import OwnerAndChildrenGenericTest
+from resource.tests import ResourceAndChildrenGenericTest
 
 
-class PublicationGenericTest(OwnerAndChildrenGenericTest):
+class PublicationGenericTest(ResourceAndChildrenGenericTest):
     def slug_is_slugified_title(self, slug_repeat_number='-2'):
         response = self.test_case.client.post(self.url, self.data)
         self.test_case.assertEqual(response.data['slug'], slugify(response.data['title']) + slug_repeat_number,
@@ -148,7 +148,7 @@ class CategoryAPITestCase(APILiveServerTestCase):
             'name': 'Category 1 Altered',
             'model_name': 'news',
         }
-        self.owner_generic_test = OwnerAndChildrenGenericTest(self)
+        self.owner_generic_test = ResourceAndChildrenGenericTest(self)
 
     def test_create(self):
         self.owner_generic_test.create()

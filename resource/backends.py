@@ -73,10 +73,7 @@ class ResourcePermissionFilterBackend(filters.BaseFilterBackend):
                 model_cls = queryset.model
             required_permissions = get_required_permissions(request.method, model_cls)
             global_permission = required_permissions[1]
-            if user.has_perm(global_permission):
-                return queryset.filter(owner=user)
-            else:
-                return queryset.filter(children=user)
+            return queryset.filter(creator=request.user)
 
 
 class IsResourceFilterBackend(filters.BaseFilterBackend):
@@ -86,7 +83,7 @@ class IsResourceFilterBackend(filters.BaseFilterBackend):
     """
 
     def filter_queryset(self, request, queryset, view):
-        return queryset.filter(owner=request.user)
+        return queryset.filter(creator=request.user)
 
 
 class IsResourceChildrenFilterBackend(filters.BaseFilterBackend):
@@ -97,7 +94,4 @@ class IsResourceChildrenFilterBackend(filters.BaseFilterBackend):
     """
 
     def filter_queryset(self, request, queryset, view):
-        if request.user.is_root_node():
-            return queryset.filter(owner=request.user)
-        else:
-            return queryset.filter(children=request.user)
+        return queryset.filter(creator=request.user)

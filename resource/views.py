@@ -8,6 +8,7 @@ from resource.backends import IsResourceFilterBackend
 from resource.forms import UserCreationFormWithEmail
 from resource.models import Resource
 from resource.serializers import ResourceSerializer
+from accounts.models import Account
 
 
 class UserLoginView(FormView):
@@ -39,6 +40,11 @@ class ResourceBaseViewSet(viewsets.ModelViewSet):
     model = Resource
     serializer_class = ResourceSerializer
 
+    # TODO find a way to get account
+    def pre_save(self, obj):
+        obj.creator = self.request.user
+        obj.account = Account.objects.get_or_create(id=1)[0]
+
 
 class ResourceViewSet(ResourceBaseViewSet):
     filter_backends = (
@@ -46,16 +52,6 @@ class ResourceViewSet(ResourceBaseViewSet):
         filters.SearchFilter,
     )
 
-    def pre_save(self, obj):
-        obj.owner = self.request.user
-
 
 class ResourceChildrenViewSet(ResourceBaseViewSet):
-
-    def pre_save(self, obj):
-        user = self.request.user
-        if user.is_root_node():
-            obj.owner = user
-        else:
-            obj.owner = user.get_root()
-            obj.children = user
+    pass

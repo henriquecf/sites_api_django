@@ -3,37 +3,38 @@ from django.contrib.auth.models import User, Permission
 from django.core.urlresolvers import reverse
 from django.test import LiveServerTestCase
 from rest_framework import status
+from accounts.models import Common
 
-from resource.models import Resource, Common
+from resource.models import Resource
 from user.tests import APIGenericTest
 
 
-class OwnerGenericTest(APIGenericTest):
+class ResourceGenericTest(APIGenericTest):
     def update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
-        super(OwnerGenericTest, self).update(status_code=status_code, is_altered=is_altered, url=url)
+        super(ResourceGenericTest, self).update(status_code=status_code, is_altered=is_altered, url=url)
         self.set_authorization(random_user=True)
-        super(OwnerGenericTest, self).update(status_code=status.HTTP_201_CREATED, is_altered=is_altered, url=url)
+        super(ResourceGenericTest, self).update(status_code=status.HTTP_201_CREATED, is_altered=is_altered, url=url)
 
     def partial_update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
-        super(OwnerGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered, url=url)
+        super(ResourceGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered, url=url)
         self.set_authorization(random_user=True)
-        super(OwnerGenericTest, self).partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False, url=url)
+        super(ResourceGenericTest, self).partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False, url=url)
 
     def list(self, count=1, status_code=status.HTTP_200_OK):
-        super(OwnerGenericTest, self).list(count=count, status_code=status_code)
+        super(ResourceGenericTest, self).list(count=count, status_code=status_code)
         self.set_authorization(random_user=True)
-        super(OwnerGenericTest, self).list(count=0, status_code=status_code)
+        super(ResourceGenericTest, self).list(count=0, status_code=status_code)
 
     def retrieve(self, status_code=status.HTTP_200_OK, url=None):
-        super(OwnerGenericTest, self).retrieve(status_code=status_code, url=url)
+        super(ResourceGenericTest, self).retrieve(status_code=status_code, url=url)
         self.set_authorization(random_user=True)
-        super(OwnerGenericTest, self).retrieve(status_code=status.HTTP_404_NOT_FOUND, url=url)
+        super(ResourceGenericTest, self).retrieve(status_code=status.HTTP_404_NOT_FOUND, url=url)
 
     def destroy(self, status_code=status.HTTP_204_NO_CONTENT, url=None):
         self.set_authorization(random_user=True)
-        super(OwnerGenericTest, self).destroy(status_code=status.HTTP_404_NOT_FOUND, url=url)
+        super(ResourceGenericTest, self).destroy(status_code=status.HTTP_404_NOT_FOUND, url=url)
         self.reset_authorization()
-        super(OwnerGenericTest, self).destroy(status_code=status_code, url=url)
+        super(ResourceGenericTest, self).destroy(status_code=status_code, url=url)
 
     def owner_is_request_user(self):
         username = self.set_authorization(random_user=True)
@@ -41,69 +42,69 @@ class OwnerGenericTest(APIGenericTest):
         owner_id = response.data['url'].split('/')[-2]
         owner_obj = Resource.objects.get(id=owner_id)
         user = User.objects.get(username=username)
-        self.test_case.assertEqual(user, owner_obj.owner)
+        self.test_case.assertEqual(user, owner_obj.creator)
 
 
-class OwnerAndChildrenGenericTest(OwnerGenericTest):
+class ResourceAndChildrenGenericTest(ResourceGenericTest):
 
     def __init__(self, test_case, initial_user_is_superuser=False):
-        super(OwnerAndChildrenGenericTest, self).__init__(test_case,
+        super(ResourceAndChildrenGenericTest, self).__init__(test_case,
                                                           initial_user_is_superuser=initial_user_is_superuser)
         self.children_user = User.objects.create_user(username='children', password='123', email='children@gm.com',
                                                       parent=self.user)
 
     def create(self, status_code=status.HTTP_201_CREATED):
-        super(OwnerAndChildrenGenericTest, self).create(status_code=status_code)
+        super(ResourceAndChildrenGenericTest, self).create(status_code=status_code)
         self.set_authorization(user=self.children_user)
-        super(OwnerAndChildrenGenericTest, self).create(status_code=status_code)
+        super(ResourceAndChildrenGenericTest, self).create(status_code=status_code)
 
     def update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
-        super(OwnerAndChildrenGenericTest, self).update(status_code=status_code, is_altered=is_altered, url=url)
+        super(ResourceAndChildrenGenericTest, self).update(status_code=status_code, is_altered=is_altered, url=url)
         self.set_authorization(user=self.children_user)
-        super(OwnerAndChildrenGenericTest, self).update(status_code=status.HTTP_201_CREATED, is_altered=is_altered,
+        super(ResourceAndChildrenGenericTest, self).update(status_code=status.HTTP_201_CREATED, is_altered=is_altered,
                                                         url=url)
         response = self.test_case.client.post(self.url, self.data)
-        super(OwnerAndChildrenGenericTest, self).update(status_code=status_code, is_altered=is_altered,
+        super(ResourceAndChildrenGenericTest, self).update(status_code=status_code, is_altered=is_altered,
                                                         url=response.data['url'])
 
     def partial_update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
-        super(OwnerAndChildrenGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered, url=url)
+        super(ResourceAndChildrenGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered, url=url)
         self.set_authorization(user=self.children_user)
-        super(OwnerAndChildrenGenericTest, self).partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False,
+        super(ResourceAndChildrenGenericTest, self).partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False,
                                                                 url=url)
         response = self.test_case.client.post(self.url, self.data)
-        super(OwnerAndChildrenGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered,
+        super(ResourceAndChildrenGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered,
                                                                 url=response.data['url'])
 
     def list(self, count=1, status_code=status.HTTP_200_OK):
-        super(OwnerAndChildrenGenericTest, self).list(count=count, status_code=status_code)
+        super(ResourceAndChildrenGenericTest, self).list(count=count, status_code=status_code)
         self.set_authorization(user=self.children_user)
         self.test_case.client.post(self.url, self.data)
-        super(OwnerAndChildrenGenericTest, self).list(count=1, status_code=status_code)
+        super(ResourceAndChildrenGenericTest, self).list(count=1, status_code=status_code)
         self.reset_authorization()
-        super(OwnerAndChildrenGenericTest, self).list(count=count + 1, status_code=status_code)
+        super(ResourceAndChildrenGenericTest, self).list(count=count + 1, status_code=status_code)
 
     def retrieve(self, status_code=status.HTTP_200_OK, url=None):
-        super(OwnerAndChildrenGenericTest, self).retrieve(status_code=status_code)
+        super(ResourceAndChildrenGenericTest, self).retrieve(status_code=status_code)
         self.set_authorization(user=self.children_user)
-        super(OwnerAndChildrenGenericTest, self).retrieve(status_code=status.HTTP_404_NOT_FOUND)
+        super(ResourceAndChildrenGenericTest, self).retrieve(status_code=status.HTTP_404_NOT_FOUND)
         response = self.test_case.client.post(self.url, self.data)
-        super(OwnerAndChildrenGenericTest, self).retrieve(status_code=status_code, url=response.data['url'])
+        super(ResourceAndChildrenGenericTest, self).retrieve(status_code=status_code, url=response.data['url'])
 
     def destroy(self, status_code=status.HTTP_204_NO_CONTENT, url=None):
-        super(OwnerAndChildrenGenericTest, self).destroy(status_code=status_code, url=url)
+        super(ResourceAndChildrenGenericTest, self).destroy(status_code=status_code, url=url)
         self.set_authorization(user=self.children_user)
         response = self.test_case.client.post(self.url, self.data)
-        super(OwnerAndChildrenGenericTest, self).destroy(status_code=status_code, url=response.data['url'])
+        super(ResourceAndChildrenGenericTest, self).destroy(status_code=status_code, url=response.data['url'])
 
     def owner_or_children_is_request_user(self):
-        super(OwnerAndChildrenGenericTest, self).owner_is_request_user()
+        super(ResourceAndChildrenGenericTest, self).owner_is_request_user()
         username = self.set_authorization(user=self.children_user)
         response = self.test_case.client.post(self.url, self.data)
         owner_id = response.data['url'].split('/')[-2]
         owner_obj = Resource.objects.get(id=owner_id)
         user = User.objects.get(username=username)
-        self.test_case.assertEqual(user, owner_obj.children)
+        self.test_case.assertEqual(user, owner_obj.creator)
         self.reset_authorization()
 
 
@@ -180,7 +181,7 @@ class PermissionGenericTestCase:
             self.test_case.assertIn(permission, database_permissions)
 
 
-class OwnerPermissionTestCase(LiveServerTestCase):
+class ResourcePermissionTestCase(LiveServerTestCase):
     model = Resource
 
     def setUp(self):

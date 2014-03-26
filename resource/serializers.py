@@ -5,8 +5,8 @@ from accounts.models import Account
 
 
 class ResourceSerializer(serializers.HyperlinkedModelSerializer):
-    owner = serializers.Field(source='owner.username')
+    creator = serializers.Field(source='creator.username')
 
     class Meta:
         model = Account
-        exclude = ['owner', 'children']
+        exclude = ['account', 'creator']

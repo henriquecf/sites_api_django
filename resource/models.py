@@ -1,13 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-
-class Common(models.Model):
-    """
-    Fields that must be in all models
-    """
-    creation_date = models.DateTimeField(auto_now_add=True)
-    last_modification_date = models.DateTimeField(auto_now=True)
+from accounts.models import Account, Common
 
 
 class Resource(Common):
@@ -17,13 +11,11 @@ class Resource(Common):
     To use this behavior, the application must inherit the model,
     serializer and viewset
     """
-    owner = models.ForeignKey(User, blank=True, related_name='owners')
-    children = models.ForeignKey(User, null=True, blank=True)
+    account = models.ForeignKey(Account, blank=True)
+    creator = models.ForeignKey(User, blank=True, related_name='creators')
 
     def __str__(self):
-        if self.children:
-            return self.children.username
-        return self.owner.username
+        return self.creator.username
 
     class Meta:
         permissions = (
