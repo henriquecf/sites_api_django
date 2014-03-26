@@ -27,3 +27,10 @@ class Owner(Common):
 
     class Meta:
         verbose_name_plural = u'Owners'
+        permissions = (
+            ('read_owner', 'Can read owner'),
+            ('read_global_owner', 'Can read all owners'),
+            ('add_global_owner', 'Can add all owners'),
+            ('change_global_owner', 'Can change all owners'),
+            ('delete_global_owner', 'Can delete all owners'),
+        )
