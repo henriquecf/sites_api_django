@@ -5,8 +5,8 @@ from .models import AccountUser
 
 
 class AccountUserSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.HyperlinkedIdentityField(view_name='user-list')
-    account = serializers.HyperlinkedIdentityField(view_name='account-list')
+    user = serializers.HyperlinkedIdentityField(view_name='user-detail')
+    account = serializers.HyperlinkedIdentityField(view_name='account-detail')
 
     class Meta:
         model = AccountUser

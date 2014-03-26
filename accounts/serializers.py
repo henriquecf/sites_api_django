@@ -3,7 +3,7 @@ from .models import Account
 
 
 class AccountSerializer(serializers.HyperlinkedModelSerializer):
-    owner = serializers.HyperlinkedIdentityField(view_name='user-list')
+    owner = serializers.HyperlinkedIdentityField(view_name='user-detail')
 
     class Meta:
         model = Account
