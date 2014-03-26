@@ -111,7 +111,7 @@ DJANGO_FILTERS = (
 )
 
 OTHER_FILTERS = (
-    'resource.backends.IsResourceChildrenFilterBackend',
+    'resource.backends.ResourceFilterBackend',
 )
 
 REST_FRAMEWORK = {
@@ -127,3 +127,5 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_FILTER_BACKENDS': OTHER_FILTERS + DJANGO_FILTERS
 }
+
+AUTH_PROFILE_MODULE = 'user.AccountUser'

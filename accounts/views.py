@@ -1,12 +1,13 @@
 import datetime
-
+from rest_framework.viewsets import ModelViewSet
+from .serializers import AccountSerializer
 from accounts.models import Account
-from resource.views import ResourceChildrenViewSet
 
 
-class AccountViewSet(ResourceChildrenViewSet):
+class AccountViewSet(ModelViewSet):
     model = Account
+    serializer_class = AccountSerializer
 
     def pre_save(self, obj):
-        super(AccountViewSet, self).pre_save(obj)
         obj.expiration_date = datetime.date.today() + datetime.timedelta(30)
+        obj.owner = self.request.user

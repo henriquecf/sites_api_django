@@ -6,6 +6,7 @@ from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 
 from resource.tests import ResourceGenericTest
+from .models import Publication
 
 
 class PublicationGenericTest(ResourceGenericTest):
@@ -72,6 +73,8 @@ class PublicationGenericTest(ResourceGenericTest):
 
 
 class PublicationAPITestCase(APILiveServerTestCase):
+    model = Publication
+
     def setUp(self):
         self.url = reverse('publication-list')
         self.data = {
@@ -132,6 +135,9 @@ class PublicationAPITestCase(APILiveServerTestCase):
 
     def test_filter_author(self):
         self.publication_generic_test.filter_author()
+
+    def test_model_has_custom_permission(self):
+        self.publication_generic_test.model_has_custom_permission()
 
 
 class CategoryAPITestCase(APILiveServerTestCase):

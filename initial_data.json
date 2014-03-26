@@ -1085,6 +1085,26 @@
 },
 {
     "fields": {
+        "user": 2,
+        "creation_date": "2014-03-26T18:39:05.217Z",
+        "last_modification_date": "2014-03-26T18:39:05.217Z",
+        "account": 1
+    },
+    "pk": 7,
+    "model": "user.accountuser"
+},
+{
+    "fields": {
+        "user": 3,
+        "creation_date": "2014-03-26T18:39:05.217Z",
+        "last_modification_date": "2014-03-26T18:39:05.217Z",
+        "account": 2
+    },
+    "pk": 8,
+    "model": "user.accountuser"
+},
+{
+    "fields": {
         "content_type": 4,
         "change_message": "",
         "object_repr": "ivan",

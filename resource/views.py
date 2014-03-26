@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.views.generic import FormView, CreateView
 from rest_framework import viewsets
 from rest_framework import filters
-from resource.backends import IsResourceFilterBackend
 from resource.forms import UserCreationFormWithEmail
 from resource.models import Resource
 from resource.serializers import ResourceSerializer
@@ -18,7 +17,7 @@ class UserLoginView(FormView):
     def get_success_url(self):
         try:
             return self.request.GET['next']
-        except:
+        except KeyError:
             return '/'
 
     def form_valid(self, form):
@@ -33,25 +32,19 @@ class UserCreateView(CreateView):
     model = User
     form_class = UserCreationFormWithEmail
     template_name = 'accounts/form.html'
-    success_url = '/'
+
+    def get_success_url(self):
+        try:
+            return self.request.GET['next']
+        except KeyError:
+            return '/'
 
 
-class ResourceBaseViewSet(viewsets.ModelViewSet):
+class ResourceViewSet(viewsets.ModelViewSet):
     model = Resource
     serializer_class = ResourceSerializer
 
     # TODO find a way to get account
     def pre_save(self, obj):
         obj.creator = self.request.user
-        obj.account = Account.objects.get_or_create(id=1)[0]
-
-
-class ResourceViewSet(ResourceBaseViewSet):
-    filter_backends = (
-        IsResourceFilterBackend,
-        filters.SearchFilter,
-    )
-
-
-class ResourceChildrenViewSet(ResourceBaseViewSet):
-    pass
+        obj.account = self.request.user.get_profile().account

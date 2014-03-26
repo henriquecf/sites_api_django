@@ -21,7 +21,7 @@ class Account(Common):
     needed for payment, etc
     """
     expiration_date = models.DateField(editable=False, default=datetime.today()+timedelta(30))
-    owner = models.OneToOneField(User, blank=True, related_name='account')
+    owner = models.OneToOneField(User, editable=False, related_name='account')
     # TODO include is owner filter
 
     def __str__(self):

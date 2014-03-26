@@ -3,14 +3,14 @@ from django.utils import timezone
 from rest_framework.decorators import link
 from rest_framework.response import Response
 
-from resource.views import ResourceChildrenViewSet
+from resource.views import ResourceViewSet
 from publication.serializers import CategorySerializer
 from publication.serializers import PublicationSerializer
 from .models import find_available_slug, Publication, Category
 from .filtersets import PublicationFilterSet
 
 
-class CategoryViewSet(ResourceChildrenViewSet):
+class CategoryViewSet(ResourceViewSet):
     serializer_class = CategorySerializer
     model = Category
 
@@ -22,7 +22,7 @@ class CategoryViewSet(ResourceChildrenViewSet):
                                                many=True).data})
 
 
-class PublicationBaseViewSet(ResourceChildrenViewSet):
+class PublicationBaseViewSet(ResourceViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.
