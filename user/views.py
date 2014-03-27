@@ -14,10 +14,24 @@ class AccountUserViewSet(ModelViewSet):
     permission_classes = (
         permissions.IsAdminUser,
     )
+    filter_backends = ()
     serializer_class = AccountUserSerializer
 
+    def get_queryset(self):
+        queryset = super(AccountUserViewSet, self).get_queryset()
+        if self.request.user.is_superuser:
+            return queryset
+        else:
+            return queryset.filter(account=self.request.user.accountuser.account)
+
     def pre_save(self, obj):
-        obj.account = self.request.user.account
+        try:
+            obj.account = self.request.user.accountuser.account
+        except ObjectDoesNotExist:
+            try:
+                obj.account = self.request.user.account
+            except ObjectDoesNotExist:
+                raise OwnerValidationError('There is no account you are associated with')
         try:
             AccountUser.objects.get(user=self.request.user)
             raise OwnerValidationError('You can create just one user account')
@@ -54,6 +68,6 @@ class UserViewSet(ModelViewSet):
 
     def post_save(self, obj, created=False):
         if self.request.method == 'POST':
-            obj.accountuser = \
-                AccountUser.objects.get_or_create(user=obj, account=self.request.user.accountuser.account)[0]
+            accountuser = AccountUser.objects.create(user=obj, account=self.request.user.accountuser.account)
+            obj.accountuser = accountuser
             obj.save()

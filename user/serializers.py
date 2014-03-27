@@ -14,13 +14,14 @@ class AccountUserSerializer(serializers.HyperlinkedModelSerializer):
 
 class UserCreateChangeSerializer(serializers.HyperlinkedModelSerializer):
     email = serializers.EmailField(required=True)
+    accountuser = serializers.HyperlinkedIdentityField(view_name='accountuser-detail')
 
     class Meta:
         model = User
-        fields = ['url', 'first_name', 'last_name', 'username', 'email', 'password']
+        fields = ['url', 'first_name', 'last_name', 'username', 'email', 'password', 'accountuser']
 
 
 class UserSerializer(UserCreateChangeSerializer):
 
     class Meta(UserCreateChangeSerializer.Meta):
-        fields = ['url', 'username', 'email', 'first_name', 'last_name']
+        fields = ['url', 'username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff', 'accountuser']

@@ -1,11 +1,9 @@
 from django.contrib.auth.models import User, Permission
-from django.core.urlresolvers import reverse
-from django.test import LiveServerTestCase
 from oauth2_provider.models import AccessToken
 import random
 from rest_framework import status
-from publication.settings import os, BASE_DIR
 
+from publication.settings import os, BASE_DIR
 from resource.models import Resource
 
 
@@ -138,34 +136,3 @@ class ResourceGenericTest(PermissionGenericTest):
         owner_obj = Resource.objects.get(id=owner_id)
         user = User.objects.get(username=self.second_owner_token)
         self.test_case.assertEqual(user, owner_obj.creator)
-
-
-# TODO This tests must be revised
-class UserTestCase(LiveServerTestCase, TestDataMixin):
-
-    def test_user_create_url_exists(self):
-        url = reverse('user-create')
-        response = self.client.get(url)
-        self.assertNotEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_create_user(self):
-        users_count = User.objects.count()
-        data = (dict(username='another_user', email='another_user@gmail.com', password1='123', password2='123'))
-        url = reverse('user-create')
-        self.client.post(url, data)
-        new_users_count = User.objects.count()
-        self.assertEqual(users_count + 1, new_users_count, 'User was not created: {0}'.format(data))
-        data.update({'username': 'another_user_altered', 'email': ''})
-        self.client.post(url, data)
-        second_users_count = User.objects.count()
-        self.assertEqual(new_users_count, second_users_count,
-                         'User without email should not be created: {0}'.format(data))
-
-    def test_user_login(self):
-        login_url = reverse('login')
-        login_data = {
-            'username': 'henrique',
-            'password': '123',
-        }
-        response = self.client.post(login_url, login_data)
-        self.assertEqual(response.status_code, 302)
