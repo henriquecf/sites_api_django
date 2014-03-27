@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from accounts.models import Account
+from .models import Account
 
 
-class OwnerSerializer(serializers.HyperlinkedModelSerializer):
-    owner = serializers.Field(source='owner.username')
+class AccountSerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.HyperlinkedIdentityField(view_name='user-detail')
 
     class Meta:
         model = Account
-        exclude = ['owner']
+        exclude = ['creation_date', 'last_modification_date']
