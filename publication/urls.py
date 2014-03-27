@@ -21,6 +21,7 @@ router.register(r'file', file_explorer_views.FileViewSet)
 router.register(r'subscription', newsletter_views.SubscriptionViewSet)
 router.register(r'newsletter', newsletter_views.NewsletterViewSet)
 router.register(r'submission', newsletter_views.SubmissionViewSet)
+router.register(r'accountuser', user_views.AccountUserViewSet)
 router.register(r'user', user_views.UserViewSet)
 
 urlpatterns = patterns('',

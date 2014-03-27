@@ -52,7 +52,7 @@ INSTALLED_APPS = (
     'news',
     'file_explorer',
     'newsletter',
-    'owner',
+    'resource',
     'user',
 )
 
@@ -77,7 +77,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    },
 }
 
 # Internationalization
@@ -111,7 +111,7 @@ DJANGO_FILTERS = (
 )
 
 OTHER_FILTERS = (
-    'owner.backends.IsOwnerChildrenFilterBackend',
+    'resource.backends.ResourceFilterBackend',
 )
 
 REST_FRAMEWORK = {

@@ -1,22 +1,22 @@
 from rest_framework import serializers
-from owner.serializers import OwnerSerializer
+from resource.serializers import ResourceSerializer
 from .models import Subscription, Newsletter, Submission
 
 
-class SubscriptionSerializer(OwnerSerializer):
+class SubscriptionSerializer(ResourceSerializer):
     unsubscribe = serializers.HyperlinkedIdentityField(view_name='subscription-unsubscribe')
 
-    class Meta(OwnerSerializer.Meta):
+    class Meta(ResourceSerializer.Meta):
         model = Subscription
 
 
-class NewsletterSerializer(OwnerSerializer):
+class NewsletterSerializer(ResourceSerializer):
     send_newsletter = serializers.HyperlinkedIdentityField(view_name='newsletter-send-newsletter')
 
-    class Meta(OwnerSerializer.Meta):
+    class Meta(ResourceSerializer.Meta):
         model = Newsletter
 
-class SubmissionSerializer(OwnerSerializer):
+class SubmissionSerializer(ResourceSerializer):
 
-    class Meta(OwnerSerializer.Meta):
+    class Meta(ResourceSerializer.Meta):
         model = Submission

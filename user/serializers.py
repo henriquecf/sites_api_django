@@ -1,6 +1,15 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from .models import AccountUser
+
+
+class AccountUserSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.HyperlinkedIdentityField(view_name='user-detail')
+    account = serializers.HyperlinkedIdentityField(view_name='account-detail')
+
+    class Meta:
+        model = AccountUser
 
 
 class UserCreateChangeSerializer(serializers.HyperlinkedModelSerializer):

@@ -4,10 +4,10 @@ from django.contrib.auth.models import User
 from django.views.generic import FormView, CreateView
 from rest_framework import viewsets
 from rest_framework import filters
-from owner.backends import IsOwnerFilterBackend
-from owner.forms import UserCreationFormWithEmail
-from owner.models import Owner
-from owner.serializers import OwnerSerializer
+from resource.forms import UserCreationFormWithEmail
+from resource.models import Resource
+from resource.serializers import ResourceSerializer
+from accounts.models import Account
 
 
 class UserLoginView(FormView):
@@ -17,7 +17,7 @@ class UserLoginView(FormView):
     def get_success_url(self):
         try:
             return self.request.GET['next']
-        except:
+        except KeyError:
             return '/'
 
     def form_valid(self, form):
@@ -32,30 +32,19 @@ class UserCreateView(CreateView):
     model = User
     form_class = UserCreationFormWithEmail
     template_name = 'accounts/form.html'
-    success_url = '/'
+
+    def get_success_url(self):
+        try:
+            return self.request.GET['next']
+        except KeyError:
+            return '/'
 
 
-class OwnerBaseViewSet(viewsets.ModelViewSet):
-    model = Owner
-    serializer_class = OwnerSerializer
+class ResourceViewSet(viewsets.ModelViewSet):
+    model = Resource
+    serializer_class = ResourceSerializer
 
-
-class OwnerViewSet(OwnerBaseViewSet):
-    filter_backends = (
-        IsOwnerFilterBackend,
-        filters.SearchFilter,
-    )
-
+    # TODO find a way to get account
     def pre_save(self, obj):
-        obj.owner = self.request.user
-
-
-class OwnerChildrenViewSet(OwnerBaseViewSet):
-
-    def pre_save(self, obj):
-        user = self.request.user
-        if user.is_root_node():
-            obj.owner = user
-        else:
-            obj.owner = user.get_root()
-            obj.children = user
+        obj.creator = self.request.user
+        obj.account = self.request.user.accountuser.account

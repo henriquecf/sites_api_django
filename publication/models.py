@@ -4,11 +4,10 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
+from resource.models import Resource
 
-from owner.models import Owner
 
-
-class Publication(Owner):
+class Publication(Resource):
     """
     This model was intended to be inherited by every model that is publishable,
     can be published, unpublished, has an author, title and slug for the url
@@ -50,7 +49,7 @@ class Publication(Owner):
             return True
 
 
-class Category(MPTTModel, Owner):
+class Category(MPTTModel, Resource):
     """
     This model implements hierarchy.
     """
@@ -60,9 +59,6 @@ class Category(MPTTModel, Owner):
 
     def __str__(self):
         return self.name
-
-    class Meta:
-        verbose_name_plural = u'Categories'
 
 
 def find_available_slug(model, instance, slug, original_slug, slug_number=2):

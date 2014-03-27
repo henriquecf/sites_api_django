@@ -1,26 +1,28 @@
-from itertools import chain
 from django.contrib.auth import hashers
-from django.forms.models import model_to_dict
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import filters, permissions
-from rest_framework.response import Response
 
-from .serializers import UserSerializer, UserCreateChangeSerializer
-from .models import User
+from .serializers import AccountUserSerializer, UserSerializer, UserCreateChangeSerializer
+from .models import AccountUser
+from .exceptions import OwnerValidationError
 
 
-class ChildrenRestriction(permissions.BasePermission):
-    """
-    Object-level permission to only allow owners of an object to edit it.
-    Assumes the model instance has an `owner` attribute.
-    """
+class AccountUserViewSet(ModelViewSet):
+    model = AccountUser
+    permission_classes = (
+        permissions.IsAdminUser,
+    )
+    serializer_class = AccountUserSerializer
 
-    def has_object_permission(self, request, view, obj):
-        user = request.user
-        if user.is_root_node():
-            return obj == user or obj in user.get_descendants()
-
-        return obj == user
+    def pre_save(self, obj):
+        obj.account = self.request.user.account
+        try:
+            AccountUser.objects.get(user=self.request.user)
+            raise OwnerValidationError('You can create just one user account')
+        except ObjectDoesNotExist:
+            obj.user = self.request.user
 
 
 class UserViewSet(ModelViewSet):
@@ -30,17 +32,15 @@ class UserViewSet(ModelViewSet):
         filters.SearchFilter,
     )
     permission_classes = (
-        permissions.IsAuthenticated,
-        ChildrenRestriction,
+        permissions.IsAdminUser,
     )
 
     def get_queryset(self):
-        user = self.request.user
         queryset = super(UserViewSet, self).get_queryset()
-        if user.is_root_node():
-            return user.get_descendants(include_self=True)
+        if self.request.user.is_superuser:
+            return queryset
         else:
-            return queryset.filter(id=user.id)
+            return queryset.filter(accountuser__account=self.request.user.get_profile().account)
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -49,18 +49,5 @@ class UserViewSet(ModelViewSet):
             return UserCreateChangeSerializer
 
     def pre_save(self, obj):
-        if self.request.method == 'POST':
-            obj.parent = self.request.user
         if not hashers.is_password_usable(obj.password):
             obj.password = hashers.make_password(obj.password)
-
-    def create(self, request, *args, **kwargs):
-        user = request.user
-        if not user.is_root_node():
-            return Response({u'detail': u'You do not have permission to perform this action.'}, status=403)
-        return super(UserViewSet, self).create(request, *args, **kwargs)
-
-    def list(self, request, *args, **kwargs):
-        if not request.user.is_root_node():
-            return Response(data={u'detail': u'You do not have permission to perform this action.'}, status=403)
-        return super(UserViewSet, self).list(request, *args, **kwargs)

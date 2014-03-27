@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 
-from owner.views import UserLoginView, UserCreateView
+from resource.views import UserLoginView, UserCreateView
 
 
 urlpatterns = patterns('',

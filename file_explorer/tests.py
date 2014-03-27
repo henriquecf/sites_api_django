@@ -3,9 +3,10 @@ from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 
 from publication.tests import PublicationGenericTest
+from resource.tests import TestDataMixin
 
 
-class FileAPITestCase(APILiveServerTestCase):
+class FileAPITestCase(APILiveServerTestCase, TestDataMixin):
 
     def setUp(self):
         self.url = reverse('file-list')
@@ -42,9 +43,6 @@ class FileAPITestCase(APILiveServerTestCase):
 
     def test_destroy(self):
         self.publication_generic_test.destroy()
-
-    def test_owner_is_request_user(self):
-        self.publication_generic_test.owner_or_children_is_request_user()
 
     def test_slug_is_slugified_title(self):
         self.publication_generic_test.slug_is_slugified_title()
