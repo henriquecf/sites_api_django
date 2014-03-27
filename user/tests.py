@@ -70,14 +70,14 @@ class UserGenericTest(APIGenericTest):
         self.set_authorization_bearer(self.account_user_token)
         super(UserGenericTest, self).list(count=-1, status_code=status.HTTP_403_FORBIDDEN)
         self.set_authorization_bearer(self.second_owner_token)
-        super(UserGenericTest, self).list(count=1, status_code=status_code)
+        super(UserGenericTest, self).list(count=4, status_code=status_code)
 
     def retrieve(self, status_code=status.HTTP_200_OK, url=None):
         super(UserGenericTest, self).retrieve(status_code=status_code)
         self.set_authorization_bearer(self.second_owner_token)
         super(UserGenericTest, self).retrieve(status_code=status.HTTP_404_NOT_FOUND)
         self.set_authorization_bearer(self.account_user_token)
-        super(UserGenericTest, self).retrieve(status_code=status.HTTP_404_NOT_FOUND)
+        super(UserGenericTest, self).retrieve(status_code=status.HTTP_403_FORBIDDEN)
 
     def destroy(self, status_code=status.HTTP_204_NO_CONTENT, url=None):
         self.set_authorization_bearer(self.second_owner_token)
@@ -120,7 +120,7 @@ class UserAPITestCase(APILiveServerTestCase, TestDataMixin):
         self.user_generic_test.partial_update()
 
     def test_list(self):
-        self.user_generic_test.list(count=4)
+        self.user_generic_test.list(count=5)
 
     def test_retrieve(self):
         self.user_generic_test.retrieve()

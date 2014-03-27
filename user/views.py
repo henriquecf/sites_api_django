@@ -51,3 +51,9 @@ class UserViewSet(ModelViewSet):
     def pre_save(self, obj):
         if not hashers.is_password_usable(obj.password):
             obj.password = hashers.make_password(obj.password)
+
+    def post_save(self, obj, created=False):
+        if self.request.method == 'POST':
+            obj.accountuser = \
+                AccountUser.objects.get_or_create(user=obj, account=self.request.user.accountuser.account)[0]
+            obj.save()
