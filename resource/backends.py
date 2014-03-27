@@ -28,9 +28,8 @@ class ResourceFilterBackend(filters.BaseFilterBackend):
     If the user has non global permission for the method, the filter is applied to the children.
     The only exception is when the user is the resource itself. In this case, the resource filter applies anyway.
     """
-    # TODO The the way comparing has_perm to compare directly with separate sets and eliminate get_required_permissions
     def filter_queryset(self, request, queryset, view):
         if request.user.is_staff:
-            return queryset.filter(account=request.user.get_profile().account)
+            return queryset.filter(account=request.user.accountuser.account)
         else:
             return queryset.filter(creator=request.user)

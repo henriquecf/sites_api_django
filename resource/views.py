@@ -47,4 +47,4 @@ class ResourceViewSet(viewsets.ModelViewSet):
     # TODO find a way to get account
     def pre_save(self, obj):
         obj.creator = self.request.user
-        obj.account = self.request.user.get_profile().account
+        obj.account = self.request.user.accountuser.account
