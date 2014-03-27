@@ -89,7 +89,7 @@ class APIGenericTest:
 
             # TODO Still need to create a generic test for ordering
 
-    def hyperlinked_identity_field(self, field):
+    def hyperlinked_field(self, field):
         response = self.test_case.client.get(self.first_object_response.data[field])
         self.test_case.assertEqual(response.status_code, status.HTTP_200_OK, 'Error with field {0}'.format(field))
 
