@@ -40,7 +40,7 @@ class UserViewSet(ModelViewSet):
         if self.request.user.is_superuser:
             return queryset
         else:
-            return queryset.filter(accountuser__account=self.request.user.get_profile().account)
+            return queryset.filter(accountuser__account=self.request.user.accountuser.account)
 
     def get_serializer_class(self):
         if self.request.method == 'GET':

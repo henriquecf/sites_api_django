@@ -88,8 +88,6 @@ class UserGenericTest(APIGenericTest):
         super(UserGenericTest, self).destroy(status_code=status_code)
 
 
-# TODO Create tests for children
-# TODO Test filters for retriving just children
 class UserAPITestCase(APILiveServerTestCase, TestDataMixin):
 
     def setUp(self):
@@ -110,7 +108,7 @@ class UserAPITestCase(APILiveServerTestCase, TestDataMixin):
         data = copy.copy(self.data)
         data.pop('email')
         response = self.client.post(self.url, data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
 
     def test_create(self):
         self.user_generic_test.create()
@@ -131,6 +129,18 @@ class UserAPITestCase(APILiveServerTestCase, TestDataMixin):
         self.user_generic_test.destroy()
 
 
+class AccountUserGenericTest(APIGenericTest):
+
+    def create(self, status_code=status.HTTP_400_BAD_REQUEST):
+        super(AccountUserGenericTest, self).create(status_code=status_code)
+
+    def update(self, status_code=status.HTTP_400_BAD_REQUEST, is_altered=False, url=None):
+        super(AccountUserGenericTest, self).update(status_code=status_code, is_altered=is_altered, url=url)
+
+    def partial_update(self, status_code=status.HTTP_400_BAD_REQUEST, is_altered=False, url=None):
+        super(AccountUserGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered, url=url)
+
+
 class AccountUserTestCase(APILiveServerTestCase):
     fixtures = [os.path.join(BASE_DIR, 'user/test_data.json')]
 
@@ -140,22 +150,22 @@ class AccountUserTestCase(APILiveServerTestCase):
         }
         self.altered_data = {
         }
-        self.resource_generic_test = ResourceGenericTest(self)
+        self.accountuser_generic_test = AccountUserGenericTest(self)
 
     def test_create(self):
-        self.resource_generic_test.create()
+        self.accountuser_generic_test.create()
 
     def test_list(self):
-        self.resource_generic_test.list()
+        self.accountuser_generic_test.list()
 
     def test_retrieve(self):
-        self.resource_generic_test.retrieve()
+        self.accountuser_generic_test.retrieve()
 
     def test_update(self):
-        self.resource_generic_test.update()
+        self.accountuser_generic_test.update()
 
     def test_partial_update(self):
-        self.resource_generic_test.partial_update()
+        self.accountuser_generic_test.partial_update()
 
     def test_destroy(self):
-        self.resource_generic_test.destroy()
+        self.accountuser_generic_test.destroy()
