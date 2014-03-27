@@ -2,13 +2,11 @@ from django.contrib.auth import hashers
 from django.contrib.auth.models import User
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import filters, permissions
-from accounts.models import Account
 
 from .serializers import AccountUserSerializer, UserSerializer, UserCreateChangeSerializer
 from .models import AccountUser
 
 
-# TODO Refactor this viewset to filter by users related to that account
 class AccountUserViewSet(ModelViewSet):
     model = AccountUser
     permission_classes = (
@@ -16,7 +14,6 @@ class AccountUserViewSet(ModelViewSet):
     )
     serializer_class = AccountUserSerializer
 
-    # TODO insert account of the owner and get right user
     def pre_save(self, obj):
         print('Ok')
         obj.account = self.request.user.get_profile().account
@@ -32,6 +29,13 @@ class UserViewSet(ModelViewSet):
     permission_classes = (
         permissions.IsAdminUser,
     )
+
+    def get_queryset(self):
+        queryset = super(UserViewSet, self).get_queryset()
+        if self.request.user.is_superuser:
+            return queryset
+        else:
+            return queryset.filter(accountuser__account=self.request.user.get_profile().account)
 
     def get_serializer_class(self):
         if self.request.method == 'GET':

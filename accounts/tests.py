@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 
 
+# TODO Implement all the tests for an API
 class AccountAPITestCase(APILiveServerTestCase):
     def setUp(self):
         self.url = reverse('account-list')

@@ -199,3 +199,5 @@ class UserAPITestCase(APILiveServerTestCase):
 
     def test_destroy(self):
         self.user_generic_test.destroy()
+
+# TODO Implement API Tests for User
