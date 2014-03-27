@@ -1,12 +1,95 @@
-import copy
 from django.contrib.auth.models import User, Permission
 from django.core.urlresolvers import reverse
 from django.test import LiveServerTestCase
+from oauth2_provider.models import AccessToken
+import random
 from rest_framework import status
-from accounts.models import Common
+from publication.settings import os, BASE_DIR
 
 from resource.models import Resource
-from user.tests import APIGenericTest
+
+
+class TestDataMixin(object):
+    fixtures = [os.path.join(BASE_DIR, 'general_test_data.json')]
+
+
+class APIGenericTest:
+    """
+    Generic tests for django rest framework api tests.
+    Tests create, update, retrieve, list, partial update, destroy actions
+    This class should be instanced inside the TestCase,
+    passing the own TestCase as a parameter
+    """
+    def load_initial_data(self):
+        self.owner_token = AccessToken.objects.get(id=1).token
+        self.account_user_token = AccessToken.objects.get(id=2).token
+        self.account_user_token2 = AccessToken.objects.get(id=3).token
+        self.account_user_token3 = AccessToken.objects.get(id=4).token
+        self.second_owner_token = AccessToken.objects.get(id=5).token
+        self.second_account_user_token = AccessToken.objects.get(id=6).token
+        self.second_account_user_token2 = AccessToken.objects.get(id=7).token
+        self.second_account_user_token3 = AccessToken.objects.get(id=8).token
+
+    def __init__(self, test_case):
+        self.test_case = test_case
+        self.url = self.test_case.url
+        self.data = self.test_case.data
+        self.altered_data = self.test_case.altered_data
+        self.load_initial_data()
+        self.set_authorization_bearer(self.owner_token)
+        self.first_object_response = self.test_case.client.post(self.url, self.data)
+
+    def set_authorization_bearer(self, token):
+        self.test_case.client.credentials(HTTP_AUTHORIZATION='Bearer {0}'.format(token))
+
+    def create(self, status_code=status.HTTP_201_CREATED):
+        response = self.test_case.client.post(self.url, self.data)
+        self.test_case.assertEqual(response.status_code, status_code, response.data)
+
+    def list(self, count=1, status_code=status.HTTP_200_OK):
+        response = self.test_case.client.get(self.url)
+        if count >= 0:
+            self.test_case.assertEqual(response.data['count'], count)
+        self.test_case.assertEqual(response.status_code, status_code, response.data)
+
+    def retrieve(self, status_code=status.HTTP_200_OK, url=None):
+        if not url:
+            url = self.first_object_response.data['url']
+        response = self.test_case.client.get(url)
+        self.test_case.assertEqual(response.status_code, status_code)
+
+    def update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
+        if not url:
+            url = self.first_object_response.data['url']
+        response = self.test_case.client.put(url, self.altered_data)
+        if is_altered:
+            self.test_case.assertNotEqual(self.first_object_response.data, response.data)
+        self.test_case.assertEqual(response.status_code, status_code, response.data)
+
+    def partial_update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
+        if not url:
+            url = self.first_object_response.data['url']
+        response = self.test_case.client.patch(url, self.altered_data)
+        if is_altered:
+            self.test_case.assertNotEqual(self.first_object_response.data, response.data)
+        self.test_case.assertEqual(response.status_code, status_code)
+
+    def destroy(self, status_code=status.HTTP_204_NO_CONTENT, url=None):
+        if not url:
+            url = self.first_object_response.data['url']
+        response = self.test_case.client.delete(url)
+        self.test_case.assertEqual(response.status_code, status_code)
+
+    def search_fields(self, search_fields=None):
+        for field in search_fields:
+            filter_parameter = random.randint(1, 999999)
+            self.altered_data.update({field: filter_parameter})
+            self.test_case.client.post(self.url, self.altered_data)
+            query_parameter = {'search': filter_parameter}
+            response = self.test_case.client.get(self.url, query_parameter)
+            self.test_case.assertEqual(response.data['count'], 1, 'Field "{0}" not in search fields'.format(field))
+
+            # TODO Still need to create a generic test for ordering
 
 
 class PermissionGenericTest(APIGenericTest):
@@ -58,7 +141,7 @@ class ResourceGenericTest(PermissionGenericTest):
 
 
 # TODO This tests must be revised
-class UserTestCase(LiveServerTestCase):
+class UserTestCase(LiveServerTestCase, TestDataMixin):
 
     def test_user_create_url_exists(self):
         url = reverse('user-create')

@@ -1,10 +1,12 @@
 from django.contrib.auth import hashers
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import filters, permissions
 
 from .serializers import AccountUserSerializer, UserSerializer, UserCreateChangeSerializer
 from .models import AccountUser
+from .exceptions import OwnerValidationError
 
 
 class AccountUserViewSet(ModelViewSet):
@@ -15,9 +17,12 @@ class AccountUserViewSet(ModelViewSet):
     serializer_class = AccountUserSerializer
 
     def pre_save(self, obj):
-        print('Ok')
-        obj.account = self.request.user.get_profile().account
-        obj.user = self.request.user
+        obj.account = self.request.user.account
+        try:
+            AccountUser.objects.get(user=self.request.user)
+            raise OwnerValidationError('You can create just one user account')
+        except ObjectDoesNotExist:
+            obj.user = self.request.user
 
 
 class UserViewSet(ModelViewSet):

@@ -1,10 +1,13 @@
 import datetime
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
+from publication.settings import BASE_DIR, os
 
 
 # TODO Implement all the tests for an API
 class AccountAPITestCase(APILiveServerTestCase):
+    fixtures = [os.path.join(BASE_DIR, 'accounts/test_data.json')]
+
     def setUp(self):
         self.url = reverse('account-list')
         self.data = {}

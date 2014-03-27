@@ -5,7 +5,7 @@ from django.utils.text import slugify
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 
-from resource.tests import ResourceGenericTest
+from resource.tests import ResourceGenericTest, TestDataMixin
 from .models import Publication
 
 
@@ -72,7 +72,7 @@ class PublicationGenericTest(ResourceGenericTest):
                                    'Field categories not found in model "{0}"'.format(model_name))
 
 
-class PublicationAPITestCase(APILiveServerTestCase):
+class PublicationAPITestCase(APILiveServerTestCase, TestDataMixin):
     model = Publication
 
     def setUp(self):
@@ -136,11 +136,8 @@ class PublicationAPITestCase(APILiveServerTestCase):
     def test_filter_author(self):
         self.publication_generic_test.filter_author()
 
-    def test_model_has_custom_permission(self):
-        self.publication_generic_test.model_has_custom_permission()
 
-
-class CategoryAPITestCase(APILiveServerTestCase):
+class CategoryAPITestCase(APILiveServerTestCase, TestDataMixin):
     def setUp(self):
         self.url = reverse('category-list')
         self.data = {

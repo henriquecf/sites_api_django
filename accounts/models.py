@@ -20,7 +20,7 @@ class Account(Common):
     including payment data, signature date controls, contact fields
     needed for payment, etc
     """
-    expiration_date = models.DateField(editable=False, default=datetime.today()+timedelta(30))
+    expiration_date = models.DateField(editable=False)
     owner = models.OneToOneField(User, editable=False, related_name='account')
     # TODO include is owner filter
 

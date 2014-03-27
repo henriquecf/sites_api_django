@@ -5,14 +5,14 @@ from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 from publication.tests import PublicationGenericTest
-from resource.models import User
+from resource.tests import TestDataMixin
 from resource.tests import ResourceGenericTest
 from .models import Newsletter, Subscription
 
 #TODO: Test just resource can destroy or user with unsubscription code can destroy
 
 
-class SubscpritionAPITestCase(APILiveServerTestCase):
+class SubscpritionAPITestCase(APILiveServerTestCase, TestDataMixin):
 
     def setUp(self):
         self.url = reverse('subscription-list')
@@ -74,7 +74,7 @@ class SubscpritionAPITestCase(APILiveServerTestCase):
         self.assertTrue(subscription.active)
 
 
-class NewsletterAPITestCase(APILiveServerTestCase):
+class NewsletterAPITestCase(APILiveServerTestCase, TestDataMixin):
 
     def setUp(self):
         self.url = reverse('newsletter-list')
