@@ -25,13 +25,7 @@ class AccountUserViewSet(ModelViewSet):
             return queryset.filter(account=self.request.user.accountuser.account)
 
     def pre_save(self, obj):
-        try:
-            obj.account = self.request.user.accountuser.account
-        except ObjectDoesNotExist:
-            try:
-                obj.account = self.request.user.account
-            except ObjectDoesNotExist:
-                raise OwnerValidationError('There is no account you are associated with')
+        obj.account = self.request.user.account
         try:
             AccountUser.objects.get(user=self.request.user)
             raise OwnerValidationError('You can create just one user account')

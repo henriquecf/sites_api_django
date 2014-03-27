@@ -147,11 +147,16 @@ class UserAPITestCase(APILiveServerTestCase, TestDataMixin):
         response4 = self.client.get(self.url)
         self.assertIn('is_active', response4.data['results'][0])
 
-    # TODO Check why this test is not passing
-    '''def test_accountuser_created_has_same_account_as_request_user(self):
-        response = self.client.get(self.user_generic_test.first_object_response.data['accountuser'])
-        owner_user = User.objects.get(username=self.user_generic_test.owner_token)
-        self.assertEqual(response.data['account'], owner_user.accountuser.account)'''
+    def test_hyperlinked_identity_field(self):
+        self.user_generic_test.hyperlinked_identity_field('accountuser')
+
+    def test_accountuser_created_has_same_account_as_request_user(self):
+        account_user_url = self.user_generic_test.first_object_response.data['accountuser']
+        response = self.client.get(account_user_url)
+        account_url = response.data['account']
+        account_id = account_url.split('/')[-2]
+        owner_account_id = User.objects.get(username=self.user_generic_test.owner_token).accountuser.account.id
+        self.assertEqual(account_id, str(owner_account_id))
 
 
 class AccountUserGenericTest(APIGenericTest):
@@ -212,6 +217,10 @@ class AccountUserTestCase(APILiveServerTestCase):
         url = self.accountuser_generic_test.first_object_response.data['account']
         account_id = url.split('/')[-2]
         self.assertEqual(account_id, str(owner_user.accountuser.account.id))
+
+    def test_hyperlinked_identity_field(self):
+        self.accountuser_generic_test.hyperlinked_identity_field('user')
+        self.accountuser_generic_test.hyperlinked_identity_field('account')
 
 
 class UserTestCase(LiveServerTestCase, TestDataMixin):
