@@ -5,8 +5,8 @@ from .models import AccountUser
 
 
 class AccountUserSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.HyperlinkedIdentityField(view_name='user-detail')
-    account = serializers.HyperlinkedIdentityField(view_name='account-detail')
+    user = serializers.HyperlinkedRelatedField(view_name='user-detail', read_only=True)
+    account = serializers.HyperlinkedRelatedField(view_name='account-detail', read_only=True)
 
     class Meta:
         model = AccountUser
@@ -14,13 +14,14 @@ class AccountUserSerializer(serializers.HyperlinkedModelSerializer):
 
 class UserCreateChangeSerializer(serializers.HyperlinkedModelSerializer):
     email = serializers.EmailField(required=True)
+    accountuser = serializers.HyperlinkedRelatedField(view_name='accountuser-detail', read_only=True)
 
     class Meta:
         model = User
-        fields = ['url', 'first_name', 'last_name', 'username', 'email', 'password']
+        fields = ['url', 'first_name', 'last_name', 'username', 'email', 'password', 'accountuser']
 
 
 class UserSerializer(UserCreateChangeSerializer):
 
     class Meta(UserCreateChangeSerializer.Meta):
-        fields = ['url', 'username', 'email', 'first_name', 'last_name']
+        fields = ['url', 'username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff', 'accountuser']

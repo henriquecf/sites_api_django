@@ -22,7 +22,6 @@ class Account(Common):
     """
     expiration_date = models.DateField(editable=False)
     owner = models.OneToOneField(User, editable=False, related_name='account')
-    # TODO include is owner filter
 
     def __str__(self):
         return self.owner.username

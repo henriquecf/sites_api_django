@@ -14,7 +14,15 @@ class AccountUserViewSet(ModelViewSet):
     permission_classes = (
         permissions.IsAdminUser,
     )
+    filter_backends = ()
     serializer_class = AccountUserSerializer
+
+    def get_queryset(self):
+        queryset = super(AccountUserViewSet, self).get_queryset()
+        if self.request.user.is_superuser:
+            return queryset
+        else:
+            return queryset.filter(account=self.request.user.accountuser.account)
 
     def pre_save(self, obj):
         obj.account = self.request.user.account
@@ -40,7 +48,7 @@ class UserViewSet(ModelViewSet):
         if self.request.user.is_superuser:
             return queryset
         else:
-            return queryset.filter(accountuser__account=self.request.user.get_profile().account)
+            return queryset.filter(accountuser__account=self.request.user.accountuser.account)
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -51,3 +59,9 @@ class UserViewSet(ModelViewSet):
     def pre_save(self, obj):
         if not hashers.is_password_usable(obj.password):
             obj.password = hashers.make_password(obj.password)
+
+    def post_save(self, obj, created=False):
+        if self.request.method == 'POST':
+            accountuser = AccountUser.objects.create(user=obj, account=self.request.user.accountuser.account)
+            obj.accountuser = accountuser
+            obj.save()
