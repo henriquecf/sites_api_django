@@ -165,6 +165,15 @@ class AccountUserGenericTest(APIGenericTest):
     def partial_update(self, status_code=status.HTTP_400_BAD_REQUEST, is_altered=False, url=None):
         super(AccountUserGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered, url=url)
 
+    def admin_permission(self):
+        self.set_authorization_bearer(self.account_user_token)
+        super(AccountUserGenericTest, self).create(status_code=status.HTTP_403_FORBIDDEN)
+        super(AccountUserGenericTest, self).update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False)
+        super(AccountUserGenericTest, self).partial_update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False)
+        super(AccountUserGenericTest, self).list(count=-1, status_code=status.HTTP_403_FORBIDDEN)
+        super(AccountUserGenericTest, self).retrieve(status_code=status.HTTP_403_FORBIDDEN)
+        super(AccountUserGenericTest, self).destroy(status_code=status.HTTP_403_FORBIDDEN)
+
 
 class AccountUserTestCase(APILiveServerTestCase):
     fixtures = [os.path.join(BASE_DIR, 'user/test_data.json')]
@@ -194,6 +203,15 @@ class AccountUserTestCase(APILiveServerTestCase):
 
     def test_destroy(self):
         self.accountuser_generic_test.destroy()
+
+    def test_admin_permission(self):
+        self.accountuser_generic_test.admin_permission()
+
+    def test_accountuser_created_has_same_account_as_request_user(self):
+        owner_user = User.objects.get(username=self.accountuser_generic_test.owner_token)
+        url = self.accountuser_generic_test.first_object_response.data['account']
+        account_id = url.split('/')[-2]
+        self.assertEqual(account_id, str(owner_user.accountuser.account.id))
 
 
 class UserTestCase(LiveServerTestCase, TestDataMixin):
