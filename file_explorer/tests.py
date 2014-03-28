@@ -68,3 +68,12 @@ class FileAPITestCase(APILiveServerTestCase, TestDataMixin):
 
     def test_add_category(self):
         self.publication_generic_test.add_category('file')
+
+    def test_owner_is_request_user(self):
+        self.publication_generic_test.owner_is_request_user()
+
+    def test_hyperlinked_fields(self):
+        self.publication_generic_test.hyperlinked_fields([])
+
+    def test_user_and_account_from_request_user(self):
+        self.publication_generic_test.user_and_account_from_request_user()

@@ -36,8 +36,6 @@ class PublicationBaseViewSet(ResourceViewSet):
 
     def pre_save(self, obj):
         super(PublicationBaseViewSet, self).pre_save(obj)
-        # Makes the user who is posting the author of the publication
-        obj.author = self.request.user
         # Creates a slug for the publication based on the title
         slug = slugify(obj.title)
         find_available_slug(self.model, obj, slug, slug)
