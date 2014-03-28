@@ -18,7 +18,12 @@ class APIGenericTest:
     This class should be instanced inside the TestCase,
     passing the own TestCase as a parameter
     """
-    def load_initial_data(self):
+
+    def __init__(self, test_case):
+        self.test_case = test_case
+        self.url = self.test_case.url
+        self.data = self.test_case.data
+        self.altered_data = self.test_case.altered_data
         self.owner_token = AccessToken.objects.get(id=1).token
         self.account_user_token = AccessToken.objects.get(id=2).token
         self.account_user_token2 = AccessToken.objects.get(id=3).token
@@ -27,13 +32,6 @@ class APIGenericTest:
         self.second_account_user_token = AccessToken.objects.get(id=6).token
         self.second_account_user_token2 = AccessToken.objects.get(id=7).token
         self.second_account_user_token3 = AccessToken.objects.get(id=8).token
-
-    def __init__(self, test_case):
-        self.test_case = test_case
-        self.url = self.test_case.url
-        self.data = self.test_case.data
-        self.altered_data = self.test_case.altered_data
-        self.load_initial_data()
         self.set_authorization_bearer(self.owner_token)
         self.first_object_response = self.test_case.client.post(self.url, self.data)
 
