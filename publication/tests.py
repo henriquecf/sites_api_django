@@ -1,15 +1,20 @@
+import datetime
 from copy import copy
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from django.utils.text import slugify
+from django.test.testcases import LiveServerTestCase
+from django.contrib.auth.models import User
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 
 from resource.tests import ResourceGenericTest, TestDataMixin
+from accounts.models import Account
 from .models import Publication
 
 
 class PublicationGenericTest(ResourceGenericTest):
+
     def slug_is_slugified_title(self, slug_repeat_number='-2'):
         response = self.test_case.client.post(self.url, self.data)
         self.test_case.assertEqual(response.data['slug'], slugify(response.data['title']) + slug_repeat_number,
@@ -143,6 +148,7 @@ class PublicationAPITestCase(APILiveServerTestCase, TestDataMixin):
 
 
 class CategoryAPITestCase(APILiveServerTestCase, TestDataMixin):
+
     def setUp(self):
         self.url = reverse('category-list')
         self.data = {
@@ -153,25 +159,29 @@ class CategoryAPITestCase(APILiveServerTestCase, TestDataMixin):
             'name': 'Category 1 Altered',
             'model_name': 'news',
         }
-        self.owner_generic_test = ResourceGenericTest(self)
+        self.resource_generic_test = ResourceGenericTest(self)
 
     def test_create(self):
-        self.owner_generic_test.create()
+        self.resource_generic_test.create()
 
     def test_retrieve(self):
-        self.owner_generic_test.retrieve()
+        self.resource_generic_test.retrieve()
 
     def test_list(self):
-        self.owner_generic_test.list()
+        self.resource_generic_test.list()
 
     def test_update(self):
-        self.owner_generic_test.update()
+        self.resource_generic_test.update()
 
     def test_partial_update(self):
-        self.owner_generic_test.partial_update()
+        self.resource_generic_test.partial_update()
 
     def test_destroy(self):
-        self.owner_generic_test.destroy()
+        self.resource_generic_test.destroy()
+
+    def test_hyperlinked_fields(self):
+        fields = ['get_descendants']
+        self.resource_generic_test.hyperlinked_fields(fields)
 
     def test_if_creates_with_parent(self):
         response = self.client.post(self.url, self.data)
@@ -200,3 +210,71 @@ class CategoryAPITestCase(APILiveServerTestCase, TestDataMixin):
         self.client.post(self.url, children_data)
         response2 = self.client.get(response.data['url'])
         self.assertFalse(response2.data['is_leaf_node'])
+
+
+class PublicationTestCase(LiveServerTestCase):
+
+    def setUp(self):
+        user = User.objects.create_user('henrique', '123')
+        account = Account.objects.create(owner=user, expiration_date=datetime.date.today())
+        self.publication = Publication.objects.create(title='Test', account=account, creator=user)
+        self.yesterday = timezone.now() - datetime.timedelta(1)
+        self.today = timezone.now()
+        self.tomorrow = timezone.now() + datetime.timedelta(1)
+
+    def scenario1(self):
+        self.publication.publication_start_date = self.today
+        self.publication.publication_end_date = self.tomorrow
+
+    def scenario2(self):
+        self.publication.publication_start_date = self.tomorrow
+        self.publication.publication_end_date = self.today
+
+    def scenario3(self):
+        self.publication.publication_start_date = self.today
+        self.publication.publication_end_date = self.yesterday
+
+    def scenario4(self):
+        self.publication.publication_start_date = self.yesterday
+        self.publication.publication_end_date = self.yesterday
+
+    def check_publish_state(self):
+        self.publication.publish()
+        return self.publication.publication_start_date <= timezone.now() and not self.publication.publication_end_date
+
+    def check_unpublish_state(self):
+        self.publication.unpublish()
+        return self.publication.publication_start_date <= timezone.now() and self.publication.publication_end_date
+
+    def test_publish(self):
+        self.assertTrue(self.publication.is_published())
+        self.assertFalse(self.publication.unpublish())
+        self.assertTrue(self.publication.publish())
+        self.scenario1()
+        self.assertTrue(self.check_publish_state())
+        self.scenario2()
+        self.assertTrue(self.check_publish_state())
+        self.scenario3()
+        self.assertTrue(self.check_publish_state())
+        self.scenario4()
+        self.assertTrue(self.check_publish_state())
+
+    def test_unpublish(self):
+        self.assertTrue(self.publication.is_published())
+        self.assertFalse(self.publication.unpublish())
+        self.assertTrue(self.publication.publish())
+        self.scenario1()
+        self.assertTrue(self.check_unpublish_state())
+        self.scenario2()
+        self.assertTrue(self.check_unpublish_state())
+        self.scenario3()
+        self.assertTrue(self.check_unpublish_state())
+        self.scenario4()
+        self.assertTrue(self.check_unpublish_state())
+
+    def test_is_published(self):
+        self.assertTrue(self.publication.is_published())
+        self.assertFalse(self.publication.unpublish())
+        self.assertFalse(self.publication.is_published())
+        self.assertTrue(self.publication.publish())
+        self.assertTrue(self.publication.is_published())
