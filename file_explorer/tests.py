@@ -6,25 +6,23 @@ from publication.tests import PublicationGenericTest
 from resource.tests import TestDataMixin
 
 
-class NewsAPITestCase(APILiveServerTestCase, TestDataMixin):
+class FileAPITestCase(APILiveServerTestCase, TestDataMixin):
 
     def setUp(self):
-        self.url = reverse('news-list')
+        self.url = reverse('file-list')
         self.data = {
-            'title': 'First news',
+            'title': 'First publication',
             'description': 'First description',
             'slug': 'first-publication',
             'publication_start_date': timezone.now(),
             'publication_end_date': None,
-            'content': 'My first news',
         }
         self.altered_data = {
-            'title': 'First news altered',
+            'title': 'First publication altered',
             'description': 'First description altered',
             'slug': 'first-publication',
             'publication_start_date': timezone.now(),
             'publication_end_date': None,
-            'content': 'My first news altered',
         }
         self.publication_generic_test = PublicationGenericTest(self)
 
@@ -65,11 +63,11 @@ class NewsAPITestCase(APILiveServerTestCase, TestDataMixin):
         self.publication_generic_test.unpublish()
 
     def test_search_fields(self):
-        search_fields = ('title', 'description', 'content')
+        search_fields = ('title', 'description')
         self.publication_generic_test.search_fields(search_fields)
 
     def test_add_category(self):
-        self.publication_generic_test.add_category('news')
+        self.publication_generic_test.add_category('file')
 
     def test_owner_is_request_user(self):
         self.publication_generic_test.owner_is_request_user()

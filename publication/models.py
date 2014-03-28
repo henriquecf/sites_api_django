@@ -2,10 +2,12 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils import timezone
 from django.contrib.auth.models import User
-from accounts.models import Owner
+from mptt.fields import TreeForeignKey
+from mptt.models import MPTTModel
+from resource.models import Resource
 
 
-class Publication(Owner):
+class Publication(Resource):
     """
     This model was intended to be inherited by every model that is publishable,
     can be published, unpublished, has an author, title and slug for the url
@@ -15,7 +17,6 @@ class Publication(Owner):
     slug = models.SlugField(max_length=150, editable=False)
     publication_start_date = models.DateTimeField(blank=True, default=timezone.now())
     publication_end_date = models.DateTimeField(blank=True, null=True)
-    author = models.ForeignKey(User, blank=True, related_name='author')
 
     def __str__(self):
         return self.title
@@ -45,6 +46,18 @@ class Publication(Owner):
             return False
         else:
             return True
+
+
+class Category(MPTTModel, Resource):
+    """
+    This model implements hierarchy.
+    """
+    name = models.CharField(max_length=150)
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children_set')
+    model_name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
 
 
 def find_available_slug(model, instance, slug, original_slug, slug_number=2):

@@ -1,0 +1,1496 @@
+[
+{
+    "fields": {
+        "name": "log entry",
+        "app_label": "admin",
+        "model": "logentry"
+    },
+    "pk": 1,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "permission",
+        "app_label": "auth",
+        "model": "permission"
+    },
+    "pk": 2,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "group",
+        "app_label": "auth",
+        "model": "group"
+    },
+    "pk": 3,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "user",
+        "app_label": "auth",
+        "model": "user"
+    },
+    "pk": 4,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "content type",
+        "app_label": "contenttypes",
+        "model": "contenttype"
+    },
+    "pk": 5,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "session",
+        "app_label": "sessions",
+        "model": "session"
+    },
+    "pk": 6,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "application",
+        "app_label": "oauth2_provider",
+        "model": "application"
+    },
+    "pk": 7,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "grant",
+        "app_label": "oauth2_provider",
+        "model": "grant"
+    },
+    "pk": 8,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "access token",
+        "app_label": "oauth2_provider",
+        "model": "accesstoken"
+    },
+    "pk": 9,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "refresh token",
+        "app_label": "oauth2_provider",
+        "model": "refreshtoken"
+    },
+    "pk": 10,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "account",
+        "app_label": "accounts",
+        "model": "account"
+    },
+    "pk": 11,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "publication",
+        "app_label": "publication",
+        "model": "publication"
+    },
+    "pk": 12,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "category",
+        "app_label": "publication",
+        "model": "category"
+    },
+    "pk": 13,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "news",
+        "app_label": "news",
+        "model": "news"
+    },
+    "pk": 14,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "file",
+        "app_label": "file_explorer",
+        "model": "file"
+    },
+    "pk": 15,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "subscription",
+        "app_label": "newsletter",
+        "model": "subscription"
+    },
+    "pk": 16,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "newsletter",
+        "app_label": "newsletter",
+        "model": "newsletter"
+    },
+    "pk": 17,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "submission",
+        "app_label": "newsletter",
+        "model": "submission"
+    },
+    "pk": 18,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "resource",
+        "app_label": "resource",
+        "model": "resource"
+    },
+    "pk": 19,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "name": "account user",
+        "app_label": "user",
+        "model": "accountuser"
+    },
+    "pk": 20,
+    "model": "contenttypes.contenttype"
+},
+{
+    "fields": {
+        "session_data": "ZDRkZTU1ZTUyMDBmOWMxMGIyN2RjYzI0Zjc3YmExOGQxZTM2MzVkNzp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6MX0=",
+        "expire_date": "2014-04-09T18:36:37.242Z"
+    },
+    "pk": "6nh76u16tv8tfm32jjo95jml98whx1do",
+    "model": "sessions.session"
+},
+{
+    "fields": {
+        "name": "Can add log entry",
+        "content_type": 1,
+        "codename": "add_logentry"
+    },
+    "pk": 1,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change log entry",
+        "content_type": 1,
+        "codename": "change_logentry"
+    },
+    "pk": 2,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete log entry",
+        "content_type": 1,
+        "codename": "delete_logentry"
+    },
+    "pk": 3,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add permission",
+        "content_type": 2,
+        "codename": "add_permission"
+    },
+    "pk": 4,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change permission",
+        "content_type": 2,
+        "codename": "change_permission"
+    },
+    "pk": 5,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete permission",
+        "content_type": 2,
+        "codename": "delete_permission"
+    },
+    "pk": 6,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add group",
+        "content_type": 3,
+        "codename": "add_group"
+    },
+    "pk": 7,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change group",
+        "content_type": 3,
+        "codename": "change_group"
+    },
+    "pk": 8,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete group",
+        "content_type": 3,
+        "codename": "delete_group"
+    },
+    "pk": 9,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add user",
+        "content_type": 4,
+        "codename": "add_user"
+    },
+    "pk": 10,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change user",
+        "content_type": 4,
+        "codename": "change_user"
+    },
+    "pk": 11,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete user",
+        "content_type": 4,
+        "codename": "delete_user"
+    },
+    "pk": 12,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add content type",
+        "content_type": 5,
+        "codename": "add_contenttype"
+    },
+    "pk": 13,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change content type",
+        "content_type": 5,
+        "codename": "change_contenttype"
+    },
+    "pk": 14,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete content type",
+        "content_type": 5,
+        "codename": "delete_contenttype"
+    },
+    "pk": 15,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add session",
+        "content_type": 6,
+        "codename": "add_session"
+    },
+    "pk": 16,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change session",
+        "content_type": 6,
+        "codename": "change_session"
+    },
+    "pk": 17,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete session",
+        "content_type": 6,
+        "codename": "delete_session"
+    },
+    "pk": 18,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add application",
+        "content_type": 7,
+        "codename": "add_application"
+    },
+    "pk": 19,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change application",
+        "content_type": 7,
+        "codename": "change_application"
+    },
+    "pk": 20,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete application",
+        "content_type": 7,
+        "codename": "delete_application"
+    },
+    "pk": 21,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add grant",
+        "content_type": 8,
+        "codename": "add_grant"
+    },
+    "pk": 22,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change grant",
+        "content_type": 8,
+        "codename": "change_grant"
+    },
+    "pk": 23,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete grant",
+        "content_type": 8,
+        "codename": "delete_grant"
+    },
+    "pk": 24,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add access token",
+        "content_type": 9,
+        "codename": "add_accesstoken"
+    },
+    "pk": 25,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change access token",
+        "content_type": 9,
+        "codename": "change_accesstoken"
+    },
+    "pk": 26,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete access token",
+        "content_type": 9,
+        "codename": "delete_accesstoken"
+    },
+    "pk": 27,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add refresh token",
+        "content_type": 10,
+        "codename": "add_refreshtoken"
+    },
+    "pk": 28,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change refresh token",
+        "content_type": 10,
+        "codename": "change_refreshtoken"
+    },
+    "pk": 29,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete refresh token",
+        "content_type": 10,
+        "codename": "delete_refreshtoken"
+    },
+    "pk": 30,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add account",
+        "content_type": 11,
+        "codename": "add_account"
+    },
+    "pk": 31,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change account",
+        "content_type": 11,
+        "codename": "change_account"
+    },
+    "pk": 32,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete account",
+        "content_type": 11,
+        "codename": "delete_account"
+    },
+    "pk": 33,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add publication",
+        "content_type": 12,
+        "codename": "add_publication"
+    },
+    "pk": 34,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change publication",
+        "content_type": 12,
+        "codename": "change_publication"
+    },
+    "pk": 35,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete publication",
+        "content_type": 12,
+        "codename": "delete_publication"
+    },
+    "pk": 36,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add category",
+        "content_type": 13,
+        "codename": "add_category"
+    },
+    "pk": 37,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change category",
+        "content_type": 13,
+        "codename": "change_category"
+    },
+    "pk": 38,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete category",
+        "content_type": 13,
+        "codename": "delete_category"
+    },
+    "pk": 39,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add news",
+        "content_type": 14,
+        "codename": "add_news"
+    },
+    "pk": 40,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change news",
+        "content_type": 14,
+        "codename": "change_news"
+    },
+    "pk": 41,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete news",
+        "content_type": 14,
+        "codename": "delete_news"
+    },
+    "pk": 42,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add file",
+        "content_type": 15,
+        "codename": "add_file"
+    },
+    "pk": 43,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change file",
+        "content_type": 15,
+        "codename": "change_file"
+    },
+    "pk": 44,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete file",
+        "content_type": 15,
+        "codename": "delete_file"
+    },
+    "pk": 45,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add subscription",
+        "content_type": 16,
+        "codename": "add_subscription"
+    },
+    "pk": 46,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change subscription",
+        "content_type": 16,
+        "codename": "change_subscription"
+    },
+    "pk": 47,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete subscription",
+        "content_type": 16,
+        "codename": "delete_subscription"
+    },
+    "pk": 48,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add newsletter",
+        "content_type": 17,
+        "codename": "add_newsletter"
+    },
+    "pk": 49,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change newsletter",
+        "content_type": 17,
+        "codename": "change_newsletter"
+    },
+    "pk": 50,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete newsletter",
+        "content_type": 17,
+        "codename": "delete_newsletter"
+    },
+    "pk": 51,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add submission",
+        "content_type": 18,
+        "codename": "add_submission"
+    },
+    "pk": 52,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change submission",
+        "content_type": 18,
+        "codename": "change_submission"
+    },
+    "pk": 53,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete submission",
+        "content_type": 18,
+        "codename": "delete_submission"
+    },
+    "pk": 54,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add resource",
+        "content_type": 19,
+        "codename": "add_resource"
+    },
+    "pk": 55,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change resource",
+        "content_type": 19,
+        "codename": "change_resource"
+    },
+    "pk": 56,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete resource",
+        "content_type": 19,
+        "codename": "delete_resource"
+    },
+    "pk": 57,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can add account user",
+        "content_type": 20,
+        "codename": "add_accountuser"
+    },
+    "pk": 58,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can change account user",
+        "content_type": 20,
+        "codename": "change_accountuser"
+    },
+    "pk": 59,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "name": "Can delete account user",
+        "content_type": 20,
+        "codename": "delete_accountuser"
+    },
+    "pk": 60,
+    "model": "auth.permission"
+},
+{
+    "fields": {
+        "username": "henrique",
+        "is_staff": true,
+        "first_name": "",
+        "email": "elo.henrique@gmail.com",
+        "is_active": true,
+        "date_joined": "2014-03-26T18:36:15.579Z",
+        "groups": [],
+        "last_name": "",
+        "last_login": "2014-03-26T18:36:37.234Z",
+        "is_superuser": true,
+        "user_permissions": [],
+        "password": "pbkdf2_sha256$12000$fLT2l1mwqwVN$/f+WkHZ2FRTDdkE/+5G9uI+xbQbrYBoOolhyjzxkaao="
+    },
+    "pk": 1,
+    "model": "auth.user"
+},
+{
+    "fields": {
+        "username": "ivan",
+        "is_staff": true,
+        "first_name": "",
+        "email": "",
+        "is_active": true,
+        "date_joined": "2014-03-26T18:36:54Z",
+        "groups": [],
+        "last_name": "",
+        "last_login": "2014-03-26T18:36:54Z",
+        "is_superuser": false,
+        "user_permissions": [],
+        "password": "pbkdf2_sha256$12000$MB0Oa0QLKkKH$0tSNmIV6XR4wQNMwX3CHD3alexvWH9+kTnDUHylV1TE="
+    },
+    "pk": 2,
+    "model": "auth.user"
+},
+{
+    "fields": {
+        "username": "owner",
+        "is_staff": true,
+        "first_name": "",
+        "email": "",
+        "is_active": true,
+        "date_joined": "2014-03-26T18:37:15Z",
+        "groups": [],
+        "last_name": "",
+        "last_login": "2014-03-26T18:37:15Z",
+        "is_superuser": false,
+        "user_permissions": [],
+        "password": "pbkdf2_sha256$12000$CQvsNR0Sp7ap$nPr+g6+gWyneqUisNZ4C3hvAHn+cXNvU8whXlZYkjzs="
+    },
+    "pk": 3,
+    "model": "auth.user"
+},
+{
+    "fields": {
+        "username": "ivan_user",
+        "is_staff": false,
+        "first_name": "",
+        "email": "",
+        "is_active": true,
+        "date_joined": "2014-03-26T18:38:08.021Z",
+        "groups": [],
+        "last_name": "",
+        "last_login": "2014-03-26T18:38:08.021Z",
+        "is_superuser": false,
+        "user_permissions": [],
+        "password": "pbkdf2_sha256$12000$ukHLGGQN3RQD$PSoodf+LyFCRBDkQS2QcPnFWs8m8qh621UP0UuF486E="
+    },
+    "pk": 4,
+    "model": "auth.user"
+},
+{
+    "fields": {
+        "username": "ivan_user2",
+        "is_staff": false,
+        "first_name": "",
+        "email": "",
+        "is_active": true,
+        "date_joined": "2014-03-26T18:38:14.975Z",
+        "groups": [],
+        "last_name": "",
+        "last_login": "2014-03-26T18:38:14.975Z",
+        "is_superuser": false,
+        "user_permissions": [],
+        "password": "pbkdf2_sha256$12000$lDOBJgF3ku2S$NVxd+T1UlOWoepnG40xuLmWSDMI5Q8KPwMaglMyMxQY="
+    },
+    "pk": 5,
+    "model": "auth.user"
+},
+{
+    "fields": {
+        "username": "ivan_user3",
+        "is_staff": false,
+        "first_name": "",
+        "email": "",
+        "is_active": true,
+        "date_joined": "2014-03-26T18:38:20.908Z",
+        "groups": [],
+        "last_name": "",
+        "last_login": "2014-03-26T18:38:20.908Z",
+        "is_superuser": false,
+        "user_permissions": [],
+        "password": "pbkdf2_sha256$12000$Lehvn5mVyvIk$HvdJ6z+42e82CUts+EFvSXwCjievxPtQanPUsZximVc="
+    },
+    "pk": 6,
+    "model": "auth.user"
+},
+{
+    "fields": {
+        "username": "owner_user",
+        "is_staff": false,
+        "first_name": "",
+        "email": "",
+        "is_active": true,
+        "date_joined": "2014-03-26T18:38:31.092Z",
+        "groups": [],
+        "last_name": "",
+        "last_login": "2014-03-26T18:38:31.092Z",
+        "is_superuser": false,
+        "user_permissions": [],
+        "password": "pbkdf2_sha256$12000$KA5njksyreq9$O9pXkfLeqbAwAtHjzBB6OgF9QorBW3JVavRwzCDI9H0="
+    },
+    "pk": 7,
+    "model": "auth.user"
+},
+{
+    "fields": {
+        "username": "owner_user2",
+        "is_staff": false,
+        "first_name": "",
+        "email": "",
+        "is_active": true,
+        "date_joined": "2014-03-26T18:38:40.019Z",
+        "groups": [],
+        "last_name": "",
+        "last_login": "2014-03-26T18:38:40.019Z",
+        "is_superuser": false,
+        "user_permissions": [],
+        "password": "pbkdf2_sha256$12000$Js3CRtIqLJgw$6cMBBV9Z6km9qg2rqGl3vD0XPwjPZ+LcFnDVvMkeJp4="
+    },
+    "pk": 8,
+    "model": "auth.user"
+},
+{
+    "fields": {
+        "username": "owner_user3",
+        "is_staff": false,
+        "first_name": "",
+        "email": "",
+        "is_active": true,
+        "date_joined": "2014-03-26T18:38:45.829Z",
+        "groups": [],
+        "last_name": "",
+        "last_login": "2014-03-26T18:38:45.829Z",
+        "is_superuser": false,
+        "user_permissions": [],
+        "password": "pbkdf2_sha256$12000$qMFT7k7Paj9U$Tl3tOiH0hIOFVXdxVwbXkyaN+V5DH4yhl5LFjlhPqWU="
+    },
+    "pk": 9,
+    "model": "auth.user"
+},
+{
+    "fields": {
+        "name": "Ivan Application",
+        "authorization_grant_type": "password",
+        "client_secret": "=L8zyVxl8l_L7ZmK@8txG?z!4vlmCqE@@V@CH=I!;yyXRxSeujxiOWxx8:_IOKrwP1gDYbixdUmBDSLqDakDkCgwlPc!FaXGlK@CRK4eIFpbrO52S?k!NUvFxf4U-7fA",
+        "redirect_uris": "",
+        "user": 2,
+        "client_id": "tyEA-jzfygj78wp?R@LFyHs0fvlNN?o4bAK3VuL2",
+        "client_type": "confidential"
+    },
+    "pk": 1,
+    "model": "oauth2_provider.application"
+},
+{
+    "fields": {
+        "name": "Owner Application",
+        "authorization_grant_type": "password",
+        "client_secret": "Pg3@Vr9mgLme8vhBQNM-Cw8??wBYXCLd0Qffedev_h.?y7TGluDK.y=HQRNkAIOeOVHWuE6ZVJdaDrMWvM9_E0QLSHir6FM!mSeWJh=p8lW20NM8!WFnnL?EOr6zosib",
+        "redirect_uris": "",
+        "user": 3,
+        "client_id": "ec71hNOwmd?YevVsyS26Chi63M.3mB!QaHTV1GND",
+        "client_type": "confidential"
+    },
+    "pk": 2,
+    "model": "oauth2_provider.application"
+},
+{
+    "fields": {
+        "user": 2,
+        "scope": "",
+        "application": 1,
+        "expires": "2015-11-30T17:57:14Z",
+        "token": "ivan"
+    },
+    "pk": 1,
+    "model": "oauth2_provider.accesstoken"
+},
+{
+    "fields": {
+        "user": 4,
+        "scope": "",
+        "application": 1,
+        "expires": "2015-11-30T17:57:25Z",
+        "token": "ivan_user"
+    },
+    "pk": 2,
+    "model": "oauth2_provider.accesstoken"
+},
+{
+    "fields": {
+        "user": 5,
+        "scope": "",
+        "application": 1,
+        "expires": "2015-11-30T17:57:37Z",
+        "token": "ivan_user2"
+    },
+    "pk": 3,
+    "model": "oauth2_provider.accesstoken"
+},
+{
+    "fields": {
+        "user": 6,
+        "scope": "",
+        "application": 1,
+        "expires": "2015-11-30T17:57:49Z",
+        "token": "ivan_user3"
+    },
+    "pk": 4,
+    "model": "oauth2_provider.accesstoken"
+},
+{
+    "fields": {
+        "user": 3,
+        "scope": "",
+        "application": 2,
+        "expires": "2015-11-30T17:58:02Z",
+        "token": "owner"
+    },
+    "pk": 5,
+    "model": "oauth2_provider.accesstoken"
+},
+{
+    "fields": {
+        "user": 7,
+        "scope": "",
+        "application": 2,
+        "expires": "2015-11-30T17:58:16Z",
+        "token": "owner_user"
+    },
+    "pk": 6,
+    "model": "oauth2_provider.accesstoken"
+},
+{
+    "fields": {
+        "user": 8,
+        "scope": "",
+        "application": 2,
+        "expires": "2015-11-30T17:58:30Z",
+        "token": "owner_user2"
+    },
+    "pk": 7,
+    "model": "oauth2_provider.accesstoken"
+},
+{
+    "fields": {
+        "user": 9,
+        "scope": "",
+        "application": 2,
+        "expires": "2015-11-30T17:58:42Z",
+        "token": "owner_user3"
+    },
+    "pk": 8,
+    "model": "oauth2_provider.accesstoken"
+},
+{
+    "fields": {
+        "creation_date": "2014-03-26T18:37:37.486Z",
+        "expiration_date": "2014-04-25",
+        "last_modification_date": "2014-03-26T18:37:37.486Z",
+        "owner": 2
+    },
+    "pk": 1,
+    "model": "accounts.account"
+},
+{
+    "fields": {
+        "creation_date": "2014-03-26T18:37:41.725Z",
+        "expiration_date": "2014-04-25",
+        "last_modification_date": "2014-03-26T18:37:41.726Z",
+        "owner": 3
+    },
+    "pk": 2,
+    "model": "accounts.account"
+},
+{
+    "fields": {
+        "user": 4,
+        "creation_date": "2014-03-26T18:39:05.217Z",
+        "last_modification_date": "2014-03-26T18:39:05.217Z",
+        "account": 1
+    },
+    "pk": 1,
+    "model": "user.accountuser"
+},
+{
+    "fields": {
+        "user": 5,
+        "creation_date": "2014-03-26T18:39:10.231Z",
+        "last_modification_date": "2014-03-26T18:39:10.231Z",
+        "account": 1
+    },
+    "pk": 2,
+    "model": "user.accountuser"
+},
+{
+    "fields": {
+        "user": 6,
+        "creation_date": "2014-03-26T18:39:15.905Z",
+        "last_modification_date": "2014-03-26T18:39:15.905Z",
+        "account": 1
+    },
+    "pk": 3,
+    "model": "user.accountuser"
+},
+{
+    "fields": {
+        "user": 7,
+        "creation_date": "2014-03-26T18:39:20.597Z",
+        "last_modification_date": "2014-03-26T18:39:20.597Z",
+        "account": 2
+    },
+    "pk": 4,
+    "model": "user.accountuser"
+},
+{
+    "fields": {
+        "user": 8,
+        "creation_date": "2014-03-26T18:39:25.827Z",
+        "last_modification_date": "2014-03-26T18:39:25.827Z",
+        "account": 2
+    },
+    "pk": 5,
+    "model": "user.accountuser"
+},
+{
+    "fields": {
+        "user": 9,
+        "creation_date": "2014-03-26T18:39:31.579Z",
+        "last_modification_date": "2014-03-26T18:39:31.579Z",
+        "account": 2
+    },
+    "pk": 6,
+    "model": "user.accountuser"
+},
+{
+    "fields": {
+        "user": 2,
+        "creation_date": "2014-03-26T18:39:05.217Z",
+        "last_modification_date": "2014-03-26T18:39:05.217Z",
+        "account": 1
+    },
+    "pk": 7,
+    "model": "user.accountuser"
+},
+{
+    "fields": {
+        "user": 3,
+        "creation_date": "2014-03-26T18:39:05.217Z",
+        "last_modification_date": "2014-03-26T18:39:05.217Z",
+        "account": 2
+    },
+    "pk": 8,
+    "model": "user.accountuser"
+},
+{
+    "fields": {
+        "content_type": 4,
+        "change_message": "",
+        "object_repr": "ivan",
+        "user": 1,
+        "object_id": "2",
+        "action_time": "2014-03-26T18:36:54.220Z",
+        "action_flag": 1
+    },
+    "pk": 1,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 4,
+        "change_message": "Changed is_staff.",
+        "object_repr": "ivan",
+        "user": 1,
+        "object_id": "2",
+        "action_time": "2014-03-26T18:37:00.100Z",
+        "action_flag": 2
+    },
+    "pk": 2,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 4,
+        "change_message": "",
+        "object_repr": "owner",
+        "user": 1,
+        "object_id": "3",
+        "action_time": "2014-03-26T18:37:15.812Z",
+        "action_flag": 1
+    },
+    "pk": 3,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 4,
+        "change_message": "Changed is_staff.",
+        "object_repr": "owner",
+        "user": 1,
+        "object_id": "3",
+        "action_time": "2014-03-26T18:37:27.627Z",
+        "action_flag": 2
+    },
+    "pk": 4,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 11,
+        "change_message": "",
+        "object_repr": "ivan",
+        "user": 1,
+        "object_id": "1",
+        "action_time": "2014-03-26T18:37:37.491Z",
+        "action_flag": 1
+    },
+    "pk": 5,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 11,
+        "change_message": "",
+        "object_repr": "owner",
+        "user": 1,
+        "object_id": "2",
+        "action_time": "2014-03-26T18:37:41.728Z",
+        "action_flag": 1
+    },
+    "pk": 6,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 4,
+        "change_message": "",
+        "object_repr": "ivan_user",
+        "user": 1,
+        "object_id": "4",
+        "action_time": "2014-03-26T18:38:08.084Z",
+        "action_flag": 1
+    },
+    "pk": 7,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 4,
+        "change_message": "",
+        "object_repr": "ivan_user2",
+        "user": 1,
+        "object_id": "5",
+        "action_time": "2014-03-26T18:38:15.033Z",
+        "action_flag": 1
+    },
+    "pk": 8,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 4,
+        "change_message": "",
+        "object_repr": "ivan_user3",
+        "user": 1,
+        "object_id": "6",
+        "action_time": "2014-03-26T18:38:20.958Z",
+        "action_flag": 1
+    },
+    "pk": 9,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 4,
+        "change_message": "",
+        "object_repr": "owner_user",
+        "user": 1,
+        "object_id": "7",
+        "action_time": "2014-03-26T18:38:31.157Z",
+        "action_flag": 1
+    },
+    "pk": 10,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 4,
+        "change_message": "",
+        "object_repr": "owner_user2",
+        "user": 1,
+        "object_id": "8",
+        "action_time": "2014-03-26T18:38:40.077Z",
+        "action_flag": 1
+    },
+    "pk": 11,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 4,
+        "change_message": "",
+        "object_repr": "owner_user3",
+        "user": 1,
+        "object_id": "9",
+        "action_time": "2014-03-26T18:38:45.889Z",
+        "action_flag": 1
+    },
+    "pk": 12,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 20,
+        "change_message": "",
+        "object_repr": "ivan - ivan_user",
+        "user": 1,
+        "object_id": "1",
+        "action_time": "2014-03-26T18:39:05.227Z",
+        "action_flag": 1
+    },
+    "pk": 13,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 20,
+        "change_message": "",
+        "object_repr": "ivan - ivan_user2",
+        "user": 1,
+        "object_id": "2",
+        "action_time": "2014-03-26T18:39:10.236Z",
+        "action_flag": 1
+    },
+    "pk": 14,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 20,
+        "change_message": "",
+        "object_repr": "ivan - ivan_user3",
+        "user": 1,
+        "object_id": "3",
+        "action_time": "2014-03-26T18:39:15.910Z",
+        "action_flag": 1
+    },
+    "pk": 15,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 20,
+        "change_message": "",
+        "object_repr": "owner - owner_user",
+        "user": 1,
+        "object_id": "4",
+        "action_time": "2014-03-26T18:39:20.602Z",
+        "action_flag": 1
+    },
+    "pk": 16,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 20,
+        "change_message": "",
+        "object_repr": "owner - owner_user2",
+        "user": 1,
+        "object_id": "5",
+        "action_time": "2014-03-26T18:39:25.832Z",
+        "action_flag": 1
+    },
+    "pk": 17,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 20,
+        "change_message": "",
+        "object_repr": "owner - owner_user3",
+        "user": 1,
+        "object_id": "6",
+        "action_time": "2014-03-26T18:39:31.585Z",
+        "action_flag": 1
+    },
+    "pk": 18,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 7,
+        "change_message": "",
+        "object_repr": "tyEA-jzfygj78wp?R@LFyHs0fvlNN?o4bAK3VuL2",
+        "user": 1,
+        "object_id": "1",
+        "action_time": "2014-03-26T18:40:02.953Z",
+        "action_flag": 1
+    },
+    "pk": 19,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 7,
+        "change_message": "",
+        "object_repr": "ec71hNOwmd?YevVsyS26Chi63M.3mB!QaHTV1GND",
+        "user": 1,
+        "object_id": "2",
+        "action_time": "2014-03-26T18:40:11.350Z",
+        "action_flag": 1
+    },
+    "pk": 20,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 7,
+        "change_message": "Changed name.",
+        "object_repr": "Owner Application",
+        "user": 1,
+        "object_id": "2",
+        "action_time": "2014-03-26T18:40:25.369Z",
+        "action_flag": 2
+    },
+    "pk": 21,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 7,
+        "change_message": "Changed name.",
+        "object_repr": "Ivan Application",
+        "user": 1,
+        "object_id": "1",
+        "action_time": "2014-03-26T18:40:34.135Z",
+        "action_flag": 2
+    },
+    "pk": 22,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 9,
+        "change_message": "",
+        "object_repr": "ivan",
+        "user": 1,
+        "object_id": "1",
+        "action_time": "2014-03-26T18:41:06.018Z",
+        "action_flag": 1
+    },
+    "pk": 23,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 9,
+        "change_message": "",
+        "object_repr": "ivan_user",
+        "user": 1,
+        "object_id": "2",
+        "action_time": "2014-03-26T18:41:17.409Z",
+        "action_flag": 1
+    },
+    "pk": 24,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 9,
+        "change_message": "",
+        "object_repr": "ivan_user2",
+        "user": 1,
+        "object_id": "3",
+        "action_time": "2014-03-26T18:41:29.514Z",
+        "action_flag": 1
+    },
+    "pk": 25,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 9,
+        "change_message": "",
+        "object_repr": "ivan_user3",
+        "user": 1,
+        "object_id": "4",
+        "action_time": "2014-03-26T18:41:41.630Z",
+        "action_flag": 1
+    },
+    "pk": 26,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 9,
+        "change_message": "",
+        "object_repr": "owner",
+        "user": 1,
+        "object_id": "5",
+        "action_time": "2014-03-26T18:41:54.690Z",
+        "action_flag": 1
+    },
+    "pk": 27,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 9,
+        "change_message": "",
+        "object_repr": "owner_user",
+        "user": 1,
+        "object_id": "6",
+        "action_time": "2014-03-26T18:42:09.456Z",
+        "action_flag": 1
+    },
+    "pk": 28,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 9,
+        "change_message": "",
+        "object_repr": "owner_user2",
+        "user": 1,
+        "object_id": "7",
+        "action_time": "2014-03-26T18:42:23.209Z",
+        "action_flag": 1
+    },
+    "pk": 29,
+    "model": "admin.logentry"
+},
+{
+    "fields": {
+        "content_type": 9,
+        "change_message": "",
+        "object_repr": "owner_user3",
+        "user": 1,
+        "object_id": "8",
+        "action_time": "2014-03-26T18:42:34.431Z",
+        "action_flag": 1
+    },
+    "pk": 30,
+    "model": "admin.logentry"
+}
+]
