@@ -78,12 +78,19 @@ class APIGenericTest:
 
     def admin_permission(self):
         self.set_authorization_bearer(self.account_user_token)
-        self.create(status_code=status.HTTP_403_FORBIDDEN)
-        self.update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False)
-        self.partial_update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False)
-        self.list(count=-1, status_code=status.HTTP_403_FORBIDDEN)
-        self.retrieve(status_code=status.HTTP_403_FORBIDDEN)
-        self.destroy(status_code=status.HTTP_403_FORBIDDEN)
+        url = self.first_object_response.data['url']
+        response = self.test_case.client.post(self.url, self.data)
+        self.test_case.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        response2 = self.test_case.client.put(url, self.altered_data)
+        self.test_case.assertEqual(response2.status_code, status.HTTP_403_FORBIDDEN)
+        response3 = self.test_case.client.patch(self.url, self.altered_data)
+        self.test_case.assertEqual(response3.status_code, status.HTTP_403_FORBIDDEN)
+        response4 = self.test_case.client.get(self.url)
+        self.test_case.assertEqual(response4.status_code, status.HTTP_403_FORBIDDEN)
+        response5 = self.test_case.client.get(url)
+        self.test_case.assertEqual(response5.status_code, status.HTTP_403_FORBIDDEN)
+        response6 = self.test_case.client.delete(url)
+        self.test_case.assertEqual(response6.status_code, status.HTTP_403_FORBIDDEN)
 
     def search_fields(self, search_fields=None):
         for field in search_fields:

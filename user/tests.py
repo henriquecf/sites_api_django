@@ -116,7 +116,6 @@ class UserAPITestCase(APILiveServerTestCase, TestDataMixin):
     def test_destroy(self):
         self.user_generic_test.destroy()
 
-    # TODO Check why this test is not working...
     def test_admin_permission(self):
         self.user_generic_test.admin_permission()
 
