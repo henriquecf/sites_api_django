@@ -98,9 +98,10 @@ class APIGenericTest:
 
             # TODO Still need to create a generic test for ordering
 
-    def hyperlinked_field(self, field):
-        response = self.test_case.client.get(self.first_object_response.data[field])
-        self.test_case.assertEqual(response.status_code, status.HTTP_200_OK, 'Error with field {0}'.format(field))
+    def hyperlinked_field(self, fields):
+        for field in fields:
+            response = self.test_case.client.get(self.first_object_response.data[field])
+            self.test_case.assertEqual(response.status_code, status.HTTP_200_OK, 'Error with field {0}'.format(field))
 
 
 class PermissionGenericTest(APIGenericTest):
@@ -114,6 +115,11 @@ class PermissionGenericTest(APIGenericTest):
 
 
 class ResourceGenericTest(PermissionGenericTest):
+
+    def create(self, status_code=status.HTTP_201_CREATED):
+        super(ResourceGenericTest, self).create(status_code=status_code)
+        self.set_authorization_bearer(self.second_owner_token)
+        super(ResourceGenericTest, self).create(status_code=status_code)
 
     def update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
         super(ResourceGenericTest, self).update(status_code=status_code, is_altered=is_altered, url=url)
@@ -149,3 +155,11 @@ class ResourceGenericTest(PermissionGenericTest):
         owner_obj = Resource.objects.get(id=owner_id)
         user = User.objects.get(username=self.second_owner_token)
         self.test_case.assertEqual(user, owner_obj.creator)
+
+    def hyperlinked_field(self, fields):
+        if not fields:
+            fields = ['creator', 'account']
+        else:
+            fields.append('creator')
+            fields.append('account')
+        super(ResourceGenericTest, self).hyperlinked_field(fields)
