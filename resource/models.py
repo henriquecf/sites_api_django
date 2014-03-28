@@ -11,8 +11,8 @@ class Resource(Common):
     To use this behavior, the application must inherit the model,
     serializer and viewset
     """
-    account = models.ForeignKey(Account, blank=True)
-    creator = models.ForeignKey(User, blank=True, related_name='creators')
+    account = models.ForeignKey(Account, editable=False)
+    creator = models.ForeignKey(User, editable=False, related_name='creators')
 
     def __str__(self):
         return self.creator.username

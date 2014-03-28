@@ -17,7 +17,6 @@ class Publication(Resource):
     slug = models.SlugField(max_length=150, editable=False)
     publication_start_date = models.DateTimeField(blank=True, default=timezone.now())
     publication_end_date = models.DateTimeField(blank=True, null=True)
-    author = models.ForeignKey(User, blank=True, related_name='author')
 
     def __str__(self):
         return self.title

@@ -138,8 +138,8 @@ class UserAPITestCase(APILiveServerTestCase, TestDataMixin):
         response4 = self.client.get(self.url)
         self.assertIn('is_active', response4.data['results'][0])
 
-    def test_hyperlinked_field(self):
-        self.user_generic_test.hyperlinked_field(['accountuser'])
+    def test_hyperlinked_fields(self):
+        self.user_generic_test.hyperlinked_fields(['accountuser'])
 
     def test_accountuser_created_has_same_account_as_request_user(self):
         account_user_url = self.user_generic_test.first_object_response.data['accountuser']
@@ -202,7 +202,7 @@ class AccountUserTestCase(APILiveServerTestCase):
 
     def test_hyperlinked_identity_field(self):
         fields = ['user', 'account']
-        self.accountuser_generic_test.hyperlinked_field(fields)
+        self.accountuser_generic_test.hyperlinked_fields(fields)
 
 
 class UserTestCase(LiveServerTestCase, TestDataMixin):

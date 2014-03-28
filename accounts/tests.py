@@ -36,11 +36,11 @@ class AccountAPITestCase(APILiveServerTestCase):
     def test_admin_permission(self):
         self.api_generic_test.admin_permission()
 
-    def test_hyperlinked_field(self):
+    def test_hyperlinked_fields(self):
         accountuser_url = reverse('accountuser-list')
         response = self.client.post(accountuser_url, {})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-        self.api_generic_test.hyperlinked_field(['owner'])
+        self.api_generic_test.hyperlinked_fields(['owner'])
 
     def test_default_expiration_date(self):
         self.assertEqual(self.api_generic_test.first_object_response.data['expiration_date'],

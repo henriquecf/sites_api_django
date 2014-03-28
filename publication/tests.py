@@ -21,9 +21,7 @@ class PublicationGenericTest(ResourceGenericTest):
         self.slug_is_slugified_title(slug_repeat_number='-4')
 
     def has_author(self):
-        self.test_case.assertIn('author', self.first_object_response.data, 'Response has no field "author"')
-        self.test_case.assertEqual(self.first_object_response.data['author'], self.owner_token,
-                                   'Unexpected author name returned')
+        self.test_case.assertIn('creator', self.first_object_response.data, 'Response has no field "creator"')
 
     def is_published_default_true(self):
         self.test_case.assertIn('is_published', self.first_object_response.data, 'Response has no field "is_published"')
@@ -44,13 +42,14 @@ class PublicationGenericTest(ResourceGenericTest):
         response = self.get_action_response('publish')
         self.test_case.assertTrue(response.data['is_published'], 'Is_published return must be True')
 
-    def filter_author(self):
-        filter_data = {'author': self.owner_token}
-        response = self.test_case.client.get(self.url, filter_data)
-        self.test_case.assertEqual(response.data['count'], 1)
-        filter_data.update({'author': 'another_author'})
-        response2 = self.test_case.client.get(self.url, filter_data)
-        self.test_case.assertEqual(response2.data['count'], 0, 'Filter not working')
+    def hyperlinked_fields(self, fields):
+        if not fields:
+            fields = ['is_published', 'publish', 'unpublish']
+        else:
+            fields.append('is_published')
+            fields.append('publish')
+            fields.append('unpublish')
+        super(PublicationGenericTest, self).hyperlinked_fields(fields)
 
     def add_category(self, model_name):
         data2 = copy(self.data)
@@ -133,8 +132,14 @@ class PublicationAPITestCase(APILiveServerTestCase, TestDataMixin):
         search_fields = ('title', 'description')
         self.publication_generic_test.search_fields(search_fields)
 
-    def test_filter_author(self):
-        self.publication_generic_test.filter_author()
+    def test_owner_is_request_user(self):
+        self.publication_generic_test.owner_is_request_user()
+
+    def test_hyperlinked_fields(self):
+        self.publication_generic_test.hyperlinked_fields([])
+
+    def test_user_and_account_from_request_user(self):
+        self.publication_generic_test.user_and_account_from_request_user()
 
 
 class CategoryAPITestCase(APILiveServerTestCase, TestDataMixin):

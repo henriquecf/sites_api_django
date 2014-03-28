@@ -68,8 +68,5 @@ class NewsAPITestCase(APILiveServerTestCase, TestDataMixin):
         search_fields = ('title', 'description', 'content')
         self.publication_generic_test.search_fields(search_fields)
 
-    def test_filter_author(self):
-        self.publication_generic_test.filter_author()
-
     def test_add_category(self):
         self.publication_generic_test.add_category('news')

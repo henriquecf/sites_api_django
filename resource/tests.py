@@ -98,7 +98,7 @@ class APIGenericTest:
 
             # TODO Still need to create a generic test for ordering
 
-    def hyperlinked_field(self, fields):
+    def hyperlinked_fields(self, fields):
         for field in fields:
             response = self.test_case.client.get(self.first_object_response.data[field])
             self.test_case.assertEqual(response.status_code, status.HTTP_200_OK, 'Error with field {0}'.format(field))
@@ -156,10 +156,18 @@ class ResourceGenericTest(PermissionGenericTest):
         user = User.objects.get(username=self.second_owner_token)
         self.test_case.assertEqual(user, owner_obj.creator)
 
-    def hyperlinked_field(self, fields):
+    def hyperlinked_fields(self, fields):
         if not fields:
             fields = ['creator', 'account']
         else:
             fields.append('creator')
             fields.append('account')
-        super(ResourceGenericTest, self).hyperlinked_field(fields)
+        super(ResourceGenericTest, self).hyperlinked_fields(fields)
+
+    def user_and_account_from_request_user(self):
+        data = self.first_object_response.data
+        account_id = data['account'].split('/')[-2]
+        creator_id = data['creator'].split('/')[-2]
+        request_user = User.objects.get(username=self.owner_token)
+        self.test_case.assertEqual(account_id, str(request_user.accountuser.account.id))
+        self.test_case.assertEqual(creator_id, str(request_user.id))
