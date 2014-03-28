@@ -35,15 +35,6 @@ class UserGenericTest(APIGenericTest):
             response = self.test_case.client.get(self.url, query_parameter)
             self.test_case.assertEqual(response.data['count'], 1, 'Field "{0}" not in search fields'.format(field))
 
-    def admin_permission(self):
-        self.set_authorization_bearer(self.account_user_token)
-        super(UserGenericTest, self).create(status_code=status.HTTP_403_FORBIDDEN)
-        super(UserGenericTest, self).update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False)
-        super(UserGenericTest, self).partial_update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False)
-        super(UserGenericTest, self).list(count=-1, status_code=status.HTTP_403_FORBIDDEN)
-        super(UserGenericTest, self).retrieve(status_code=status.HTTP_403_FORBIDDEN)
-        super(UserGenericTest, self).destroy(status_code=status.HTTP_403_FORBIDDEN)
-
     def create(self, status_code=status.HTTP_201_CREATED):
         self.alter_username()
         super(UserGenericTest, self).create(status_code=status_code)
@@ -147,8 +138,8 @@ class UserAPITestCase(APILiveServerTestCase, TestDataMixin):
         response4 = self.client.get(self.url)
         self.assertIn('is_active', response4.data['results'][0])
 
-    def test_hyperlinked_identity_field(self):
-        self.user_generic_test.hyperlinked_identity_field('accountuser')
+    def test_hyperlinked_field(self):
+        self.user_generic_test.hyperlinked_field('accountuser')
 
     def test_accountuser_created_has_same_account_as_request_user(self):
         account_user_url = self.user_generic_test.first_object_response.data['accountuser']
@@ -169,15 +160,6 @@ class AccountUserGenericTest(APIGenericTest):
 
     def partial_update(self, status_code=status.HTTP_400_BAD_REQUEST, is_altered=False, url=None):
         super(AccountUserGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered, url=url)
-
-    def admin_permission(self):
-        self.set_authorization_bearer(self.account_user_token)
-        super(AccountUserGenericTest, self).create(status_code=status.HTTP_403_FORBIDDEN)
-        super(AccountUserGenericTest, self).update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False)
-        super(AccountUserGenericTest, self).partial_update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False)
-        super(AccountUserGenericTest, self).list(count=-1, status_code=status.HTTP_403_FORBIDDEN)
-        super(AccountUserGenericTest, self).retrieve(status_code=status.HTTP_403_FORBIDDEN)
-        super(AccountUserGenericTest, self).destroy(status_code=status.HTTP_403_FORBIDDEN)
 
 
 class AccountUserTestCase(APILiveServerTestCase):
@@ -219,8 +201,8 @@ class AccountUserTestCase(APILiveServerTestCase):
         self.assertEqual(account_id, str(owner_user.accountuser.account.id))
 
     def test_hyperlinked_identity_field(self):
-        self.accountuser_generic_test.hyperlinked_identity_field('user')
-        self.accountuser_generic_test.hyperlinked_identity_field('account')
+        self.accountuser_generic_test.hyperlinked_field('user')
+        self.accountuser_generic_test.hyperlinked_field('account')
 
 
 class UserTestCase(LiveServerTestCase, TestDataMixin):

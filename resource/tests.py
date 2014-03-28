@@ -78,6 +78,15 @@ class APIGenericTest:
         response = self.test_case.client.delete(url)
         self.test_case.assertEqual(response.status_code, status_code)
 
+    def admin_permission(self):
+        self.set_authorization_bearer(self.account_user_token)
+        self.create(status_code=status.HTTP_403_FORBIDDEN)
+        self.update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False)
+        self.partial_update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False)
+        self.list(count=-1, status_code=status.HTTP_403_FORBIDDEN)
+        self.retrieve(status_code=status.HTTP_403_FORBIDDEN)
+        self.destroy(status_code=status.HTTP_403_FORBIDDEN)
+
     def search_fields(self, search_fields=None):
         for field in search_fields:
             filter_parameter = random.randint(1, 999999)
