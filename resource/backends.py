@@ -14,19 +14,17 @@ custom_permissions_map = {
 
 
 class CustomDjangoModelPermissions(permissions.DjangoModelPermissions):
-    """
-    Customization of DjangoModelPermissions including restriction for GET calls in the API.
-    For this restriction to apply, the read permission must be in the model.
-    """
+    """Customization of DjangoModelPermissions including restriction for GET calls in the API."""
     perms_map = custom_permissions_map
 
 
 class ResourceFilterBackend(filters.BaseFilterBackend):
-    """
-    This filter analise the user and its permissions.
-    If the user has global permission for the method, the filter is applied to the resource.
-    If the user has non global permission for the method, the filter is applied to the children.
-    The only exception is when the user is the resource itself. In this case, the resource filter applies anyway.
+    """This filter analise the user and its permissions.
+
+    If the user is a superuser, he has access to the whole model.
+    Else if the user is staff, meaning he is an administrator of the account, he has access every object related to that
+    account.
+    Else he has just access to the objects he created.
     """
     def filter_queryset(self, request, queryset, view):
         if request.user.is_superuser:

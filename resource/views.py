@@ -1,12 +1,9 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import User
-from django.views.generic import FormView, CreateView
+from django.views.generic import FormView
 from rest_framework import viewsets
-from rest_framework import filters
 from resource.models import Resource
 from resource.serializers import ResourceSerializer
-from accounts.models import Account
 
 
 class UserLoginView(FormView):
@@ -14,12 +11,14 @@ class UserLoginView(FormView):
     template_name = 'accounts/form.html'
 
     def get_success_url(self):
+        """Checks if there is a URL to redirect through the key "next". Goes to root URL otherwise."""
         try:
             return self.request.GET['next']
         except KeyError:
             return '/'
 
     def form_valid(self, form):
+        """Authenticates the user and logs him in."""
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']
         user = authenticate(username=username, password=password)
@@ -32,5 +31,6 @@ class ResourceViewSet(viewsets.ModelViewSet):
     serializer_class = ResourceSerializer
 
     def pre_save(self, obj):
+        """Relates the created resource to the request user and his related account."""
         obj.creator = self.request.user
         obj.account = self.request.user.accountuser.account
