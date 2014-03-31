@@ -1,14 +1,12 @@
+from datetime import timedelta
 from django.contrib.auth.models import User, Permission
-from oauth2_provider.models import AccessToken
+from django.utils import timezone
+from oauth2_provider.models import AccessToken, Application
 import random
 from rest_framework import status
-
-from publication.settings import os, BASE_DIR
 from resource.models import Resource
-
-
-class TestDataMixin(object):
-    fixtures = [os.path.join(BASE_DIR, 'general_test_data.json')]
+from accounts.models import Account
+from user.models import AccountUser
 
 
 class APIGenericTest:
@@ -19,19 +17,39 @@ class APIGenericTest:
     passing the own TestCase as a parameter
     """
 
+    def make_initial_data(self):
+        User.objects.create_superuser('henrique', 'elo.henrique@gmail.com', '123')
+        owner = User.objects.create_user('owner', 'owner@owner.com', '123')
+        owner.is_staff = True
+        owner.save()
+        second_owner = User.objects.create_user('second_owner', 'second_owner@owner.com', '123')
+        second_owner.is_staff = True
+        second_owner.save()
+        owner_account = Account.objects.create(owner=owner)
+        second_owner_account = Account.objects.create(owner=second_owner)
+        AccountUser.objects.create(account=owner_account, user=owner)
+        AccountUser.objects.create(account=second_owner_account, user=second_owner)
+        owner_user = User.objects.create_user('owner_user', 'owner_user@owner.com', '123')
+        AccountUser.objects.create(account=owner_account, user=owner_user)
+        owner_application = Application.objects.create(user=owner, client_type='confidential',
+                                                       authorization_grant_type='password')
+        second_owner_application = Application.objects.create(user=second_owner, client_type='confidential',
+                                                              authorization_grant_type='password')
+        self.owner_token = AccessToken.objects.create(user=owner, token=owner.username, application=owner_application,
+                                                      expires=timezone.now() + timedelta(30)).token
+        self.second_owner_token = AccessToken.objects.create(user=second_owner, token=second_owner.username,
+                                                             application=second_owner_application,
+                                                             expires=timezone.now() + timedelta(30)).token
+        self.account_user_token = AccessToken.objects.create(user=owner_user, token=owner_user.username,
+                                                              application=owner_application,
+                                                              expires=timezone.now() + timedelta(30)).token
+
     def __init__(self, test_case):
         self.test_case = test_case
         self.url = self.test_case.url
         self.data = self.test_case.data
         self.altered_data = self.test_case.altered_data
-        self.owner_token = AccessToken.objects.get(id=1).token
-        self.account_user_token = AccessToken.objects.get(id=2).token
-        self.account_user_token2 = AccessToken.objects.get(id=3).token
-        self.account_user_token3 = AccessToken.objects.get(id=4).token
-        self.second_owner_token = AccessToken.objects.get(id=5).token
-        self.second_account_user_token = AccessToken.objects.get(id=6).token
-        self.second_account_user_token2 = AccessToken.objects.get(id=7).token
-        self.second_account_user_token3 = AccessToken.objects.get(id=8).token
+        self.make_initial_data()
         self.set_authorization_bearer(self.owner_token)
         self.first_object_response = self.test_case.client.post(self.url, self.data)
 
@@ -110,7 +128,6 @@ class APIGenericTest:
 
 
 class PermissionGenericTest(APIGenericTest):
-
     def model_has_custom_permission(self):
         model_name = self.test_case.model._meta.model_name
         view_permission = 'view_{0}'.format(model_name)
@@ -120,7 +137,6 @@ class PermissionGenericTest(APIGenericTest):
 
 
 class ResourceGenericTest(PermissionGenericTest):
-
     def create(self, status_code=status.HTTP_201_CREATED):
         super(ResourceGenericTest, self).create(status_code=status_code)
         self.set_authorization_bearer(self.second_owner_token)

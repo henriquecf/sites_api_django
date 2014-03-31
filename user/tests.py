@@ -1,4 +1,6 @@
 import copy
+from datetime import timedelta
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.test import LiveServerTestCase
 import random
@@ -7,8 +9,9 @@ from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
 
-from resource.tests import APIGenericTest, TestDataMixin
-from publication.settings import os, BASE_DIR
+from resource.tests import APIGenericTest
+from oauth2_provider.models import AccessToken, Application
+from accounts.models import Account
 
 
 class UserGenericTest(APIGenericTest):
@@ -62,7 +65,7 @@ class UserGenericTest(APIGenericTest):
         self.test_case.client.post(self.url, self.data)
         super(UserGenericTest, self).list(count=count+1, status_code=status_code)
         self.set_authorization_bearer(self.second_owner_token)
-        super(UserGenericTest, self).list(count=4, status_code=status_code)
+        super(UserGenericTest, self).list(count=1, status_code=status_code)
 
     def retrieve(self, status_code=status.HTTP_200_OK, url=None):
         super(UserGenericTest, self).retrieve(status_code=status_code)
@@ -76,7 +79,7 @@ class UserGenericTest(APIGenericTest):
         super(UserGenericTest, self).destroy(status_code=status_code)
 
 
-class UserAPITestCase(APILiveServerTestCase, TestDataMixin):
+class UserAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
         self.url = reverse('user-list')
@@ -108,7 +111,7 @@ class UserAPITestCase(APILiveServerTestCase, TestDataMixin):
         self.user_generic_test.partial_update()
 
     def test_list(self):
-        self.user_generic_test.list(count=5)
+        self.user_generic_test.list(count=3)
 
     def test_retrieve(self):
         self.user_generic_test.retrieve()
@@ -152,6 +155,30 @@ class UserAPITestCase(APILiveServerTestCase, TestDataMixin):
 
 class AccountUserGenericTest(APIGenericTest):
 
+    def make_initial_data(self):
+        User.objects.create_superuser('henrique', 'elo.henrique@gmail.com', '123')
+        owner = User.objects.create_user('owner', 'owner@owner.com', '123')
+        owner.is_staff = True
+        owner.save()
+        second_owner = User.objects.create_user('second_owner', 'second_owner@owner.com', '123')
+        second_owner.is_staff = True
+        second_owner.save()
+        owner_account = Account.objects.create(owner=owner)
+        second_owner_account = Account.objects.create(owner=second_owner)
+        owner_user = User.objects.create_user('owner_user', 'owner_user@owner.com', '123')
+        owner_application = Application.objects.create(user=owner, client_type='confidential',
+                                                       authorization_grant_type='password')
+        second_owner_application = Application.objects.create(user=second_owner, client_type='confidential',
+                                                              authorization_grant_type='password')
+        self.owner_token = AccessToken.objects.create(user=owner, token=owner.username, application=owner_application,
+                                                      expires=timezone.now() + timedelta(30)).token
+        self.second_owner_token = AccessToken.objects.create(user=second_owner, token=second_owner.username,
+                                                             application=second_owner_application,
+                                                             expires=timezone.now() + timedelta(30)).token
+        self.account_user_token = AccessToken.objects.create(user=owner_user, token=owner_user.username,
+                                                              application=owner_application,
+                                                              expires=timezone.now() + timedelta(30)).token
+
     def create(self, status_code=status.HTTP_400_BAD_REQUEST):
         super(AccountUserGenericTest, self).create(status_code=status_code)
 
@@ -163,7 +190,6 @@ class AccountUserGenericTest(APIGenericTest):
 
 
 class AccountUserTestCase(APILiveServerTestCase):
-    fixtures = [os.path.join(BASE_DIR, 'user/test_data.json')]
 
     def setUp(self):
         self.url = reverse('accountuser-list')
@@ -205,7 +231,10 @@ class AccountUserTestCase(APILiveServerTestCase):
         self.accountuser_generic_test.hyperlinked_fields(fields)
 
 
-class UserTestCase(LiveServerTestCase, TestDataMixin):
+class UserTestCase(LiveServerTestCase):
+
+    def setUp(self):
+        User.objects.create_superuser('henrique', 'elo.henrique@gmail.com', '123')
 
     def test_user_login(self):
         login_url = reverse('login')

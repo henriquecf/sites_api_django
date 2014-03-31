@@ -3,10 +3,9 @@ from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 
 from publication.tests import PublicationGenericTest
-from resource.tests import TestDataMixin
 
 
-class NewsAPITestCase(APILiveServerTestCase, TestDataMixin):
+class NewsAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
         self.url = reverse('news-list')

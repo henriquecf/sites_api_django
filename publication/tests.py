@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 
-from resource.tests import ResourceGenericTest, TestDataMixin
+from resource.tests import ResourceGenericTest
 from accounts.models import Account
 from .models import Publication
 
@@ -76,7 +76,7 @@ class PublicationGenericTest(ResourceGenericTest):
                                    'Field categories not found in model "{0}"'.format(model_name))
 
 
-class PublicationAPITestCase(APILiveServerTestCase, TestDataMixin):
+class PublicationAPITestCase(APILiveServerTestCase):
     model = Publication
 
     def setUp(self):
@@ -147,7 +147,7 @@ class PublicationAPITestCase(APILiveServerTestCase, TestDataMixin):
         self.publication_generic_test.user_and_account_from_request_user()
 
 
-class CategoryAPITestCase(APILiveServerTestCase, TestDataMixin):
+class CategoryAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
         self.url = reverse('category-list')
