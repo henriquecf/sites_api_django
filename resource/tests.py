@@ -1,3 +1,4 @@
+from itertools import chain
 from datetime import timedelta
 from django.contrib.auth.models import User, Permission
 from django.utils import timezone
@@ -43,6 +44,18 @@ class APIGenericTest:
         self.account_user_token = AccessToken.objects.create(user=owner_user, token=owner_user.username,
                                                               application=owner_application,
                                                               expires=timezone.now() + timedelta(30)).token
+        self.owner = owner
+        self.second_owner = second_owner
+        self.account_user = owner_user
+        # TODO Take care of permissions dependencies between models.
+        # TODO Model inheritance must include permission inheritance.
+        model_name = self.test_case.model._meta.model_name
+        permissions = Permission.objects.filter(codename__endswith=model_name)
+        pub_permissions = Permission.objects.filter(codename__endswith='publication')
+        cat_permissions = Permission.objects.filter(codename__endswith='category')
+        for permission in chain(permissions, pub_permissions, cat_permissions):
+            self.owner.user_permissions.add(permission)
+            self.second_owner.user_permissions.add(permission)
 
     def __init__(self, test_case):
         self.test_case = test_case
@@ -135,10 +148,16 @@ class APIGenericTest:
 
 
 class ResourceGenericTest(APIGenericTest):
+
     def create(self, status_code=status.HTTP_201_CREATED):
         super(ResourceGenericTest, self).create(status_code=status_code)
         self.set_authorization_bearer(self.second_owner_token)
         super(ResourceGenericTest, self).create(status_code=status_code)
+        self.set_authorization_bearer(self.account_user_token)
+        super(ResourceGenericTest, self).create(status_code=status.HTTP_403_FORBIDDEN)
+        self.owner.user_permissions.clear()
+        self.set_authorization_bearer(self.owner_token)
+        super(ResourceGenericTest, self).create(status_code=status.HTTP_403_FORBIDDEN)
 
     def update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
         super(ResourceGenericTest, self).update(status_code=status_code, is_altered=is_altered, url=url)
