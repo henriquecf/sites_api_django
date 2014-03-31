@@ -7,6 +7,7 @@ from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 from resource.tests import APIGenericTest
 from oauth2_provider.models import AccessToken, Application
+from .models import Account
 
 
 class AccountAPIGenericTest(APIGenericTest):
@@ -35,6 +36,7 @@ class AccountAPIGenericTest(APIGenericTest):
 
 
 class AccountAPITestCase(APILiveServerTestCase):
+    model = Account
 
     def setUp(self):
         self.url = reverse('account-list')
@@ -72,3 +74,6 @@ class AccountAPITestCase(APILiveServerTestCase):
     def test_default_expiration_date(self):
         self.assertEqual(self.account_api_generic_test.first_object_response.data['expiration_date'],
                          datetime.date.today() + datetime.timedelta(30))
+
+    def test_model_has_custom_permission(self):
+        self.account_api_generic_test.model_has_custom_permission()

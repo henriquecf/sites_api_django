@@ -72,6 +72,9 @@ class Category(MPTTModel, Resource):
     def __str__(self):
         return self.name
 
+    class Meta(MPTTModel.Meta, Resource.Meta):
+        verbose_name_plural = 'Categories'
+
 
 def find_available_slug(model, instance, slug, original_slug, slug_number=2):
     #Adds underscores with an incrementing number to the slug until an available one is found.

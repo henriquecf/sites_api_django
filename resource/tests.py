@@ -126,8 +126,6 @@ class APIGenericTest:
             response = self.test_case.client.get(self.first_object_response.data[field])
             self.test_case.assertEqual(response.status_code, status.HTTP_200_OK, 'Error with field {0}'.format(field))
 
-
-class PermissionGenericTest(APIGenericTest):
     def model_has_custom_permission(self):
         model_name = self.test_case.model._meta.model_name
         view_permission = 'view_{0}'.format(model_name)
@@ -136,7 +134,7 @@ class PermissionGenericTest(APIGenericTest):
         self.test_case.assertIn(view_permission, database_permissions)
 
 
-class ResourceGenericTest(PermissionGenericTest):
+class ResourceGenericTest(APIGenericTest):
     def create(self, status_code=status.HTTP_201_CREATED):
         super(ResourceGenericTest, self).create(status_code=status_code)
         self.set_authorization_bearer(self.second_owner_token)

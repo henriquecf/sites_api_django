@@ -17,6 +17,7 @@ class Common(models.Model):
 
     class Meta:
         abstract = True
+        default_permissions = ('view', 'add', 'change', 'delete')
 
 
 class Account(Common):

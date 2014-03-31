@@ -12,6 +12,7 @@ from rest_framework.test import APILiveServerTestCase
 from resource.tests import APIGenericTest
 from oauth2_provider.models import AccessToken, Application
 from accounts.models import Account
+from .models import AccountUser
 
 
 class UserGenericTest(APIGenericTest):
@@ -80,6 +81,7 @@ class UserGenericTest(APIGenericTest):
 
 
 class UserAPITestCase(APILiveServerTestCase):
+    model = User
 
     def setUp(self):
         self.url = reverse('user-list')
@@ -190,6 +192,7 @@ class AccountUserGenericTest(APIGenericTest):
 
 
 class AccountUserTestCase(APILiveServerTestCase):
+    model = AccountUser
 
     def setUp(self):
         self.url = reverse('accountuser-list')
@@ -229,6 +232,9 @@ class AccountUserTestCase(APILiveServerTestCase):
     def test_hyperlinked_identity_field(self):
         fields = ['user', 'account']
         self.accountuser_generic_test.hyperlinked_fields(fields)
+
+    def test_model_has_custom_permission(self):
+        self.accountuser_generic_test.model_has_custom_permission()
 
 
 class UserTestCase(LiveServerTestCase):
