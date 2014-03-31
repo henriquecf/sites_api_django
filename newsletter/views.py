@@ -14,6 +14,10 @@ class SubscriptionViewSet(ResourceViewSet):
 
     @link()
     def unsubscribe(self, request, *args, **kwargs):
+        """Verify token and subscriber to deactivate a subscritpion.
+
+        If token does not match for the user, a 401 status code is returned.
+        """
         subscription = self.get_object()
         if subscription.token == request.GET['token']:
             subscription.active = False
@@ -30,6 +34,7 @@ class NewsletterViewSet(ResourceViewSet):
 
     @link()
     def send_newsletter(self, request, *args, **kwargs):
+        """Send the newsletter calling the model function."""
         newsletter = self.get_object()
         status = newsletter.send_newsletter()
         if status:

@@ -5,8 +5,11 @@ from resource.models import Resource
 
 
 class Subscription(Resource):
-    """
-    This class holds the newsletter subscribers
+    """Holds information about the newsletter subscribers.
+
+    It holds the name and email, obligatory fields to create a subscription.
+    Besides these fields, it automatically generates a token to deactivate
+    and put subscription status in a boolean field.
     """
     name = models.CharField(max_length=50)
     email = models.EmailField(max_length=200)
@@ -46,13 +49,20 @@ class Newsletter(Resource):
 
 
 class Submission(Resource):
-    """
-    This class holds the submission of a newsletter to a subscriber
+    """Holds the submission information.
+
+    This model is related with a newsletter object and a subscription object.
     """
     subscription = models.ForeignKey(Subscription)
     newsletter = models.ForeignKey(Newsletter)
 
     def send_newsletter(self, user):
+        """Sends a newsletter to the subscription in the subscription field.
+
+        Keyword arguments:
+
+        user -- Not used in this context. Held for compatibility.
+        """
         message = EmailMultiAlternatives(self.title,
                                          self.newsletter.content,
                                          'localhost',

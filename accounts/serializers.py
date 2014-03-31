@@ -7,4 +7,3 @@ class AccountSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Account
-        exclude = ['creation_date', 'last_modification_date']
