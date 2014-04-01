@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from rest_framework import serializers
 
-from accounts.models import Account
+from account.models import Account
 
 
 class ResourceSerializer(serializers.HyperlinkedModelSerializer):

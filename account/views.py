@@ -4,10 +4,10 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions, filters
-from accounts.exceptions import OwnerValidationError
-from accounts.serializers import AccountUserSerializer, UserSerializer, UserCreateChangeSerializer
+from account.exceptions import OwnerValidationError
+from account.serializers import AccountUserSerializer, UserSerializer, UserCreateChangeSerializer
 from .serializers import AccountSerializer
-from accounts.models import Account, AccountUser
+from account.models import Account, AccountUser
 
 
 class AccountViewSet(ModelViewSet):

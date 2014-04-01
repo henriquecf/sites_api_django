@@ -6,7 +6,7 @@ from oauth2_provider.models import AccessToken, Application
 import random
 from rest_framework import status
 from resource.models import Resource
-from accounts.models import Account, AccountUser
+from account.models import Account, AccountUser
 
 
 class APIGenericTest:

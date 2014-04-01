@@ -9,7 +9,7 @@ from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 
 from resource.tests import ResourceGenericTest
-from accounts.models import Account
+from account.models import Account
 from .models import Publication, Category
 
 

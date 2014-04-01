@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 import random
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
-from accounts.models import Account, AccountUser
+from account.models import Account, AccountUser
 from resource.tests import APIGenericTest
 from oauth2_provider.models import AccessToken, Application
 from .models import Account
