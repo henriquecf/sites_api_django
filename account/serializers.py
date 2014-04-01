@@ -25,11 +25,12 @@ class UserCreateChangeSerializer(serializers.HyperlinkedModelSerializer):
     accountuser = serializers.HyperlinkedRelatedField(view_name='accountuser-detail', read_only=True)
     #TODO: Find another field to replace ManyRelatedField
     user_permissions = serializers.ManyRelatedField()
+    groups = serializers.ManyRelatedField()
 
     class Meta:
         model = User
         fields = ['url', 'first_name', 'last_name', 'username', 'email', 'password',  'is_active', 'is_staff',
-                  'accountuser', 'user_permissions']
+                  'accountuser', 'user_permissions', 'groups']
 
 
 class UserSerializer(UserCreateChangeSerializer):
