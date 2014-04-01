@@ -26,11 +26,12 @@ class UserCreateChangeSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ['url', 'first_name', 'last_name', 'username', 'email', 'password', 'accountuser']
+        fields = ['url', 'first_name', 'last_name', 'username', 'email', 'password',  'is_active', 'is_staff',
+                  'accountuser']
 
 
 class UserSerializer(UserCreateChangeSerializer):
     """Must be called when a safe method is being requested."""
 
     class Meta(UserCreateChangeSerializer.Meta):
-        fields = ['url', 'username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff', 'accountuser']
+        exclude = ['password']
