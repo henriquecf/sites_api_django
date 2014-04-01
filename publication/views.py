@@ -16,6 +16,7 @@ class CategoryViewSet(ResourceViewSet):
 
     @link()
     def get_descendants(self, request, *agrs, **kwargs):
+        """Returns the descendants of a category."""
         category = self.get_object()
         return Response(
             {'descendants': CategorySerializer(category.get_descendants(), context={'request': request},
@@ -24,10 +25,8 @@ class CategoryViewSet(ResourceViewSet):
 
 class PublicationBaseViewSet(ResourceViewSet):
     """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    Has some extra actions as publish, unpublish end check if is
-    publisehd or not.
+
+    The fields title and description are defined as fields that can be searched.
     """
     model = Publication
     serializer_class = PublicationSerializer
@@ -35,6 +34,12 @@ class PublicationBaseViewSet(ResourceViewSet):
     search_fields = ('title', 'description')
 
     def pre_save(self, obj):
+        """Defines all actions needed before saving the object.
+
+        Calls the actions from ResourceViewSet.
+        Finds an available slug.
+        Defines a publication start date, if it does not exist.
+        """
         super(PublicationBaseViewSet, self).pre_save(obj)
         # Creates a slug for the publication based on the title
         slug = slugify(obj.title)
@@ -45,15 +50,24 @@ class PublicationBaseViewSet(ResourceViewSet):
 
     @link()
     def is_published(self, request, *args, **kwargs):
+        """Link to return the state of the publication, if published or not."""
         publication = self.get_object()
         return Response({'is_published': publication.is_published()})
 
     @link()
     def publish(self, request, *args, **kwargs):
+        """Link to publish the publication.
+
+        Returns the state of the publication, if published or not.
+        """
         publication = self.get_object()
         return Response({'is_published': publication.publish()})
 
     @link()
     def unpublish(self, request, *args, **kwargs):
+        """Link to unpublish the publication.
+
+        Returns the state of the publication, if published or not.
+        """
         publication = self.get_object()
         return Response({'is_published': publication.unpublish()})

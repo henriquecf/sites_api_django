@@ -1,14 +1,13 @@
+from itertools import chain
+from datetime import timedelta
 from django.contrib.auth.models import User, Permission
-from oauth2_provider.models import AccessToken
+from django.utils import timezone
+from oauth2_provider.models import AccessToken, Application
 import random
 from rest_framework import status
-
-from publication.settings import os, BASE_DIR
 from resource.models import Resource
-
-
-class TestDataMixin(object):
-    fixtures = [os.path.join(BASE_DIR, 'general_test_data.json')]
+from accounts.models import Account
+from user.models import AccountUser
 
 
 class APIGenericTest:
@@ -19,19 +18,60 @@ class APIGenericTest:
     passing the own TestCase as a parameter
     """
 
+    def make_initial_data(self):
+        User.objects.create_superuser('henrique', 'elo.henrique@gmail.com', '123')
+        owner = User.objects.create_user('owner', 'owner@owner.com', '123')
+        owner.is_staff = True
+        owner.save()
+        second_owner = User.objects.create_user('second_owner', 'second_owner@owner.com', '123')
+        second_owner.is_staff = True
+        second_owner.save()
+        owner_account = Account.objects.create(owner=owner)
+        second_owner_account = Account.objects.create(owner=second_owner)
+        AccountUser.objects.create(account=owner_account, user=owner)
+        AccountUser.objects.create(account=second_owner_account, user=second_owner)
+        owner_user = User.objects.create_user('owner_user', 'owner_user@owner.com', '123')
+        owner_user2 = User.objects.create_user('owner_user2', 'owner_user2@owner.com', '123')
+        AccountUser.objects.create(account=owner_account, user=owner_user)
+        AccountUser.objects.create(account=owner_account, user=owner_user2)
+        owner_application = Application.objects.create(user=owner, client_type='confidential',
+                                                       authorization_grant_type='password')
+        second_owner_application = Application.objects.create(user=second_owner, client_type='confidential',
+                                                              authorization_grant_type='password')
+        self.owner_token = AccessToken.objects.create(user=owner, token=owner.username, application=owner_application,
+                                                      expires=timezone.now() + timedelta(30)).token
+        self.second_owner_token = AccessToken.objects.create(user=second_owner, token=second_owner.username,
+                                                             application=second_owner_application,
+                                                             expires=timezone.now() + timedelta(30)).token
+        self.account_user_token = AccessToken.objects.create(user=owner_user, token=owner_user.username,
+                                                             application=owner_application,
+                                                             expires=timezone.now() + timedelta(30)).token
+        self.account_user_token2 = AccessToken.objects.create(user=owner_user2,
+                                                              token=owner_user2.username,
+                                                              application=owner_application,
+                                                              expires=timezone.now() + timedelta(30)).token
+        self.owner = owner
+        self.second_owner = second_owner
+        self.account_user = owner_user
+        self.account_user2 = owner_user2
+        # TODO Take care of permissions dependencies between models.
+        # TODO Model inheritance must include permission inheritance.
+        model_name = self.test_case.model._meta.model_name
+        permissions = Permission.objects.filter(codename__endswith=model_name)
+        pub_permissions = Permission.objects.filter(codename__endswith='publication')
+        cat_permissions = Permission.objects.filter(codename__endswith='category')
+        for permission in chain(permissions, pub_permissions, cat_permissions):
+            self.owner.user_permissions.add(permission)
+            self.second_owner.user_permissions.add(permission)
+            self.account_user2.user_permissions.add(permission)
+            self.account_user2.accountuser.global_permissions.add(permission)
+
     def __init__(self, test_case):
         self.test_case = test_case
         self.url = self.test_case.url
         self.data = self.test_case.data
         self.altered_data = self.test_case.altered_data
-        self.owner_token = AccessToken.objects.get(id=1).token
-        self.account_user_token = AccessToken.objects.get(id=2).token
-        self.account_user_token2 = AccessToken.objects.get(id=3).token
-        self.account_user_token3 = AccessToken.objects.get(id=4).token
-        self.second_owner_token = AccessToken.objects.get(id=5).token
-        self.second_account_user_token = AccessToken.objects.get(id=6).token
-        self.second_account_user_token2 = AccessToken.objects.get(id=7).token
-        self.second_account_user_token3 = AccessToken.objects.get(id=8).token
+        self.make_initial_data()
         self.set_authorization_bearer(self.owner_token)
         self.first_object_response = self.test_case.client.post(self.url, self.data)
 
@@ -108,9 +148,6 @@ class APIGenericTest:
             response = self.test_case.client.get(self.first_object_response.data[field])
             self.test_case.assertEqual(response.status_code, status.HTTP_200_OK, 'Error with field {0}'.format(field))
 
-
-class PermissionGenericTest(APIGenericTest):
-
     def model_has_custom_permission(self):
         model_name = self.test_case.model._meta.model_name
         view_permission = 'view_{0}'.format(model_name)
@@ -119,21 +156,46 @@ class PermissionGenericTest(APIGenericTest):
         self.test_case.assertIn(view_permission, database_permissions)
 
 
-class ResourceGenericTest(PermissionGenericTest):
-
+class ResourceGenericTest(APIGenericTest):
     def create(self, status_code=status.HTTP_201_CREATED):
         super(ResourceGenericTest, self).create(status_code=status_code)
         self.set_authorization_bearer(self.second_owner_token)
         super(ResourceGenericTest, self).create(status_code=status_code)
+        self.set_authorization_bearer(self.account_user_token)
+        super(ResourceGenericTest, self).create(status_code=status.HTTP_403_FORBIDDEN)
+        self.owner.user_permissions.clear()
+        self.set_authorization_bearer(self.owner_token)
+        super(ResourceGenericTest, self).create(status_code=status.HTTP_403_FORBIDDEN)
 
     def update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
         super(ResourceGenericTest, self).update(status_code=status_code, is_altered=is_altered, url=url)
         self.set_authorization_bearer(self.second_owner_token)
         super(ResourceGenericTest, self).update(status_code=status.HTTP_201_CREATED, is_altered=is_altered, url=url)
+        self.set_authorization_bearer(self.account_user_token)
+        super(ResourceGenericTest, self).update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False, url=url)
+        self.owner.user_permissions.clear()
+        self.set_authorization_bearer(self.owner_token)
+        super(ResourceGenericTest, self).update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False, url=url)
+        self.set_authorization_bearer(self.account_user_token2)
+        super(ResourceGenericTest, self).update(status_code=status_code, is_altered=is_altered, url=url)
+        self.account_user2.accountuser.global_permissions.clear()
+        super(ResourceGenericTest, self).update(status_code=status.HTTP_201_CREATED, is_altered=False, url=url)
 
     def partial_update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
         super(ResourceGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered, url=url)
         self.set_authorization_bearer(self.second_owner_token)
+        super(ResourceGenericTest, self).partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False,
+                                                        url=url)
+        self.set_authorization_bearer(self.account_user_token)
+        super(ResourceGenericTest, self).partial_update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False,
+                                                        url=url)
+        self.owner.user_permissions.clear()
+        self.set_authorization_bearer(self.owner_token)
+        super(ResourceGenericTest, self).partial_update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False,
+                                                        url=url)
+        self.set_authorization_bearer(self.account_user_token2)
+        super(ResourceGenericTest, self).partial_update(status_code=status_code, is_altered=True, url=url)
+        self.account_user2.accountuser.global_permissions.clear()
         super(ResourceGenericTest, self).partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False,
                                                         url=url)
 
@@ -141,17 +203,42 @@ class ResourceGenericTest(PermissionGenericTest):
         super(ResourceGenericTest, self).list(count=count, status_code=status_code)
         self.set_authorization_bearer(self.second_owner_token)
         super(ResourceGenericTest, self).list(count=0, status_code=status_code)
+        self.set_authorization_bearer(self.account_user_token)
+        super(ResourceGenericTest, self).list(count=-1, status_code=status.HTTP_403_FORBIDDEN)
+        self.owner.user_permissions.clear()
+        self.set_authorization_bearer(self.owner_token)
+        super(ResourceGenericTest, self).list(count=-1, status_code=status.HTTP_403_FORBIDDEN)
+        self.set_authorization_bearer(self.account_user_token2)
+        super(ResourceGenericTest, self).list(count=count, status_code=status_code)
+        self.account_user2.accountuser.global_permissions.clear()
+        super(ResourceGenericTest, self).list(count=0, status_code=status_code)
 
     def retrieve(self, status_code=status.HTTP_200_OK, url=None):
         super(ResourceGenericTest, self).retrieve(status_code=status_code, url=url)
         self.set_authorization_bearer(self.second_owner_token)
         super(ResourceGenericTest, self).retrieve(status_code=status.HTTP_404_NOT_FOUND, url=url)
+        self.set_authorization_bearer(self.account_user_token)
+        super(ResourceGenericTest, self).retrieve(status_code=status.HTTP_403_FORBIDDEN, url=url)
+        self.owner.user_permissions.clear()
+        self.set_authorization_bearer(self.owner_token)
+        super(ResourceGenericTest, self).retrieve(status_code=status.HTTP_403_FORBIDDEN, url=url)
+        self.set_authorization_bearer(self.account_user_token2)
+        super(ResourceGenericTest, self).retrieve(status_code=status_code, url=url)
+        self.account_user2.accountuser.global_permissions.clear()
+        super(ResourceGenericTest, self).retrieve(status_code=status.HTTP_404_NOT_FOUND, url=url)
 
     def destroy(self, status_code=status.HTTP_204_NO_CONTENT, url=None):
         self.set_authorization_bearer(self.second_owner_token)
         super(ResourceGenericTest, self).destroy(status_code=status.HTTP_404_NOT_FOUND, url=url)
-        self.set_authorization_bearer(self.owner_token)
+        self.set_authorization_bearer(self.account_user_token2)
         super(ResourceGenericTest, self).destroy(status_code=status_code, url=url)
+        self.account_user2.accountuser.global_permissions.clear()
+        super(ResourceGenericTest, self).destroy(status_code=status.HTTP_404_NOT_FOUND, url=url)
+        self.set_authorization_bearer(self.account_user_token)
+        super(ResourceGenericTest, self).destroy(status_code=status.HTTP_403_FORBIDDEN, url=url)
+        self.owner.user_permissions.clear()
+        self.set_authorization_bearer(self.owner_token)
+        super(ResourceGenericTest, self).destroy(status_code=status.HTTP_403_FORBIDDEN, url=url)
 
     def owner_is_request_user(self):
         self.set_authorization_bearer(self.second_owner_token)

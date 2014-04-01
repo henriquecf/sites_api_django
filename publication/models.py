@@ -1,16 +1,16 @@
 from django.db import models
 from django.utils.text import slugify
 from django.utils import timezone
-from django.contrib.auth.models import User
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 from resource.models import Resource
 
 
 class Publication(Resource):
-    """
-    This model was intended to be inherited by every model that is publishable,
-    can be published, unpublished, has an author, title and slug for the url
+    """Anything that will be published in a site.
+
+    This model is the base for any other model that will be used as a publication in a site.
+    It has basic publications functionality and can be used by its own, or inherited by other models.
     """
     title = models.CharField(max_length=150)
     description = models.TextField(blank=True)
@@ -22,6 +22,11 @@ class Publication(Resource):
         return self.title
 
     def publish(self):
+        """Publishes a publication.
+
+        Sets the publication start date to now, if it is bigger than now, and sets the publication end date to None.
+        Returns the state of the publication.
+        """
         if self.publication_start_date > timezone.now():
             self.publication_start_date = timezone.now()
         if self.publication_end_date:
@@ -30,6 +35,11 @@ class Publication(Resource):
         return self.is_published()
 
     def unpublish(self):
+        """Unpublishes the publication.
+
+        Sets the publication start date to now, if it is bigger than now, and sets the publication end date also to now.
+        Returns the state of the publication.
+        """
         if self.publication_start_date > timezone.now():
             self.publication_start_date = timezone.now()
         self.publication_end_date = timezone.now()
@@ -37,6 +47,7 @@ class Publication(Resource):
         return self.is_published()
 
     def is_published(self):
+        """Returns True if the publication is published or False otherwise."""
         if self.publication_end_date:
             if self.publication_start_date > timezone.now() or self.publication_end_date < timezone.now():
                 return False
@@ -49,8 +60,10 @@ class Publication(Resource):
 
 
 class Category(MPTTModel, Resource):
-    """
-    This model implements hierarchy.
+    """Model that will be related to any other that must be categorized.
+
+    This model should just implement category to other models.
+    Besides that, this categories can have hierarchy, being related to each other as parent or children.
     """
     name = models.CharField(max_length=150)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children_set')
@@ -59,12 +72,12 @@ class Category(MPTTModel, Resource):
     def __str__(self):
         return self.name
 
+    class Meta(MPTTModel.Meta, Resource.Meta):
+        verbose_name_plural = 'Categories'
+
 
 def find_available_slug(model, instance, slug, original_slug, slug_number=2):
-    """
-    Recursive method that will add underscores to a slug field
-    until a free value is located
-    """
+    #Adds underscores with an incrementing number to the slug until an available one is found.
     try:
         sender_node = model.objects.get(slug=slug)
     except model.DoesNotExist:
