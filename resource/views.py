@@ -32,7 +32,10 @@ class ResourceViewSet(viewsets.ModelViewSet):
     serializer_class = ResourceSerializer
 
     def pre_save(self, obj):
-        """Relates the created resource to the request user and his related account."""
+        """Checks if there is a creator and account for the resource.
+
+        Does nothing if it has, assigns the request user and its account to the object otherwise.
+        """
         try:
             obj.creator
             obj.account

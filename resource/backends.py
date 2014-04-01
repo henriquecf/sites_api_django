@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from rest_framework import filters, permissions
-from django.views.decorators.cache import never_cache
 
 
 custom_permissions_map = {
@@ -25,7 +24,9 @@ class ResourceFilterBackend(filters.BaseFilterBackend):
     If the user is a superuser, he has access to the whole model.
     Else if the user is staff, meaning he is an administrator of the account, he has access every object related to that
     account.
-    Else he has just access to the objects he created.
+    Else, the global permissions are checked:
+        If the user has global permission, he has access to the account data.
+        Else, he has access just to his data.
     """
     def filter_queryset(self, request, queryset, view):
         if request.user.is_superuser:

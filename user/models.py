@@ -9,6 +9,7 @@ class AccountUser(Common):
     global_permissions = models.ManyToManyField(Permission, null=True, blank=True)
 
     def has_global_permission(self, permission):
+        """Checks if the user has global permission for that given permission."""
         return permission in set(
             "%s.%s" % (p.content_type.app_label, p.codename) for p in self.global_permissions.all())
 
