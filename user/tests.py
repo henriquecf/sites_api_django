@@ -113,7 +113,7 @@ class UserAPITestCase(APILiveServerTestCase):
         self.user_generic_test.partial_update()
 
     def test_list(self):
-        self.user_generic_test.list(count=3)
+        self.user_generic_test.list(count=4)
 
     def test_retrieve(self):
         self.user_generic_test.retrieve()
