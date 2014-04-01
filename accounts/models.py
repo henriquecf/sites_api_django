@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import date, timedelta
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -17,6 +17,7 @@ class Common(models.Model):
 
     class Meta:
         abstract = True
+        default_permissions = ('view', 'add', 'change', 'delete')
 
 
 class Account(Common):
@@ -24,8 +25,8 @@ class Account(Common):
 
     This model saves data related to the account of a person.
     """
-    expiration_date = models.DateField(editable=False)
-    owner = models.OneToOneField(User, editable=False, related_name='account')
+    expiration_date = models.DateField(editable=False, default=date.today()+timedelta(30))
+    owner = models.OneToOneField(User, blank=True, related_name='account')
 
     def __str__(self):
         return self.owner.username

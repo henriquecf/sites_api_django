@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.views.generic import FormView
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import viewsets
 from resource.models import Resource
 from resource.serializers import ResourceSerializer
@@ -31,6 +32,13 @@ class ResourceViewSet(viewsets.ModelViewSet):
     serializer_class = ResourceSerializer
 
     def pre_save(self, obj):
-        """Relates the created resource to the request user and his related account."""
-        obj.creator = self.request.user
-        obj.account = self.request.user.accountuser.account
+        """Checks if there is a creator and account for the resource.
+
+        Does nothing if it has, assigns the request user and its account to the object otherwise.
+        """
+        try:
+            obj.creator
+            obj.account
+        except ObjectDoesNotExist:
+            obj.creator = self.request.user
+            obj.account = self.request.user.accountuser.account

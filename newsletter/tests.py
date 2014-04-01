@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
-
-from django.utils import timezone
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
-from publication.tests import PublicationGenericTest
-from resource.tests import TestDataMixin
 from resource.tests import ResourceGenericTest
-from .models import Newsletter, Subscription
+from .models import Subscription, Newsletter
 
 
 #TODO: Test just resource can destroy or user with unsubscription code can destroy
-class SubscriptionAPITestCase(APILiveServerTestCase, TestDataMixin):
+class SubscriptionAPITestCase(APILiveServerTestCase):
+    model = Subscription
 
     def setUp(self):
         self.url = reverse('subscription-list')
@@ -71,8 +68,12 @@ class SubscriptionAPITestCase(APILiveServerTestCase, TestDataMixin):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(subscription.active)
 
+    def test_model_has_custom_permission(self):
+        self.resource_generic_test.model_has_custom_permission()
 
-class NewsletterAPITestCase(APILiveServerTestCase, TestDataMixin):
+
+class NewsletterAPITestCase(APILiveServerTestCase):
+    model = Newsletter
 
     def setUp(self):
         self.url = reverse('newsletter-list')
@@ -108,3 +109,6 @@ class NewsletterAPITestCase(APILiveServerTestCase, TestDataMixin):
         response = self.client.post(self.url, self.data)
         send_url = response.data['send_newsletter']
         # TODO this test is not complete
+
+    def test_model_has_custom_permission(self):
+        self.resource_generic_test.model_has_custom_permission()

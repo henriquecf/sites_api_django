@@ -3,10 +3,11 @@ from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 
 from publication.tests import PublicationGenericTest
-from resource.tests import TestDataMixin
+from .models import File
 
 
-class FileAPITestCase(APILiveServerTestCase, TestDataMixin):
+class FileAPITestCase(APILiveServerTestCase):
+    model = File
 
     def setUp(self):
         self.url = reverse('file-list')
@@ -77,3 +78,6 @@ class FileAPITestCase(APILiveServerTestCase, TestDataMixin):
 
     def test_user_and_account_from_request_user(self):
         self.publication_generic_test.user_and_account_from_request_user()
+
+    def test_model_has_custom_permission(self):
+        self.publication_generic_test.model_has_custom_permission()
