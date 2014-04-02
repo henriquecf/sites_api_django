@@ -41,9 +41,20 @@ class PublicationBaseViewSet(ResourceViewSet):
         Defines a publication start date, if it does not exist.
         """
         super(PublicationBaseViewSet, self).pre_save(obj)
-        # Creates a slug for the publication based on the title
-        slug = slugify(obj.title)
-        find_available_slug(self.model, obj, slug, slug)
+        if self.request.method == 'POST':
+            # Creates a slug for the publication based on the title
+            slug = slugify(obj.title)
+            find_available_slug(self.model, obj, slug, slug)
+        else:
+            try:
+                title = self.request.DATA['title']
+                last_title = Publication.objects.get(id=obj.id).title
+                if title != last_title:
+                    # Creates a slug for the publication based on the title
+                    slug = slugify(obj.title)
+                    find_available_slug(self.model, obj, slug, slug)
+            except KeyError:
+                pass
         # Creates a publication_start_date for the publication in case it does not exists
         if not obj.publication_start_date:
             obj.publication_start_date = timezone.now()
