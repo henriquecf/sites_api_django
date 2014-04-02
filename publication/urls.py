@@ -28,5 +28,8 @@ urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
                        url(r'^account/', include('account.urls')),
+                       url(r'^permission/(?P<pk>[\d]+)/$', account_views.PermissionDetailView.as_view(),
+                           name='permission-detail'),
+                       url(r'^group/(?P<pk>[\d]+)/$', account_views.GroupDetailView.as_view(), name='group-detail'),
                        url(r'^', include(router.urls), name='api'),
 )

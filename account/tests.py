@@ -208,7 +208,7 @@ class UserAPITestCase(APILiveServerTestCase):
         self.assertNotIn('password', response.data)
 
     def test_hyperlinked_fields(self):
-        self.user_generic_test.serializer_hyperlinked_fields(['accountuser'])
+        self.user_generic_test.serializer_hyperlinked_fields(['accountuser', 'user_permissions', 'groups'])
 
     def test_accountuser_created_has_same_account_as_request_user(self):
         account_user_url = self.user_generic_test.first_object_response.data['accountuser']
@@ -219,7 +219,7 @@ class UserAPITestCase(APILiveServerTestCase):
         self.assertEqual(account_id, str(owner_account_id))
 
     def test_serializer_read_only_fields(self):
-        fields = ['accountuser', 'user_permissions', 'groups']
+        fields = ['accountuser']
         self.user_generic_test.serializer_read_only_fields(fields)
 
 

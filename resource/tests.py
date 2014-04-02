@@ -142,6 +142,7 @@ class APIGenericTest:
 
             # TODO Still need to create a generic test for ordering
 
+    # TODO Check if this test is really working
     def serializer_hyperlinked_fields(self, fields):
         for field in fields:
             response = self.test_case.client.get(self.first_object_response.data[field])

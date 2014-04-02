@@ -23,8 +23,6 @@ class UserCreateChangeSerializer(serializers.HyperlinkedModelSerializer):
     """Must be called when a non safe method is being requested."""
     email = serializers.EmailField(required=True)
     accountuser = serializers.HyperlinkedRelatedField(view_name='accountuser-detail', read_only=True)
-    user_permissions = serializers.RelatedField(many=True, read_only=True)
-    groups = serializers.RelatedField(many=True, read_only=True)
 
     class Meta:
         model = User

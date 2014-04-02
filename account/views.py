@@ -1,9 +1,9 @@
 import datetime
 from django.contrib.auth import hashers
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission, Group
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import permissions, filters
+from rest_framework import permissions, filters, generics
 from account.exceptions import BadRequestValidationError
 from account.serializers import AccountUserSerializer, UserSerializer, UserCreateChangeSerializer
 from .serializers import AccountSerializer, AccountGroupSerializer
@@ -145,3 +145,17 @@ class AccountGroupViewSet(ModelViewSet):
             raise BadRequestValidationError('Role field is unique. Please insert another name.')
         except ObjectDoesNotExist:
             obj.account = self.request.user.accountuser.account
+
+
+class PermissionDetailView(generics.RetrieveAPIView):
+    model = Permission
+    permission_classes = (
+        permissions.IsAdminUser,
+    )
+
+
+class GroupDetailView(generics.RetrieveAPIView):
+    model = Group
+    permission_classes = (
+        permissions.IsAdminUser,
+    )
