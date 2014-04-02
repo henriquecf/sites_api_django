@@ -1,5 +1,6 @@
 from django.utils.text import slugify
 from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import link
 from rest_framework.response import Response
 
@@ -41,14 +42,15 @@ class PublicationBaseViewSet(ResourceViewSet):
         Defines a publication start date, if it does not exist.
         """
         super(PublicationBaseViewSet, self).pre_save(obj)
-        if self.request.method == 'POST':
+        try:
+            last_title = Publication.objects.get(id=obj.id).title
+        except ObjectDoesNotExist:
             # Creates a slug for the publication based on the title
             slug = slugify(obj.title)
             find_available_slug(self.model, obj, slug, slug)
         else:
             try:
                 title = self.request.DATA['title']
-                last_title = Publication.objects.get(id=obj.id).title
                 if title != last_title:
                     # Creates a slug for the publication based on the title
                     slug = slugify(obj.title)
