@@ -1,6 +1,6 @@
 from datetime import date, timedelta
 from django.db import models
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User, Permission, Group
 
 
 class Common(models.Model):
@@ -44,3 +44,17 @@ class AccountUser(Common):
 
     def __str__(self):
         return '{0} - {1}'.format(self.account, self.user)
+
+
+class AccountGroup(Group):
+    role = models.CharField(max_length=100)
+    account = models.ForeignKey(Account, blank=True)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        self.name = '{0}-{1}'.format(self.account, self.role)
+        super(AccountGroup, self).save()
+
+    def __str__(self):
+        return '{0}-{1}'.format(self.account, self.role)
+

@@ -4,10 +4,10 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions, filters
-from account.exceptions import OwnerValidationError
+from account.exceptions import BadRequestValidationError
 from account.serializers import AccountUserSerializer, UserSerializer, UserCreateChangeSerializer
-from .serializers import AccountSerializer
-from account.models import Account, AccountUser
+from .serializers import AccountSerializer, AccountGroupSerializer
+from account.models import Account, AccountUser, AccountGroup
 
 
 class AccountViewSet(ModelViewSet):
@@ -30,7 +30,7 @@ class AccountViewSet(ModelViewSet):
         obj.expiration_date = datetime.date.today() + datetime.timedelta(30)
         try:
             Account.objects.get(owner=self.request.user)
-            raise OwnerValidationError('You already have an account and can not create another one.')
+            raise BadRequestValidationError('You already have an account and can not create another one.')
         except ObjectDoesNotExist:
             obj.owner = self.request.user
 
@@ -65,7 +65,7 @@ class AccountUserViewSet(ModelViewSet):
         obj.account = self.request.user.account
         try:
             AccountUser.objects.get(user=self.request.user)
-            raise OwnerValidationError('You can create just one user account')
+            raise BadRequestValidationError('You can create just one user account')
         except ObjectDoesNotExist:
             obj.user = self.request.user
 
@@ -118,3 +118,30 @@ class UserViewSet(ModelViewSet):
             accountuser = AccountUser.objects.create(user=obj, account=self.request.user.accountuser.account)
             obj.accountuser = accountuser
             obj.save()
+
+
+class AccountGroupViewSet(ModelViewSet):
+    model = AccountGroup
+    serializer_class = AccountGroupSerializer
+    permission_classes = (
+        permissions.IsAdminUser,
+    )
+    filter_backends = (
+        filters.SearchFilter,
+    )
+    search_fields = ['role']
+
+    def get_queryset(self):
+        queryset = super(AccountGroupViewSet, self).get_queryset()
+        user = self.request.user
+        if user.is_superuser:
+            return queryset
+        else:
+            return queryset.filter(account=user.accountuser.account)
+
+    def pre_save(self, obj):
+        try:
+            AccountGroup.objects.get(account=self.request.user.accountuser.account, role=obj.role)
+            raise BadRequestValidationError('Role field is unique. Please insert another name.')
+        except ObjectDoesNotExist:
+            obj.account = self.request.user.accountuser.account

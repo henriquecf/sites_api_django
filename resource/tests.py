@@ -239,6 +239,7 @@ class ResourceGenericTest(APIGenericTest):
         self.set_authorization_bearer(self.owner_token)
         super(ResourceGenericTest, self).destroy(status_code=status.HTTP_403_FORBIDDEN, url=url)
 
+    #TODO: Confusing. Should not an -er be used with request verb to make a substantive?
     def owner_is_request_user(self):
         self.set_authorization_bearer(self.second_owner_token)
         response = self.test_case.client.post(self.url, self.data)
@@ -255,6 +256,7 @@ class ResourceGenericTest(APIGenericTest):
             fields.append('account')
         super(ResourceGenericTest, self).hyperlinked_fields(fields)
 
+    #TODO: This name is confusing. Suggestion: user and account coincide with the requester ones
     def user_and_account_from_request_user(self):
         data = self.first_object_response.data
         account_id = data['account'].split('/')[-2]
