@@ -81,6 +81,10 @@ class AccountAPITestCase(APILiveServerTestCase):
     def test_model_has_custom_permission(self):
         self.account_api_generic_test.model_has_custom_permission()
 
+    def test_serializer_read_only_fields(self):
+        fields = ['owner']
+        self.account_api_generic_test.serializer_read_only_fields(fields)
+
 
 class UserGenericTest(APIGenericTest):
 
@@ -214,6 +218,10 @@ class UserAPITestCase(APILiveServerTestCase):
         owner_account_id = User.objects.get(username=self.user_generic_test.owner_token).accountuser.account.id
         self.assertEqual(account_id, str(owner_account_id))
 
+    def test_serializer_read_only_fields(self):
+        fields = ['accountuser', 'user_permissions', 'groups']
+        self.user_generic_test.serializer_read_only_fields(fields)
+
 
 class AccountUserGenericTest(APIGenericTest):
 
@@ -295,6 +303,10 @@ class AccountUserTestCase(APILiveServerTestCase):
 
     def test_model_has_custom_permission(self):
         self.accountuser_generic_test.model_has_custom_permission()
+
+    def test_serializer_read_only_fields(self):
+        fields = ['user', 'account']
+        self.accountuser_generic_test.serializer_read_only_fields(fields)
 
 
 class UserTestCase(LiveServerTestCase):
@@ -405,3 +417,7 @@ class GroupAPITestCase(APILiveServerTestCase):
     def test_hyperlinked_fields(self):
         fields = ['account']
         self.account_group_api_generic_test.serializer_hyperlinked_fields(fields)
+
+    def test_serializer_read_only_fields(self):
+        fields = ['account', 'name']
+        self.account_group_api_generic_test.serializer_read_only_fields(fields)

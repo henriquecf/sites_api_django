@@ -154,8 +154,10 @@ class APIGenericTest:
                                                                                                     flat=True)
         self.test_case.assertIn(view_permission, database_permissions)
 
-    def serializer_read_only_fields(self):
-        pass
+    def serializer_read_only_fields(self, fields):
+        for field in fields:
+            response = self.test_case.client.options(self.url)
+            self.test_case.assertEqual(True, response.data['actions']['POST'][field]['read_only'])
 
 
 class ResourceGenericTest(APIGenericTest):
@@ -251,11 +253,7 @@ class ResourceGenericTest(APIGenericTest):
         self.test_case.assertEqual(user, owner_obj.creator)
 
     def serializer_hyperlinked_fields(self, fields):
-        if not fields:
-            fields = ['creator', 'account']
-        else:
-            fields.append('creator')
-            fields.append('account')
+        fields.extend(['creator', 'account'])
         super(ResourceGenericTest, self).serializer_hyperlinked_fields(fields)
 
     def user_and_account_coincide_with_request_user(self):
@@ -265,3 +263,7 @@ class ResourceGenericTest(APIGenericTest):
         request_user = User.objects.get(username=self.owner_token)
         self.test_case.assertEqual(account_id, str(request_user.accountuser.account.id))
         self.test_case.assertEqual(creator_id, str(request_user.id))
+
+    def serializer_read_only_fields(self, fields):
+        fields.extend(['creator', 'account'])
+        super(ResourceGenericTest, self).serializer_read_only_fields(fields)

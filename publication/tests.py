@@ -48,12 +48,7 @@ class PublicationGenericTest(ResourceGenericTest):
         self.test_case.assertTrue(response.data['is_published'], 'Is_published return must be True')
 
     def serializer_hyperlinked_fields(self, fields):
-        if not fields:
-            fields = ['is_published', 'publish', 'unpublish']
-        else:
-            fields.append('is_published')
-            fields.append('publish')
-            fields.append('unpublish')
+        fields.extend(['is_published', 'publish', 'unpublish'])
         super(PublicationGenericTest, self).serializer_hyperlinked_fields(fields)
 
     def add_category(self, model_name):
@@ -148,6 +143,9 @@ class PublicationAPITestCase(APILiveServerTestCase):
 
     def test_model_has_custom_permission(self):
         self.publication_generic_test.model_has_custom_permission()
+
+    def test_serializer_read_only_fields(self):
+        self.publication_generic_test.serializer_read_only_fields([])
 
 
 class CategoryAPITestCase(APILiveServerTestCase):

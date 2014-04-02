@@ -81,3 +81,6 @@ class FileAPITestCase(APILiveServerTestCase):
 
     def test_model_has_custom_permission(self):
         self.publication_generic_test.model_has_custom_permission()
+
+    def test_serializer_read_only_fields(self):
+        self.publication_generic_test.serializer_read_only_fields([])
