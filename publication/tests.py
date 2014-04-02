@@ -48,7 +48,7 @@ class PublicationGenericTest(ResourceGenericTest):
         self.test_case.assertTrue(response.data['is_published'], 'Is_published return must be True')
 
     def serializer_hyperlinked_fields(self, fields):
-        fields.extend(['is_published', 'publish', 'unpublish'])
+        fields.extend(['publish', 'unpublish'])
         super(PublicationGenericTest, self).serializer_hyperlinked_fields(fields)
 
     def add_category(self, model_name):

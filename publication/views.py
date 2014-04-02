@@ -49,12 +49,6 @@ class PublicationBaseViewSet(ResourceViewSet):
             obj.publication_start_date = timezone.now()
 
     @link()
-    def is_published(self, request, *args, **kwargs):
-        """Link to return the state of the publication, if published or not."""
-        publication = self.get_object()
-        return Response({'is_published': publication.is_published()})
-
-    @link()
     def publish(self, request, *args, **kwargs):
         """Link to publish the publication.
 
