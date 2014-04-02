@@ -74,10 +74,10 @@ class FileAPITestCase(APILiveServerTestCase):
         self.publication_generic_test.owner_is_request_user()
 
     def test_hyperlinked_fields(self):
-        self.publication_generic_test.hyperlinked_fields([])
+        self.publication_generic_test.serializer_hyperlinked_fields([])
 
     def test_user_and_account_from_request_user(self):
-        self.publication_generic_test.user_and_account_from_request_user()
+        self.publication_generic_test.user_and_account_coincide_with_request_user()
 
     def test_model_has_custom_permission(self):
         self.publication_generic_test.model_has_custom_permission()

@@ -142,7 +142,7 @@ class APIGenericTest:
 
             # TODO Still need to create a generic test for ordering
 
-    def hyperlinked_fields(self, fields):
+    def serializer_hyperlinked_fields(self, fields):
         for field in fields:
             response = self.test_case.client.get(self.first_object_response.data[field])
             self.test_case.assertEqual(response.status_code, status.HTTP_200_OK, 'Error with field {0}'.format(field))
@@ -153,6 +153,9 @@ class APIGenericTest:
         database_permissions = Permission.objects.filter(codename__endswith=model_name).values_list('codename',
                                                                                                     flat=True)
         self.test_case.assertIn(view_permission, database_permissions)
+
+    def serializer_read_only_fields(self):
+        pass
 
 
 class ResourceGenericTest(APIGenericTest):
@@ -239,7 +242,6 @@ class ResourceGenericTest(APIGenericTest):
         self.set_authorization_bearer(self.owner_token)
         super(ResourceGenericTest, self).destroy(status_code=status.HTTP_403_FORBIDDEN, url=url)
 
-    #TODO: Confusing. Should not an -er be used with request verb to make a substantive?
     def owner_is_request_user(self):
         self.set_authorization_bearer(self.second_owner_token)
         response = self.test_case.client.post(self.url, self.data)
@@ -248,16 +250,15 @@ class ResourceGenericTest(APIGenericTest):
         user = User.objects.get(username=self.second_owner_token)
         self.test_case.assertEqual(user, owner_obj.creator)
 
-    def hyperlinked_fields(self, fields):
+    def serializer_hyperlinked_fields(self, fields):
         if not fields:
             fields = ['creator', 'account']
         else:
             fields.append('creator')
             fields.append('account')
-        super(ResourceGenericTest, self).hyperlinked_fields(fields)
+        super(ResourceGenericTest, self).serializer_hyperlinked_fields(fields)
 
-    #TODO: This name is confusing. Suggestion: user and account coincide with the requester ones
-    def user_and_account_from_request_user(self):
+    def user_and_account_coincide_with_request_user(self):
         data = self.first_object_response.data
         account_id = data['account'].split('/')[-2]
         creator_id = data['creator'].split('/')[-2]

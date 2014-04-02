@@ -72,7 +72,7 @@ class AccountAPITestCase(APILiveServerTestCase):
         accountuser_url = reverse('accountuser-list')
         response = self.client.post(accountuser_url, {})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-        self.account_api_generic_test.hyperlinked_fields(['owner'])
+        self.account_api_generic_test.serializer_hyperlinked_fields(['owner'])
 
     def test_default_expiration_date(self):
         self.assertEqual(self.account_api_generic_test.first_object_response.data['expiration_date'],
@@ -204,7 +204,7 @@ class UserAPITestCase(APILiveServerTestCase):
         self.assertNotIn('password', response.data)
 
     def test_hyperlinked_fields(self):
-        self.user_generic_test.hyperlinked_fields(['accountuser'])
+        self.user_generic_test.serializer_hyperlinked_fields(['accountuser'])
 
     def test_accountuser_created_has_same_account_as_request_user(self):
         account_user_url = self.user_generic_test.first_object_response.data['accountuser']
@@ -291,7 +291,7 @@ class AccountUserTestCase(APILiveServerTestCase):
 
     def test_hyperlinked_identity_field(self):
         fields = ['user', 'account']
-        self.accountuser_generic_test.hyperlinked_fields(fields)
+        self.accountuser_generic_test.serializer_hyperlinked_fields(fields)
 
     def test_model_has_custom_permission(self):
         self.accountuser_generic_test.model_has_custom_permission()
@@ -402,6 +402,6 @@ class GroupAPITestCase(APILiveServerTestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST,
                          'Should not be possible to create another account group with same role name')
 
-    def test_hyperlinked_identity_field(self):
+    def test_hyperlinked_fields(self):
         fields = ['account']
-        self.account_group_api_generic_test.hyperlinked_fields(fields)
+        self.account_group_api_generic_test.serializer_hyperlinked_fields(fields)

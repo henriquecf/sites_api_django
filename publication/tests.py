@@ -47,14 +47,14 @@ class PublicationGenericTest(ResourceGenericTest):
         response = self.get_action_response('publish')
         self.test_case.assertTrue(response.data['is_published'], 'Is_published return must be True')
 
-    def hyperlinked_fields(self, fields):
+    def serializer_hyperlinked_fields(self, fields):
         if not fields:
             fields = ['is_published', 'publish', 'unpublish']
         else:
             fields.append('is_published')
             fields.append('publish')
             fields.append('unpublish')
-        super(PublicationGenericTest, self).hyperlinked_fields(fields)
+        super(PublicationGenericTest, self).serializer_hyperlinked_fields(fields)
 
     def add_category(self, model_name):
         data2 = copy(self.data)
@@ -141,10 +141,10 @@ class PublicationAPITestCase(APILiveServerTestCase):
         self.publication_generic_test.owner_is_request_user()
 
     def test_hyperlinked_fields(self):
-        self.publication_generic_test.hyperlinked_fields([])
+        self.publication_generic_test.serializer_hyperlinked_fields([])
 
     def test_user_and_account_from_request_user(self):
-        self.publication_generic_test.user_and_account_from_request_user()
+        self.publication_generic_test.user_and_account_coincide_with_request_user()
 
     def test_model_has_custom_permission(self):
         self.publication_generic_test.model_has_custom_permission()
@@ -185,7 +185,7 @@ class CategoryAPITestCase(APILiveServerTestCase):
 
     def test_hyperlinked_fields(self):
         fields = ['get_descendants']
-        self.resource_generic_test.hyperlinked_fields(fields)
+        self.resource_generic_test.serializer_hyperlinked_fields(fields)
 
     def test_if_creates_with_parent(self):
         response = self.client.post(self.url, self.data)
