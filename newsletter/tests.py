@@ -71,6 +71,9 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
     def test_model_has_custom_permission(self):
         self.resource_generic_test.model_has_custom_permission()
 
+    def test_serializer_read_only_fields(self):
+        self.resource_generic_test.serializer_read_only_fields([])
+
 
 class NewsletterAPITestCase(APILiveServerTestCase):
     model = Newsletter
@@ -112,3 +115,6 @@ class NewsletterAPITestCase(APILiveServerTestCase):
 
     def test_model_has_custom_permission(self):
         self.resource_generic_test.model_has_custom_permission()
+
+    def test_serializer_read_only_fields(self):
+        self.resource_generic_test.serializer_read_only_fields([])

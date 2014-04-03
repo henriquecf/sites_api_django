@@ -5,7 +5,7 @@ from publication.models import Publication, Category
 
 
 class PublicationSerializer(ResourceSerializer):
-    is_published = serializers.HyperlinkedIdentityField(view_name='publication-is-published')
+    is_published = serializers.BooleanField(source='is_published', read_only=True)
     publish = serializers.HyperlinkedIdentityField(view_name='publication-publish')
     unpublish = serializers.HyperlinkedIdentityField(view_name='publication-unpublish')
 

@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url, include
 from django.contrib import admin
 from rest_framework.routers import DefaultRouter
 
-from accounts import views as account_views
+from account import views as account_views
 from publication import views as publication_views
 from news import views as news_views
 from file_explorer import views as file_explorer_views
@@ -22,10 +22,14 @@ router.register(r'newsletter', newsletter_views.NewsletterViewSet)
 router.register(r'submission', newsletter_views.SubmissionViewSet)
 router.register(r'accountuser', account_views.AccountUserViewSet)
 router.register(r'user', account_views.UserViewSet)
+router.register(r'accountgroup', account_views.AccountGroupViewSet)
 
 urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-                       url(r'^accounts/', include('accounts.urls')),
+                       url(r'^account/', include('account.urls')),
+                       url(r'^permission/(?P<pk>[\d]+)/$', account_views.PermissionDetailView.as_view(),
+                           name='permission-detail'),
+                       url(r'^group/(?P<pk>[\d]+)/$', account_views.GroupDetailView.as_view(), name='group-detail'),
                        url(r'^', include(router.urls), name='api'),
 )

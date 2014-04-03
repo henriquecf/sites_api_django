@@ -46,7 +46,7 @@ INSTALLED_APPS = (
     'mptt',
     'django_filters',
 
-    'accounts',
+    'account',
     'publication',
     'news',
     'file_explorer',

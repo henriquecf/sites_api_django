@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-from accounts.models import Account, Common
+from account.models import Account, Common
 
 
 class Resource(Common):
