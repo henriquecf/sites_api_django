@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from accounts.models import AccountUser
-from .models import Account
+from account.models import AccountUser
+from .models import Account, AccountGroup
 
 
 class AccountSerializer(serializers.HyperlinkedModelSerializer):
@@ -26,11 +26,19 @@ class UserCreateChangeSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ['url', 'first_name', 'last_name', 'username', 'email', 'password', 'accountuser']
+        exclude = ['is_superuser']
 
 
 class UserSerializer(UserCreateChangeSerializer):
     """Must be called when a safe method is being requested."""
 
     class Meta(UserCreateChangeSerializer.Meta):
-        fields = ['url', 'username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff', 'accountuser']
+        exclude = ['is_superuser', 'password']
+
+
+class AccountGroupSerializer(serializers.HyperlinkedModelSerializer):
+    account = serializers.HyperlinkedRelatedField(view_name='account-detail', read_only=True)
+    name = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = AccountGroup

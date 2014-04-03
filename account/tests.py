@@ -8,10 +8,9 @@ from django.contrib.auth.models import User
 import random
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
-from accounts.models import Account, AccountUser
 from resource.tests import APIGenericTest
 from oauth2_provider.models import AccessToken, Application
-from .models import Account
+from .models import Account, AccountGroup, AccountUser
 
 
 class AccountAPIGenericTest(APIGenericTest):
@@ -73,7 +72,7 @@ class AccountAPITestCase(APILiveServerTestCase):
         accountuser_url = reverse('accountuser-list')
         response = self.client.post(accountuser_url, {})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-        self.account_api_generic_test.hyperlinked_fields(['owner'])
+        self.account_api_generic_test.serializer_hyperlinked_fields(['owner'])
 
     def test_default_expiration_date(self):
         self.assertEqual(self.account_api_generic_test.first_object_response.data['expiration_date'],
@@ -81,6 +80,10 @@ class AccountAPITestCase(APILiveServerTestCase):
 
     def test_model_has_custom_permission(self):
         self.account_api_generic_test.model_has_custom_permission()
+
+    def test_serializer_read_only_fields(self):
+        fields = ['owner']
+        self.account_api_generic_test.serializer_read_only_fields(fields)
 
 
 class UserGenericTest(APIGenericTest):
@@ -199,20 +202,13 @@ class UserAPITestCase(APILiveServerTestCase):
     def test_hashed_password(self):
         self.assertNotEqual(self.user_generic_test.first_object_response.data['password'], self.data['password'])
 
-    def test_user_viewset_get_serializer(self):
-        self.user_generic_test.alter_username()
-        response = self.client.post(self.url, self.data)
-        self.assertNotIn('is_active', response.data)
-        self.user_generic_test.alter_username(altered_data=True)
-        response2 = self.client.patch(response.data['url'], self.altered_data)
-        self.assertNotIn('is_active', response2.data)
-        response3 = self.client.get(response.data['url'])
-        self.assertIn('is_active', response3.data)
-        response4 = self.client.get(self.url)
-        self.assertIn('is_active', response4.data['results'][0])
+    def test_excluded_serializer_fields(self):
+        self.assertNotIn('is_superuser', self.user_generic_test.first_object_response.data)
+        response = self.client.get(self.user_generic_test.first_object_response.data['url'])
+        self.assertNotIn('password', response.data)
 
     def test_hyperlinked_fields(self):
-        self.user_generic_test.hyperlinked_fields(['accountuser'])
+        self.user_generic_test.serializer_hyperlinked_fields(['accountuser', 'user_permissions', 'groups'])
 
     def test_accountuser_created_has_same_account_as_request_user(self):
         account_user_url = self.user_generic_test.first_object_response.data['accountuser']
@@ -221,6 +217,10 @@ class UserAPITestCase(APILiveServerTestCase):
         account_id = account_url.split('/')[-2]
         owner_account_id = User.objects.get(username=self.user_generic_test.owner_token).accountuser.account.id
         self.assertEqual(account_id, str(owner_account_id))
+
+    def test_serializer_read_only_fields(self):
+        fields = ['accountuser']
+        self.user_generic_test.serializer_read_only_fields(fields)
 
 
 class AccountUserGenericTest(APIGenericTest):
@@ -299,10 +299,14 @@ class AccountUserTestCase(APILiveServerTestCase):
 
     def test_hyperlinked_identity_field(self):
         fields = ['user', 'account']
-        self.accountuser_generic_test.hyperlinked_fields(fields)
+        self.accountuser_generic_test.serializer_hyperlinked_fields(fields)
 
     def test_model_has_custom_permission(self):
         self.accountuser_generic_test.model_has_custom_permission()
+
+    def test_serializer_read_only_fields(self):
+        fields = ['user', 'account']
+        self.accountuser_generic_test.serializer_read_only_fields(fields)
 
 
 class UserTestCase(LiveServerTestCase):
@@ -318,3 +322,102 @@ class UserTestCase(LiveServerTestCase):
         }
         response = self.client.post(login_url, login_data)
         self.assertEqual(response.status_code, 302)
+
+
+class AccountGroupAPIGenericTest(APIGenericTest):
+
+    def alter_data(self, altered_data=False):
+        if not altered_data:
+            self.data.update({'role': 'Group {0}'.format(random.randint(1, 100000))})
+        else:
+            self.altered_data.update({'role': 'Group {0}'.format(random.randint(1, 100000))})
+
+    def create(self, status_code=status.HTTP_201_CREATED):
+        self.alter_data()
+        super(AccountGroupAPIGenericTest, self).create(status_code=status_code)
+
+    def list(self, count=1, status_code=status.HTTP_200_OK):
+        super(AccountGroupAPIGenericTest, self).list(count=count, status_code=status_code)
+        self.set_authorization_bearer(self.second_owner_token)
+        super(AccountGroupAPIGenericTest, self).list(count=0, status_code=status_code)
+
+    def retrieve(self, status_code=status.HTTP_200_OK, url=None):
+        super(AccountGroupAPIGenericTest, self).retrieve(status_code=status_code, url=url)
+        self.set_authorization_bearer(self.second_owner_token)
+        super(AccountGroupAPIGenericTest, self).retrieve(status_code=status.HTTP_404_NOT_FOUND, url=url)
+
+    def update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
+        super(AccountGroupAPIGenericTest, self).update(status_code=status_code, is_altered=is_altered, url=url)
+        self.set_authorization_bearer(self.second_owner_token)
+        super(AccountGroupAPIGenericTest, self).update(status_code=status.HTTP_201_CREATED, is_altered=True, url=url)
+
+    def partial_update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
+        super(AccountGroupAPIGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered, url=url)
+        self.set_authorization_bearer(self.second_owner_token)
+        super(AccountGroupAPIGenericTest, self).partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False,
+                                                               url=url)
+
+    def destroy(self, status_code=status.HTTP_204_NO_CONTENT, url=None):
+        self.set_authorization_bearer(self.second_owner_token)
+        super(AccountGroupAPIGenericTest, self).destroy(status_code=status.HTTP_404_NOT_FOUND, url=url)
+        self.set_authorization_bearer(self.owner_token)
+        super(AccountGroupAPIGenericTest, self).destroy(status_code=status_code, url=url)
+
+
+class GroupAPITestCase(APILiveServerTestCase):
+    """Specify the Group's functionality.
+
+    Key features being tested:
+
+    Create, update, partial update, destroy, list and retrieve;
+    Admin Permission, Filter groups by account.
+    """
+    model = AccountGroup
+
+    def setUp(self):
+        self.url = reverse('accountgroup-list')
+        self.data = {
+            'role': 'Group 1',
+        }
+        self.altered_data = {
+            'role': 'Group 1 altered',
+        }
+        self.account_group_api_generic_test = AccountGroupAPIGenericTest(self)
+
+    def test_create(self):
+        self.account_group_api_generic_test.create()
+
+    def test_update(self):
+        self.account_group_api_generic_test.update()
+
+    def test_partial_update(self):
+        self.account_group_api_generic_test.partial_update()
+
+    def test_retrieve(self):
+        self.account_group_api_generic_test.retrieve()
+
+    def test_list(self):
+        self.account_group_api_generic_test.list()
+
+    def test_destroy(self):
+        self.account_group_api_generic_test.destroy()
+
+    def test_admin_permission(self):
+        self.account_group_api_generic_test.admin_permission()
+
+    def test_search_fields(self):
+        fields = ['role']
+        self.account_group_api_generic_test.search_fields(fields)
+
+    def test_role_and_account_are_unique_together(self):
+        response = self.client.post(self.url, self.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST,
+                         'Should not be possible to create another account group with same role name')
+
+    def test_hyperlinked_fields(self):
+        fields = ['account']
+        self.account_group_api_generic_test.serializer_hyperlinked_fields(fields)
+
+    def test_serializer_read_only_fields(self):
+        fields = ['account', 'name']
+        self.account_group_api_generic_test.serializer_read_only_fields(fields)

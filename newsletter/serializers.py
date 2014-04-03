@@ -16,6 +16,7 @@ class NewsletterSerializer(ResourceSerializer):
     class Meta(ResourceSerializer.Meta):
         model = Newsletter
 
+
 class SubmissionSerializer(ResourceSerializer):
 
     class Meta(ResourceSerializer.Meta):
