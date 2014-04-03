@@ -7,7 +7,6 @@ from django.test.testcases import LiveServerTestCase
 from django.contrib.auth.models import User
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
-
 from resource.tests import ResourceGenericTest
 from account.models import Account
 from .models import Publication, Category
@@ -71,7 +70,7 @@ class PublicationGenericTest(ResourceGenericTest):
                                    'Field categories not found in model "{0}"'.format(model_name))
 
 
-class PublicationAPITestCase(APILiveServerTestCase):
+class PublicationAPITestFixtures(APILiveServerTestCase):
     model = Publication
 
     def setUp(self):
@@ -90,6 +89,13 @@ class PublicationAPITestCase(APILiveServerTestCase):
             'publication_start_date': timezone.now(),
             'publication_end_date': None,
         }
+        self.publication_generic_test = PublicationGenericTest(self)
+
+
+class PublicationAPITestFunctions:
+    search_fields = ('title', 'description')
+
+    def __init__(self):
         self.publication_generic_test = PublicationGenericTest(self)
 
     def test_create(self):
@@ -129,8 +135,7 @@ class PublicationAPITestCase(APILiveServerTestCase):
         self.publication_generic_test.unpublish()
 
     def test_search_fields(self):
-        search_fields = ('title', 'description')
-        self.publication_generic_test.search_fields(search_fields)
+        self.publication_generic_test.search_fields(self.search_fields)
 
     def test_owner_is_request_user(self):
         self.publication_generic_test.owner_is_request_user()
@@ -146,6 +151,10 @@ class PublicationAPITestCase(APILiveServerTestCase):
 
     def test_serializer_read_only_fields(self):
         self.publication_generic_test.serializer_read_only_fields([])
+
+
+class PublicationAPITestCase(PublicationAPITestFixtures, PublicationAPITestFunctions):
+    pass
 
 
 class CategoryAPITestCase(APILiveServerTestCase):
