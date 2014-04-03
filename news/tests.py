@@ -2,11 +2,11 @@ from django.utils import timezone
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 
-from publication.tests import PublicationGenericTest
+from publication.tests import PublicationGenericTest, PublicationAPITestFixtures, PublicationAPITestFunctions
 from .models import News
 
 
-class NewsAPITestCase(APILiveServerTestCase):
+class NewsAPITestFixtures(APILiveServerTestCase):
     model = News
 
     def setUp(self):
@@ -29,60 +29,11 @@ class NewsAPITestCase(APILiveServerTestCase):
         }
         self.publication_generic_test = PublicationGenericTest(self)
 
-    def test_create(self):
-        self.publication_generic_test.create()
-
-    def test_list(self):
-        self.publication_generic_test.list()
-
-    def test_retrieve(self):
-        self.publication_generic_test.retrieve()
-
-    def test_update(self):
-        self.publication_generic_test.update()
-
-    def test_partial_update(self):
-        self.publication_generic_test.partial_update()
-
-    def test_destroy(self):
-        self.publication_generic_test.destroy()
-
-    def test_slug_is_slugified_title(self):
-        self.publication_generic_test.slug_is_slugified_title()
-
-    def test_slug_is_unique(self):
-        self.publication_generic_test.slug_is_unique()
-
-    def test_has_author(self):
-        self.publication_generic_test.has_author()
-
-    def test_is_published_default_true(self):
-        self.publication_generic_test.is_published_default_true()
-
-    def test_publish(self):
-        self.publication_generic_test.publish()
-
-    def test_unpublish(self):
-        self.publication_generic_test.unpublish()
-
-    def test_search_fields(self):
-        search_fields = ('title', 'description', 'content')
-        self.publication_generic_test.search_fields(search_fields)
+class NewsAPITestFunctions(PublicationAPITestFunctions):
+    search_fields = ('title', 'description', 'content')
 
     def test_add_category(self):
         self.publication_generic_test.add_category('news')
 
-    def test_owner_is_request_user(self):
-        self.publication_generic_test.owner_is_request_user()
-
-    def test_hyperlinked_fields(self):
-        self.publication_generic_test.serializer_hyperlinked_fields([])
-
-    def test_user_and_account_from_request_user(self):
-        self.publication_generic_test.user_and_account_coincide_with_request_user()
-
-    def test_model_has_custom_permission(self):
-        self.publication_generic_test.model_has_custom_permission()
-
-    def test_serializer_read_only_fields(self):
-        self.publication_generic_test.serializer_read_only_fields([])
+class NewsAPITestCase(NewsAPITestFixtures, NewsAPITestFunctions):
+    pass
