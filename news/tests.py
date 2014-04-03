@@ -1,8 +1,7 @@
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
-
-from publication.tests import PublicationGenericTest, PublicationAPITestFixtures, PublicationAPITestFunctions
+from publication.tests import PublicationGenericTest, PublicationAPITestFunctions
 from .models import News
 
 
@@ -29,11 +28,13 @@ class NewsAPITestFixtures(APILiveServerTestCase):
         }
         self.publication_generic_test = PublicationGenericTest(self)
 
+
 class NewsAPITestFunctions(PublicationAPITestFunctions):
     search_fields = ('title', 'description', 'content')
 
     def test_add_category(self):
         self.publication_generic_test.add_category('news')
+
 
 class NewsAPITestCase(NewsAPITestFixtures, NewsAPITestFunctions):
     pass

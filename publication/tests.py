@@ -1,4 +1,4 @@
-import datetime, unittest
+import datetime
 from copy import copy
 from django.utils import timezone
 from django.core.urlresolvers import reverse
@@ -7,7 +7,6 @@ from django.test.testcases import LiveServerTestCase
 from django.contrib.auth.models import User
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
-
 from resource.tests import ResourceGenericTest
 from account.models import Account
 from .models import Publication, Category
@@ -91,6 +90,7 @@ class PublicationAPITestFixtures(APILiveServerTestCase):
             'publication_end_date': None,
         }
         self.publication_generic_test = PublicationGenericTest(self)
+
 
 class PublicationAPITestFunctions:
     search_fields = ('title', 'description')
