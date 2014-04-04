@@ -46,9 +46,9 @@ class PublicationGenericTest(ResourceGenericTest):
         response = self.get_action_response('publish')
         self.test_case.assertTrue(response.data['is_published'], 'Is_published return must be True')
 
-    def serializer_hyperlinked_fields(self, fields):
+    def test_resource_serializer_hyperlinked_fields(self, fields):
         fields.extend(['publish', 'unpublish'])
-        super(PublicationGenericTest, self).serializer_hyperlinked_fields(fields)
+        super(PublicationGenericTest, self).test_resource_serializer_hyperlinked_fields(fields)
 
     def add_category(self, model_name):
         data2 = copy(self.data)
@@ -99,22 +99,22 @@ class PublicationAPITestFunctions:
         self.publication_generic_test = PublicationGenericTest(self)
 
     def test_create(self):
-        self.publication_generic_test.create()
+        self.publication_generic_test.test_resource_create()
 
     def test_list(self):
-        self.publication_generic_test.list()
+        self.publication_generic_test.test_resource_list()
 
     def test_retrieve(self):
-        self.publication_generic_test.retrieve()
+        self.publication_generic_test.test_resource_retrieve()
 
     def test_update(self):
-        self.publication_generic_test.update()
+        self.publication_generic_test.test_resource_update()
 
     def test_partial_update(self):
-        self.publication_generic_test.partial_update()
+        self.publication_generic_test.test_resource_partial_update()
 
     def test_destroy(self):
-        self.publication_generic_test.destroy()
+        self.publication_generic_test.test_resource_destroy()
 
     def test_slug_is_slugified_title(self):
         self.publication_generic_test.slug_is_slugified_title()
@@ -138,19 +138,19 @@ class PublicationAPITestFunctions:
         self.publication_generic_test.search_fields(self.search_fields)
 
     def test_owner_is_request_user(self):
-        self.publication_generic_test.owner_is_request_user()
+        self.publication_generic_test.test_resource_owner_is_request_user()
 
     def test_hyperlinked_fields(self):
-        self.publication_generic_test.serializer_hyperlinked_fields([])
+        self.publication_generic_test.test_resource_serializer_hyperlinked_fields([])
 
     def test_user_and_account_from_request_user(self):
-        self.publication_generic_test.user_and_account_coincide_with_request_user()
+        self.publication_generic_test.test_resource_user_and_account_coincide_with_request_user()
 
     def test_model_has_custom_permission(self):
         self.publication_generic_test.model_has_custom_permission()
 
     def test_serializer_read_only_fields(self):
-        self.publication_generic_test.serializer_read_only_fields([])
+        self.publication_generic_test.test_resource_serializer_read_only_fields([])
 
 
 class PublicationAPITestCase(PublicationAPITestFixtures, PublicationAPITestFunctions):
@@ -173,26 +173,26 @@ class CategoryAPITestCase(APILiveServerTestCase):
         self.resource_generic_test = ResourceGenericTest(self)
 
     def test_create(self):
-        self.resource_generic_test.create()
+        self.resource_generic_test.test_resource_create()
 
     def test_retrieve(self):
-        self.resource_generic_test.retrieve()
+        self.resource_generic_test.test_resource_retrieve()
 
     def test_list(self):
-        self.resource_generic_test.list()
+        self.resource_generic_test.test_resource_list()
 
     def test_update(self):
-        self.resource_generic_test.update()
+        self.resource_generic_test.test_resource_update()
 
     def test_partial_update(self):
-        self.resource_generic_test.partial_update()
+        self.resource_generic_test.test_resource_partial_update()
 
     def test_destroy(self):
-        self.resource_generic_test.destroy()
+        self.resource_generic_test.test_resource_destroy()
 
     def test_hyperlinked_fields(self):
         fields = ['get_descendants']
-        self.resource_generic_test.serializer_hyperlinked_fields(fields)
+        self.resource_generic_test.test_resource_serializer_hyperlinked_fields(fields)
 
     def test_if_creates_with_parent(self):
         response = self.client.post(self.url, self.data)

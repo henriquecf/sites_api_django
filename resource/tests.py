@@ -162,7 +162,8 @@ class APIGenericTest:
 
 
 class ResourceGenericTest(APIGenericTest):
-    def create(self, status_code=status.HTTP_201_CREATED):
+
+    def test_resource_create(self, status_code=status.HTTP_201_CREATED):
         super(ResourceGenericTest, self).create(status_code=status_code)
         self.set_authorization_bearer(self.second_owner_token)
         super(ResourceGenericTest, self).create(status_code=status_code)
@@ -172,7 +173,7 @@ class ResourceGenericTest(APIGenericTest):
         self.set_authorization_bearer(self.owner_token)
         super(ResourceGenericTest, self).create(status_code=status.HTTP_403_FORBIDDEN)
 
-    def update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
+    def test_resource_update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
         super(ResourceGenericTest, self).update(status_code=status_code, is_altered=is_altered, url=url)
         self.set_authorization_bearer(self.second_owner_token)
         super(ResourceGenericTest, self).update(status_code=status.HTTP_201_CREATED, is_altered=is_altered, url=url)
@@ -186,7 +187,7 @@ class ResourceGenericTest(APIGenericTest):
         self.account_user2.accountuser.global_permissions.clear()
         super(ResourceGenericTest, self).update(status_code=status.HTTP_201_CREATED, is_altered=False, url=url)
 
-    def partial_update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
+    def test_resource_partial_update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
         super(ResourceGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered, url=url)
         self.set_authorization_bearer(self.second_owner_token)
         super(ResourceGenericTest, self).partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False,
@@ -204,7 +205,7 @@ class ResourceGenericTest(APIGenericTest):
         super(ResourceGenericTest, self).partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False,
                                                         url=url)
 
-    def list(self, count=1, status_code=status.HTTP_200_OK):
+    def test_resource_list(self, count=1, status_code=status.HTTP_200_OK):
         super(ResourceGenericTest, self).list(count=count, status_code=status_code)
         self.set_authorization_bearer(self.second_owner_token)
         super(ResourceGenericTest, self).list(count=0, status_code=status_code)
@@ -218,7 +219,7 @@ class ResourceGenericTest(APIGenericTest):
         self.account_user2.accountuser.global_permissions.clear()
         super(ResourceGenericTest, self).list(count=0, status_code=status_code)
 
-    def retrieve(self, status_code=status.HTTP_200_OK, url=None):
+    def test_resource_retrieve(self, status_code=status.HTTP_200_OK, url=None):
         super(ResourceGenericTest, self).retrieve(status_code=status_code, url=url)
         self.set_authorization_bearer(self.second_owner_token)
         super(ResourceGenericTest, self).retrieve(status_code=status.HTTP_404_NOT_FOUND, url=url)
@@ -232,7 +233,7 @@ class ResourceGenericTest(APIGenericTest):
         self.account_user2.accountuser.global_permissions.clear()
         super(ResourceGenericTest, self).retrieve(status_code=status.HTTP_404_NOT_FOUND, url=url)
 
-    def destroy(self, status_code=status.HTTP_204_NO_CONTENT, url=None):
+    def test_resource_destroy(self, status_code=status.HTTP_204_NO_CONTENT, url=None):
         self.set_authorization_bearer(self.second_owner_token)
         super(ResourceGenericTest, self).destroy(status_code=status.HTTP_404_NOT_FOUND, url=url)
         self.set_authorization_bearer(self.account_user_token2)
@@ -245,7 +246,7 @@ class ResourceGenericTest(APIGenericTest):
         self.set_authorization_bearer(self.owner_token)
         super(ResourceGenericTest, self).destroy(status_code=status.HTTP_403_FORBIDDEN, url=url)
 
-    def owner_is_request_user(self):
+    def test_resource_owner_is_request_user(self):
         self.set_authorization_bearer(self.second_owner_token)
         response = self.test_case.client.post(self.url, self.data)
         owner_id = response.data['url'].split('/')[-2]
@@ -253,11 +254,11 @@ class ResourceGenericTest(APIGenericTest):
         user = User.objects.get(username=self.second_owner_token)
         self.test_case.assertEqual(user, owner_obj.creator)
 
-    def serializer_hyperlinked_fields(self, fields):
+    def test_resource_serializer_hyperlinked_fields(self, fields):
         fields.extend(['creator', 'account'])
         super(ResourceGenericTest, self).serializer_hyperlinked_fields(fields)
 
-    def user_and_account_coincide_with_request_user(self):
+    def test_resource_user_and_account_coincide_with_request_user(self):
         data = self.first_object_response.data
         account_id = data['account'].split('/')[-2]
         creator_id = data['creator'].split('/')[-2]
@@ -265,6 +266,6 @@ class ResourceGenericTest(APIGenericTest):
         self.test_case.assertEqual(account_id, str(request_user.accountuser.account.id))
         self.test_case.assertEqual(creator_id, str(request_user.id))
 
-    def serializer_read_only_fields(self, fields):
+    def test_resource_serializer_read_only_fields(self, fields):
         fields.extend(['creator', 'account'])
         super(ResourceGenericTest, self).serializer_read_only_fields(fields)

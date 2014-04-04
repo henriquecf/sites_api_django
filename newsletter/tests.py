@@ -23,23 +23,23 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
         self.resource_generic_test = ResourceGenericTest(self)
 
     def test_create(self):
-        self.resource_generic_test.create()
+        self.resource_generic_test.test_resource_create()
 
     def test_list(self):
         self.data.update({'email': 'ivan2@ivan2.com'})
-        self.resource_generic_test.list(count=1)
+        self.resource_generic_test.test_resource_list(count=1)
 
     def test_retrieve(self):
-        self.resource_generic_test.retrieve()
+        self.resource_generic_test.test_resource_retrieve()
 
     def test_update(self):
-        self.resource_generic_test.update()
+        self.resource_generic_test.test_resource_update()
 
     def test_partial_update(self):
-        self.resource_generic_test.partial_update()
+        self.resource_generic_test.test_resource_partial_update()
 
     def test_destroy(self):
-        self.resource_generic_test.destroy()
+        self.resource_generic_test.test_resource_destroy()
 
     def test_email_is_unique(self):
         count = Subscription.objects.count()
@@ -72,7 +72,7 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
         self.resource_generic_test.model_has_custom_permission()
 
     def test_serializer_read_only_fields(self):
-        self.resource_generic_test.serializer_read_only_fields([])
+        self.resource_generic_test.test_resource_serializer_read_only_fields([])
 
 
 class NewsletterAPITestCase(APILiveServerTestCase):
@@ -91,22 +91,22 @@ class NewsletterAPITestCase(APILiveServerTestCase):
         self.resource_generic_test = ResourceGenericTest(self)
 
     def test_create(self):
-        self.resource_generic_test.create()
+        self.resource_generic_test.test_resource_create()
 
     def test_list(self):
-        self.resource_generic_test.list()
+        self.resource_generic_test.test_resource_list()
 
     def test_retrieve(self):
-        self.resource_generic_test.retrieve()
+        self.resource_generic_test.test_resource_retrieve()
 
     def test_update(self):
-        self.resource_generic_test.update()
+        self.resource_generic_test.test_resource_update()
 
     def test_partial_update(self):
-        self.resource_generic_test.partial_update()
+        self.resource_generic_test.test_resource_partial_update()
 
     def test_destroy(self):
-        self.resource_generic_test.destroy()
+        self.resource_generic_test.test_resource_destroy()
 
     def test_send_newsletter_just_to_own_subscribers(self):
         response = self.client.post(self.url, self.data)
@@ -117,4 +117,4 @@ class NewsletterAPITestCase(APILiveServerTestCase):
         self.resource_generic_test.model_has_custom_permission()
 
     def test_serializer_read_only_fields(self):
-        self.resource_generic_test.serializer_read_only_fields([])
+        self.resource_generic_test.test_resource_serializer_read_only_fields([])
