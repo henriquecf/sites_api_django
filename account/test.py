@@ -48,42 +48,42 @@ class AccountAPITestCase(APILiveServerTestCase):
         self.account_api_generic_test = AccountAPIGenericTest(self)
 
     def test_create(self):
-        self.account_api_generic_test.create(status_code=status.HTTP_400_BAD_REQUEST)
+        self.account_api_generic_test.test_create(status_code=status.HTTP_400_BAD_REQUEST)
 
     def test_update(self):
-        self.account_api_generic_test.update(status_code=status.HTTP_400_BAD_REQUEST)
+        self.account_api_generic_test.test_update(status_code=status.HTTP_400_BAD_REQUEST)
 
     def test_partial_update(self):
-        self.account_api_generic_test.partial_update(status_code=status.HTTP_400_BAD_REQUEST)
+        self.account_api_generic_test.test_partial_update(status_code=status.HTTP_400_BAD_REQUEST)
 
     def test_retrieve(self):
-        self.account_api_generic_test.retrieve()
+        self.account_api_generic_test.test_retrieve()
 
     def test_list(self):
-        self.account_api_generic_test.list()
+        self.account_api_generic_test.test_list()
 
     def test_destroy(self):
-        self.account_api_generic_test.destroy()
+        self.account_api_generic_test.test_destroy()
 
     def test_admin_permission(self):
-        self.account_api_generic_test.admin_permission()
+        self.account_api_generic_test.test_admin_permission()
 
     def test_hyperlinked_fields(self):
         accountuser_url = reverse('accountuser-list')
         response = self.client.post(accountuser_url, {})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-        self.account_api_generic_test.serializer_hyperlinked_fields(['owner'])
+        self.account_api_generic_test.test_serializer_hyperlinked_fields(['owner'])
 
     def test_default_expiration_date(self):
         self.assertEqual(self.account_api_generic_test.first_object_response.data['expiration_date'],
                          datetime.date.today() + datetime.timedelta(30))
 
     def test_model_has_custom_permission(self):
-        self.account_api_generic_test.model_has_custom_permission()
+        self.account_api_generic_test.test_model_has_custom_permission()
 
     def test_serializer_read_only_fields(self):
         fields = ['owner']
-        self.account_api_generic_test.serializer_read_only_fields(fields)
+        self.account_api_generic_test.test_serializer_read_only_fields(fields)
 
 
 class UserGenericTest(APIGenericTest):
@@ -98,7 +98,7 @@ class UserGenericTest(APIGenericTest):
             'username': username,
         })
 
-    def search_fields(self, search_fields=None):
+    def test_search_fields(self, search_fields=None):
         for field in search_fields:
             filter_parameter = random.randint(1, 999999)
             self.altered_data.update({'username': filter_parameter + 1})
@@ -110,45 +110,45 @@ class UserGenericTest(APIGenericTest):
             response = self.test_case.client.get(self.url, query_parameter)
             self.test_case.assertEqual(response.data['count'], 1, 'Field "{0}" not in search fields'.format(field))
 
-    def create(self, status_code=status.HTTP_201_CREATED):
+    def test_create(self, status_code=status.HTTP_201_CREATED):
         self.alter_username()
-        super(UserGenericTest, self).create(status_code=status_code)
+        super(UserGenericTest, self).test_create(status_code=status_code)
         self.set_authorization_bearer(self.second_owner_token)
         self.alter_username()
-        super(UserGenericTest, self).create(status_code=status_code)
+        super(UserGenericTest, self).test_create(status_code=status_code)
 
-    def update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
+    def test_update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
         self.set_authorization_bearer(self.second_owner_token)
-        super(UserGenericTest, self).update(status_code=status.HTTP_201_CREATED, is_altered=False, url=url)
+        super(UserGenericTest, self).test_update(status_code=status.HTTP_201_CREATED, is_altered=False, url=url)
         self.alter_username(altered_data=True)
         self.set_authorization_bearer(self.owner_token)
-        super(UserGenericTest, self).update(status_code=status_code, is_altered=is_altered, url=url)
+        super(UserGenericTest, self).test_update(status_code=status_code, is_altered=is_altered, url=url)
 
-    def partial_update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
+    def test_partial_update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
         self.set_authorization_bearer(self.second_owner_token)
-        super(UserGenericTest, self).partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False)
+        super(UserGenericTest, self).test_partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False)
         self.set_authorization_bearer(self.owner_token)
         self.alter_username(altered_data=True)
-        super(UserGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered)
+        super(UserGenericTest, self).test_partial_update(status_code=status_code, is_altered=is_altered)
 
-    def list(self, count=1, status_code=status.HTTP_200_OK):
-        super(UserGenericTest, self).list(count=count, status_code=status_code)
+    def test_list(self, count=1, status_code=status.HTTP_200_OK):
+        super(UserGenericTest, self).test_list(count=count, status_code=status_code)
         self.alter_username()
         self.test_case.client.post(self.url, self.data)
-        super(UserGenericTest, self).list(count=count+1, status_code=status_code)
+        super(UserGenericTest, self).test_list(count=count+1, status_code=status_code)
         self.set_authorization_bearer(self.second_owner_token)
-        super(UserGenericTest, self).list(count=1, status_code=status_code)
+        super(UserGenericTest, self).test_list(count=1, status_code=status_code)
 
-    def retrieve(self, status_code=status.HTTP_200_OK, url=None):
-        super(UserGenericTest, self).retrieve(status_code=status_code)
+    def test_retrieve(self, status_code=status.HTTP_200_OK, url=None):
+        super(UserGenericTest, self).test_retrieve(status_code=status_code)
         self.set_authorization_bearer(self.second_owner_token)
-        super(UserGenericTest, self).retrieve(status_code=status.HTTP_404_NOT_FOUND)
+        super(UserGenericTest, self).test_retrieve(status_code=status.HTTP_404_NOT_FOUND)
 
-    def destroy(self, status_code=status.HTTP_204_NO_CONTENT, url=None):
+    def test_destroy(self, status_code=status.HTTP_204_NO_CONTENT, url=None):
         self.set_authorization_bearer(self.second_owner_token)
-        super(UserGenericTest, self).destroy(status_code=status.HTTP_404_NOT_FOUND)
+        super(UserGenericTest, self).test_destroy(status_code=status.HTTP_404_NOT_FOUND)
         self.set_authorization_bearer(self.owner_token)
-        super(UserGenericTest, self).destroy(status_code=status_code)
+        super(UserGenericTest, self).test_destroy(status_code=status_code)
 
 
 class UserAPITestCase(APILiveServerTestCase):
@@ -175,29 +175,29 @@ class UserAPITestCase(APILiveServerTestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
 
     def test_create(self):
-        self.user_generic_test.create()
+        self.user_generic_test.test_create()
 
     def test_update(self):
-        self.user_generic_test.update()
+        self.user_generic_test.test_update()
 
     def test_partial_update(self):
-        self.user_generic_test.partial_update()
+        self.user_generic_test.test_partial_update()
 
     def test_list(self):
-        self.user_generic_test.list(count=4)
+        self.user_generic_test.test_list(count=4)
 
     def test_retrieve(self):
-        self.user_generic_test.retrieve()
+        self.user_generic_test.test_retrieve()
 
     def test_destroy(self):
-        self.user_generic_test.destroy()
+        self.user_generic_test.test_destroy()
 
     def test_admin_permission(self):
-        self.user_generic_test.admin_permission()
+        self.user_generic_test.test_admin_permission()
 
     def test_search_fields(self):
         search_fields = ['username', 'email']
-        self.user_generic_test.search_fields(search_fields)
+        self.user_generic_test.test_search_fields(search_fields)
 
     def test_hashed_password(self):
         self.assertNotEqual(self.user_generic_test.first_object_response.data['password'], self.data['password'])
@@ -208,7 +208,7 @@ class UserAPITestCase(APILiveServerTestCase):
         self.assertNotIn('password', response.data)
 
     def test_hyperlinked_fields(self):
-        self.user_generic_test.serializer_hyperlinked_fields(['accountuser', 'user_permissions', 'groups'])
+        self.user_generic_test.test_serializer_hyperlinked_fields(['accountuser', 'user_permissions', 'groups'])
 
     def test_accountuser_created_has_same_account_as_request_user(self):
         account_user_url = self.user_generic_test.first_object_response.data['accountuser']
@@ -220,7 +220,7 @@ class UserAPITestCase(APILiveServerTestCase):
 
     def test_serializer_read_only_fields(self):
         fields = ['accountuser']
-        self.user_generic_test.serializer_read_only_fields(fields)
+        self.user_generic_test.test_serializer_read_only_fields(fields)
 
 
 class AccountUserGenericTest(APIGenericTest):
@@ -249,14 +249,14 @@ class AccountUserGenericTest(APIGenericTest):
                                                               application=owner_application,
                                                               expires=timezone.now() + timedelta(30)).token
 
-    def create(self, status_code=status.HTTP_400_BAD_REQUEST):
-        super(AccountUserGenericTest, self).create(status_code=status_code)
+    def test_create(self, status_code=status.HTTP_400_BAD_REQUEST):
+        super(AccountUserGenericTest, self).test_create(status_code=status_code)
 
-    def update(self, status_code=status.HTTP_400_BAD_REQUEST, is_altered=False, url=None):
-        super(AccountUserGenericTest, self).update(status_code=status_code, is_altered=is_altered, url=url)
+    def test_update(self, status_code=status.HTTP_400_BAD_REQUEST, is_altered=False, url=None):
+        super(AccountUserGenericTest, self).test_update(status_code=status_code, is_altered=is_altered, url=url)
 
-    def partial_update(self, status_code=status.HTTP_400_BAD_REQUEST, is_altered=False, url=None):
-        super(AccountUserGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered, url=url)
+    def test_partial_update(self, status_code=status.HTTP_400_BAD_REQUEST, is_altered=False, url=None):
+        super(AccountUserGenericTest, self).test_partial_update(status_code=status_code, is_altered=is_altered, url=url)
 
 
 class AccountUserTestCase(APILiveServerTestCase):
@@ -271,25 +271,25 @@ class AccountUserTestCase(APILiveServerTestCase):
         self.accountuser_generic_test = AccountUserGenericTest(self)
 
     def test_create(self):
-        self.accountuser_generic_test.create()
+        self.accountuser_generic_test.test_create()
 
     def test_list(self):
-        self.accountuser_generic_test.list()
+        self.accountuser_generic_test.test_list()
 
     def test_retrieve(self):
-        self.accountuser_generic_test.retrieve()
+        self.accountuser_generic_test.test_retrieve()
 
     def test_update(self):
-        self.accountuser_generic_test.update()
+        self.accountuser_generic_test.test_update()
 
     def test_partial_update(self):
-        self.accountuser_generic_test.partial_update()
+        self.accountuser_generic_test.test_partial_update()
 
     def test_destroy(self):
-        self.accountuser_generic_test.destroy()
+        self.accountuser_generic_test.test_destroy()
 
     def test_admin_permission(self):
-        self.accountuser_generic_test.admin_permission()
+        self.accountuser_generic_test.test_admin_permission()
 
     def test_accountuser_created_has_same_account_as_request_user(self):
         owner_user = User.objects.get(username=self.accountuser_generic_test.owner_token)
@@ -299,14 +299,14 @@ class AccountUserTestCase(APILiveServerTestCase):
 
     def test_hyperlinked_identity_field(self):
         fields = ['user', 'account']
-        self.accountuser_generic_test.serializer_hyperlinked_fields(fields)
+        self.accountuser_generic_test.test_serializer_hyperlinked_fields(fields)
 
     def test_model_has_custom_permission(self):
-        self.accountuser_generic_test.model_has_custom_permission()
+        self.accountuser_generic_test.test_model_has_custom_permission()
 
     def test_serializer_read_only_fields(self):
         fields = ['user', 'account']
-        self.accountuser_generic_test.serializer_read_only_fields(fields)
+        self.accountuser_generic_test.test_serializer_read_only_fields(fields)
 
 
 class UserTestCase(LiveServerTestCase):
@@ -332,36 +332,36 @@ class AccountGroupAPIGenericTest(APIGenericTest):
         else:
             self.altered_data.update({'role': 'Group {0}'.format(random.randint(1, 100000))})
 
-    def create(self, status_code=status.HTTP_201_CREATED):
+    def test_create(self, status_code=status.HTTP_201_CREATED):
         self.alter_data()
-        super(AccountGroupAPIGenericTest, self).create(status_code=status_code)
+        super(AccountGroupAPIGenericTest, self).test_create(status_code=status_code)
 
-    def list(self, count=1, status_code=status.HTTP_200_OK):
-        super(AccountGroupAPIGenericTest, self).list(count=count, status_code=status_code)
+    def test_list(self, count=1, status_code=status.HTTP_200_OK):
+        super(AccountGroupAPIGenericTest, self).test_list(count=count, status_code=status_code)
         self.set_authorization_bearer(self.second_owner_token)
-        super(AccountGroupAPIGenericTest, self).list(count=0, status_code=status_code)
+        super(AccountGroupAPIGenericTest, self).test_list(count=0, status_code=status_code)
 
-    def retrieve(self, status_code=status.HTTP_200_OK, url=None):
-        super(AccountGroupAPIGenericTest, self).retrieve(status_code=status_code, url=url)
+    def test_retrieve(self, status_code=status.HTTP_200_OK, url=None):
+        super(AccountGroupAPIGenericTest, self).test_retrieve(status_code=status_code, url=url)
         self.set_authorization_bearer(self.second_owner_token)
-        super(AccountGroupAPIGenericTest, self).retrieve(status_code=status.HTTP_404_NOT_FOUND, url=url)
+        super(AccountGroupAPIGenericTest, self).test_retrieve(status_code=status.HTTP_404_NOT_FOUND, url=url)
 
-    def update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
-        super(AccountGroupAPIGenericTest, self).update(status_code=status_code, is_altered=is_altered, url=url)
+    def test_update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
+        super(AccountGroupAPIGenericTest, self).test_update(status_code=status_code, is_altered=is_altered, url=url)
         self.set_authorization_bearer(self.second_owner_token)
-        super(AccountGroupAPIGenericTest, self).update(status_code=status.HTTP_201_CREATED, is_altered=True, url=url)
+        super(AccountGroupAPIGenericTest, self).test_update(status_code=status.HTTP_201_CREATED, is_altered=True, url=url)
 
-    def partial_update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
-        super(AccountGroupAPIGenericTest, self).partial_update(status_code=status_code, is_altered=is_altered, url=url)
+    def test_partial_update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
+        super(AccountGroupAPIGenericTest, self).test_partial_update(status_code=status_code, is_altered=is_altered, url=url)
         self.set_authorization_bearer(self.second_owner_token)
-        super(AccountGroupAPIGenericTest, self).partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False,
+        super(AccountGroupAPIGenericTest, self).test_partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False,
                                                                url=url)
 
-    def destroy(self, status_code=status.HTTP_204_NO_CONTENT, url=None):
+    def test_destroy(self, status_code=status.HTTP_204_NO_CONTENT, url=None):
         self.set_authorization_bearer(self.second_owner_token)
-        super(AccountGroupAPIGenericTest, self).destroy(status_code=status.HTTP_404_NOT_FOUND, url=url)
+        super(AccountGroupAPIGenericTest, self).test_destroy(status_code=status.HTTP_404_NOT_FOUND, url=url)
         self.set_authorization_bearer(self.owner_token)
-        super(AccountGroupAPIGenericTest, self).destroy(status_code=status_code, url=url)
+        super(AccountGroupAPIGenericTest, self).test_destroy(status_code=status_code, url=url)
 
 
 class GroupAPITestCase(APILiveServerTestCase):
@@ -385,29 +385,29 @@ class GroupAPITestCase(APILiveServerTestCase):
         self.account_group_api_generic_test = AccountGroupAPIGenericTest(self)
 
     def test_create(self):
-        self.account_group_api_generic_test.create()
+        self.account_group_api_generic_test.test_create()
 
     def test_update(self):
-        self.account_group_api_generic_test.update()
+        self.account_group_api_generic_test.test_update()
 
     def test_partial_update(self):
-        self.account_group_api_generic_test.partial_update()
+        self.account_group_api_generic_test.test_partial_update()
 
     def test_retrieve(self):
-        self.account_group_api_generic_test.retrieve()
+        self.account_group_api_generic_test.test_retrieve()
 
     def test_list(self):
-        self.account_group_api_generic_test.list()
+        self.account_group_api_generic_test.test_list()
 
     def test_destroy(self):
-        self.account_group_api_generic_test.destroy()
+        self.account_group_api_generic_test.test_destroy()
 
     def test_admin_permission(self):
-        self.account_group_api_generic_test.admin_permission()
+        self.account_group_api_generic_test.test_admin_permission()
 
     def test_search_fields(self):
         fields = ['role']
-        self.account_group_api_generic_test.search_fields(fields)
+        self.account_group_api_generic_test.test_search_fields(fields)
 
     def test_role_and_account_are_unique_together(self):
         response = self.client.post(self.url, self.data)
@@ -416,8 +416,8 @@ class GroupAPITestCase(APILiveServerTestCase):
 
     def test_hyperlinked_fields(self):
         fields = ['account']
-        self.account_group_api_generic_test.serializer_hyperlinked_fields(fields)
+        self.account_group_api_generic_test.test_serializer_hyperlinked_fields(fields)
 
     def test_serializer_read_only_fields(self):
         fields = ['account', 'name']
-        self.account_group_api_generic_test.serializer_read_only_fields(fields)
+        self.account_group_api_generic_test.test_serializer_read_only_fields(fields)
