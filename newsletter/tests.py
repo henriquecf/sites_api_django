@@ -69,7 +69,7 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
         self.assertTrue(subscription.active)
 
     def test_model_has_custom_permission(self):
-        self.resource_generic_test.model_has_custom_permission()
+        self.resource_generic_test.test_model_has_custom_permission()
 
     def test_serializer_read_only_fields(self):
         self.resource_generic_test.test_resource_serializer_read_only_fields([])
@@ -114,7 +114,7 @@ class NewsletterAPITestCase(APILiveServerTestCase):
         # TODO this test is not complete
 
     def test_model_has_custom_permission(self):
-        self.resource_generic_test.model_has_custom_permission()
+        self.resource_generic_test.test_model_has_custom_permission()
 
     def test_serializer_read_only_fields(self):
         self.resource_generic_test.test_resource_serializer_read_only_fields([])

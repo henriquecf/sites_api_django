@@ -135,7 +135,7 @@ class PublicationAPITestFunctions:
         self.publication_generic_test.unpublish()
 
     def test_search_fields(self):
-        self.publication_generic_test.search_fields(self.search_fields)
+        self.publication_generic_test.test_search_fields(self.search_fields)
 
     def test_owner_is_request_user(self):
         self.publication_generic_test.test_resource_owner_is_request_user()
@@ -147,7 +147,7 @@ class PublicationAPITestFunctions:
         self.publication_generic_test.test_resource_user_and_account_coincide_with_request_user()
 
     def test_model_has_custom_permission(self):
-        self.publication_generic_test.model_has_custom_permission()
+        self.publication_generic_test.test_model_has_custom_permission()
 
     def test_serializer_read_only_fields(self):
         self.publication_generic_test.test_resource_serializer_read_only_fields([])
@@ -223,7 +223,7 @@ class CategoryAPITestCase(APILiveServerTestCase):
         self.assertFalse(response2.data['is_leaf_node'])
 
     def test_model_has_custom_permission(self):
-        self.resource_generic_test.model_has_custom_permission()
+        self.resource_generic_test.test_model_has_custom_permission()
 
 
 class PublicationTestCase(LiveServerTestCase):
