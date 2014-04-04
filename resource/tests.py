@@ -162,7 +162,6 @@ class APIGenericTest:
 
 
 class ResourceGenericTest(APIGenericTest):
-
     def test_resource_create(self, status_code=status.HTTP_201_CREATED):
         super(ResourceGenericTest, self).test_create(status_code=status_code)
         self.set_authorization_bearer(self.second_owner_token)
@@ -176,7 +175,8 @@ class ResourceGenericTest(APIGenericTest):
     def test_resource_update(self, status_code=status.HTTP_200_OK, is_altered=True, url=None):
         super(ResourceGenericTest, self).test_update(status_code=status_code, is_altered=is_altered, url=url)
         self.set_authorization_bearer(self.second_owner_token)
-        super(ResourceGenericTest, self).test_update(status_code=status.HTTP_201_CREATED, is_altered=is_altered, url=url)
+        super(ResourceGenericTest, self).test_update(status_code=status.HTTP_201_CREATED, is_altered=is_altered,
+                                                     url=url)
         self.set_authorization_bearer(self.account_user_token)
         super(ResourceGenericTest, self).test_update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False, url=url)
         self.owner.user_permissions.clear()
@@ -191,19 +191,19 @@ class ResourceGenericTest(APIGenericTest):
         super(ResourceGenericTest, self).test_partial_update(status_code=status_code, is_altered=is_altered, url=url)
         self.set_authorization_bearer(self.second_owner_token)
         super(ResourceGenericTest, self).test_partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False,
-                                                        url=url)
+                                                             url=url)
         self.set_authorization_bearer(self.account_user_token)
         super(ResourceGenericTest, self).test_partial_update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False,
-                                                        url=url)
+                                                             url=url)
         self.owner.user_permissions.clear()
         self.set_authorization_bearer(self.owner_token)
         super(ResourceGenericTest, self).test_partial_update(status_code=status.HTTP_403_FORBIDDEN, is_altered=False,
-                                                        url=url)
+                                                             url=url)
         self.set_authorization_bearer(self.account_user_token2)
         super(ResourceGenericTest, self).test_partial_update(status_code=status_code, is_altered=True, url=url)
         self.account_user2.accountuser.global_permissions.clear()
         super(ResourceGenericTest, self).test_partial_update(status_code=status.HTTP_404_NOT_FOUND, is_altered=False,
-                                                        url=url)
+                                                             url=url)
 
     def test_resource_list(self, count=1, status_code=status.HTTP_200_OK):
         super(ResourceGenericTest, self).test_list(count=count, status_code=status_code)
