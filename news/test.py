@@ -2,7 +2,7 @@ from django.utils import timezone
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
-from publication.tests import PublicationGenericTest, PublicationAPITestFunctions
+from publication.test import PublicationGenericTest, PublicationAPITestFunctions
 from .models import News
 
 

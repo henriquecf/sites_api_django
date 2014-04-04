@@ -2,7 +2,7 @@
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
-from resource.tests import ResourceGenericTest
+from resource.test import ResourceGenericTest
 from .models import Subscription, Newsletter
 
 
