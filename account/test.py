@@ -309,21 +309,6 @@ class AccountUserTestCase(APILiveServerTestCase):
         self.accountuser_generic_test.test_serializer_read_only_fields(fields)
 
 
-class UserTestCase(LiveServerTestCase):
-
-    def setUp(self):
-        User.objects.create_superuser('henrique', 'elo.henrique@gmail.com', '123')
-
-    def test_user_login(self):
-        login_url = reverse('login')
-        login_data = {
-            'username': 'henrique',
-            'password': '123',
-        }
-        response = self.client.post(login_url, login_data)
-        self.assertEqual(response.status_code, 302)
-
-
 class AccountGroupAPIGenericTest(APIGenericTest):
 
     def alter_data(self, altered_data=False):
