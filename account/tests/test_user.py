@@ -7,7 +7,6 @@ from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
 from fixtures import user_accountuser_account_token_fixture
 import routines
-from account.models import AccountUser
 
 
 class UserAPITestCase(APILiveServerTestCase):
