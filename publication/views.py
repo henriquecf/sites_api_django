@@ -5,23 +5,9 @@ from rest_framework.decorators import link
 from rest_framework.response import Response
 
 from resource.views import ResourceViewSet
-from publication.serializers import CategorySerializer
 from publication.serializers import PublicationSerializer
-from .models import find_available_slug, Publication, Category
+from .models import find_available_slug, Publication
 from .filtersets import PublicationFilterSet
-
-
-class CategoryViewSet(ResourceViewSet):
-    serializer_class = CategorySerializer
-    model = Category
-
-    @link()
-    def get_descendants(self, request, *agrs, **kwargs):
-        """Returns the descendants of a category."""
-        category = self.get_object()
-        return Response(
-            {'descendants': CategorySerializer(category.get_descendants(), context={'request': request},
-                                               many=True).data})
 
 
 class PublicationBaseViewSet(ResourceViewSet):

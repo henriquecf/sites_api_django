@@ -2,11 +2,9 @@
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
-import routines, fixtures
-from resource.test import ResourceGenericTest
+import test_routines, test_fixtures
 from resource import routines as resource_routines
-from publication import routines as publication_routines
-from newsletter.models import Subscription, Newsletter
+from newsletter.models import Subscription
 
 
 class SubscriptionAPITestCase(APILiveServerTestCase):
@@ -22,7 +20,7 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
             'name': 'Ivan',
             'email': 'ivan_morais@yahoo.com.br',
         }
-        fixtures.user_accountuser_account_token_fixture('subscription', self)
+        test_fixtures.user_accountuser_account_token_fixture(self)
         self.set_authorization_bearer()
         self.first_object_response = self.client.post(self.url, self.data)
         self.data.update({'email': 'ivan@gmail.com'})
@@ -33,20 +31,20 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Bearer {0}'.format(token))
 
     def test_api_basic_methods(self):
-        routines.test_api_basic_methods_routine(self)
+        test_routines.test_api_basic_methods_routine(self)
 
     def test_admin_permission(self):
-        routines.test_admin_permission_routine(self)
+        test_routines.test_admin_permission_routine(self)
 
     def test_model_has_custom_permission(self):
-        routines.test_model_has_custom_permission_routine(self)
+        test_routines.test_model_has_custom_permission_routine(self)
 
     def test_resource_permission(self):
-        routines.test_resource_permission_routine(self)
+        test_routines.test_resource_permission_routine(self)
 
     #TODO: Refactor test to permit customization
     def test_custom_object_permission(self):
-        routines.test_custom_object_permission_routine(self, count=2)
+        test_routines.test_custom_object_permission_routine(self, count=2)
 
     def test_serializer_read_only_fields(self):
         fields = ['token', 'active']

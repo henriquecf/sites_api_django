@@ -7,7 +7,7 @@ from oauth2_provider.models import Application, AccessToken
 from account.models import AccountUser, Account
 
 
-def user_accountuser_account_token_fixture(model_name, test_case):
+def user_accountuser_account_token_fixture(test_case):
     User.objects.create_superuser('henrique', 'elo.henrique@gmail.com', '123')
     owner = User.objects.create_user('owner', 'owner@owner.com', '123')
     owner.is_staff = True
@@ -45,7 +45,7 @@ def user_accountuser_account_token_fixture(model_name, test_case):
     test_case.account_user2 = owner_user2
     # TODO Take care of permissions dependencies between models.
     # TODO Model inheritance must include permission inheritance.
-    permissions = Permission.objects.filter(codename__endswith=model_name)
+    permissions = Permission.objects.filter(codename__endswith=test_case.model._meta.model_name)
     pub_permissions = Permission.objects.filter(codename__endswith='publication')
     cat_permissions = Permission.objects.filter(codename__endswith='category')
     for permission in chain(permissions, pub_permissions, cat_permissions):

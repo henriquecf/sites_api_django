@@ -93,12 +93,12 @@ def test_search_fields_routine(test_case, search_fields):
         test_case.assertEqual(response.data['count'], 1, 'Field "{0}" not in search fields'.format(field))
 
 
-def test_custom_object_permission_routine(test_case):
+def test_custom_object_permission_routine(test_case, count=3):
 
     # Removes permission from the owner
     test_case.owner.user_permissions.clear()
 
-    # Now he is not allowed to access anything TODO must this test exist?
+    # Now he is not allowed to access anything
     test_admin_permission_routine(test_case, token=test_case.owner_token)
 
     # Changes to an user that has global permissions
@@ -109,7 +109,7 @@ def test_custom_object_permission_routine(test_case):
     test_case.account_user2.accountuser.global_permissions.clear()
 
     # He should get restrictions to owner resources now
-    test_resource_permission_routine(test_case, token=test_case.account_user_token2, count=3)
+    test_resource_permission_routine(test_case, token=test_case.account_user_token2, count=count)
 
 
 def add_category_routine(test_case):
