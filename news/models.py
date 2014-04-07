@@ -1,6 +1,7 @@
 from django.db import models
+from category.models import Category
 
-from publication.models import Publication, Category
+from publication.models import Publication
 
 
 class News(Publication):

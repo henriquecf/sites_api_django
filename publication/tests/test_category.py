@@ -2,11 +2,11 @@
 from copy import copy
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
+from category.models import Category
 
 import test_routines
 import test_fixtures
 from resource import routines as resource_routines
-from publication.models import Category
 
 
 class CategoryAPITestCase(APILiveServerTestCase):
