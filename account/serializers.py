@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from account.models import AccountUser
-from .models import Account, AccountGroup
+from account.models import AccountUser, Account, AccountGroup, FilterRestriction
 
 
 class AccountSerializer(serializers.HyperlinkedModelSerializer):
@@ -42,3 +41,11 @@ class AccountGroupSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = AccountGroup
+
+
+class FilterRestrictionSerializer(serializers.HyperlinkedModelSerializer):
+    account_user = serializers.PrimaryKeyRelatedField()
+    permission = serializers.PrimaryKeyRelatedField()
+
+    class Meta:
+        model = FilterRestriction

@@ -5,9 +5,15 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions, filters, generics
 from account.exceptions import BadRequestValidationError
-from account.serializers import AccountUserSerializer, UserSerializer, UserCreateChangeSerializer
-from .serializers import AccountSerializer, AccountGroupSerializer
-from account.models import Account, AccountUser, AccountGroup
+from account.serializers import (
+    AccountUserSerializer,
+    UserSerializer,
+    UserCreateChangeSerializer,
+    AccountSerializer,
+    AccountGroupSerializer,
+    FilterRestrictionSerializer,
+)
+from account.models import Account, AccountUser, AccountGroup, FilterRestriction
 
 
 class AccountViewSet(ModelViewSet):
@@ -145,6 +151,29 @@ class AccountGroupViewSet(ModelViewSet):
             raise BadRequestValidationError('Role field is unique. Please insert another name.')
         except ObjectDoesNotExist:
             obj.account = self.request.user.accountuser.account
+
+
+class FilterRestrictionViewSet(ModelViewSet):
+    model = FilterRestriction
+    serializer_class = FilterRestrictionSerializer
+    permission_classes = (
+        permissions.IsAdminUser,
+    )
+    filter_backends = ()
+
+    def get_queryset(self):
+        queryset = super(FilterRestrictionViewSet, self).get_queryset()
+        user = self.request.user
+        if user.is_superuser:
+            return queryset
+        else:
+            return queryset.filter(account_user__account=user.accountuser.account)
+
+    def pre_save(self, obj):
+        if obj.account_user.account != self.request.user.accountuser.account:
+            raise BadRequestValidationError('You can not alter other account users permissions')
+        else:
+            super(FilterRestrictionViewSet, self).pre_save(obj)
 
 
 class PermissionDetailView(generics.RetrieveAPIView):
