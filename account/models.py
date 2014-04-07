@@ -35,7 +35,7 @@ class Account(Common):
 class AccountUser(Common):
     user = models.OneToOneField(User, blank=True)
     account = models.ForeignKey(Account, blank=True)
-    filter_permissions = models.ManyToManyField(Permission, null=True, blank=True)
+    filter_permissions = models.ManyToManyField(Permission, through='FilterPermission', null=True, blank=True)
 
     def has_filter_permission(self, permission):
         """Checks if the user has global permission for that given permission."""
@@ -44,6 +44,13 @@ class AccountUser(Common):
 
     def __str__(self):
         return '{0} - {1}'.format(self.account, self.user)
+
+
+class FilterPermission(models.Model):
+    filter_field = models.CharField(max_length=100)
+    values = models.TextField()
+    permission = models.ForeignKey(Permission)
+    account_user = models.ForeignKey(AccountUser)
 
 
 class AccountGroup(Group):
