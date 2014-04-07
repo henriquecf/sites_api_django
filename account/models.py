@@ -35,12 +35,12 @@ class Account(Common):
 class AccountUser(Common):
     user = models.OneToOneField(User, blank=True)
     account = models.ForeignKey(Account, blank=True)
-    global_permissions = models.ManyToManyField(Permission, null=True, blank=True)
+    filter_permissions = models.ManyToManyField(Permission, null=True, blank=True)
 
-    def has_global_permission(self, permission):
+    def has_filter_permission(self, permission):
         """Checks if the user has global permission for that given permission."""
         return permission in set(
-            "%s.%s" % (p.content_type.app_label, p.codename) for p in self.global_permissions.all())
+            "%s.%s" % (p.content_type.app_label, p.codename) for p in self.filter_permissions.all())
 
     def __str__(self):
         return '{0} - {1}'.format(self.account, self.user)

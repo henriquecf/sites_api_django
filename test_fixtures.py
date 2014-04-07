@@ -52,7 +52,7 @@ def user_accountuser_account_token_fixture(test_case):
         test_case.owner.user_permissions.add(permission)
         test_case.second_owner.user_permissions.add(permission)
         test_case.account_user2.user_permissions.add(permission)
-        test_case.account_user2.accountuser.global_permissions.add(permission)
+        test_case.account_user2.accountuser.filter_permissions.add(permission)
 
 
 def user_token_fixture(test_case):

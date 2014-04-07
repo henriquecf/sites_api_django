@@ -44,7 +44,7 @@ class ResourceFilterBackend(filters.BaseFilterBackend):
                 permission = custom_permissions_map[request.method][0] % kwargs
             except KeyError:
                 permission = None
-            if permission and request.user.accountuser.has_global_permission(permission):
+            if permission and request.user.accountuser.has_filter_permission(permission):
                 return queryset.filter(account=request.user.accountuser.account)
             else:
                 return queryset.filter(creator=request.user)
