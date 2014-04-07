@@ -12,6 +12,16 @@ class SubscriptionViewSet(ResourceViewSet):
     serializer_class = SubscriptionSerializer
     model = Subscription
 
+    def create(self, request, *args, **kwargs):
+        try:
+            subscription = Subscription.objects.get(email=request.DATA['email'])
+            subscription.active = True
+            subscription.save()
+            serialized_data = SubscriptionSerializer(subscription)
+            return Response(data=serialized_data.data, status=201)
+        except ObjectDoesNotExist:
+            return super(SubscriptionViewSet, self).create(request, *args, **kwargs)
+
     @link()
     def unsubscribe(self, request, *args, **kwargs):
         """Verify token and subscriber to deactivate a subscritpion.
