@@ -6,11 +6,11 @@ from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
 from test_fixtures import user_accountuser_account_token_fixture
 import test_routines
-from account.models import AccountUser
+from account.models import AccountGroup
 
 
-class AccountUserAPITestCase(APILiveServerTestCase):
-    model = AccountUser
+class AccountGruopAPITestCase(APILiveServerTestCase):
+    model = AccountGroup
 
     def setUp(self):
         self.url = reverse('accountgroup-list')
