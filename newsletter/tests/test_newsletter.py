@@ -8,7 +8,7 @@ from resource import routines as resource_routines
 from newsletter.models import Newsletter
 
 
-class NewsAPITestCase(APILiveServerTestCase):
+class NewsletterAPITestCase(APILiveServerTestCase):
     model = Newsletter
 
     def setUp(self):

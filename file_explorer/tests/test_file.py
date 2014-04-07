@@ -9,7 +9,7 @@ from resource import routines as resource_routines
 from file_explorer.models import File
 
 
-class NewsAPITestCase(APILiveServerTestCase):
+class FileAPITestCase(APILiveServerTestCase):
     model = File
 
     def setUp(self):
