@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 from copy import copy
 from django.core.urlresolvers import reverse
-from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
-import routines, fixtures
+
+import routines
+import fixtures
 from resource import routines as resource_routines
-from publication import routines as publication_routines
-from news.models import News
+from publication.models import Category
 
 
 class CategoryAPITestCase(APILiveServerTestCase):
-    model = News
+    model = Category
 
     def setUp(self):
         self.url = reverse('category-list')
