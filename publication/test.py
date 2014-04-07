@@ -7,9 +7,10 @@ from django.test.testcases import LiveServerTestCase
 from django.contrib.auth.models import User
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
+from category.models import Category
 from resource.test import ResourceGenericTest
 from account.models import Account
-from .models import Publication, Category
+from .models import Publication
 
 
 class PublicationGenericTest(ResourceGenericTest):
