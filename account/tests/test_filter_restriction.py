@@ -18,13 +18,13 @@ class FilterPermissionAPITestCase(APILiveServerTestCase):
         self.data = {
             'filter_field': 'creator',
             'values': '1',
-            'account_user': self.owner.accountuser.id,
+            'accountuser': self.owner.accountuser.id,
             'permission': Permission.objects.first().id,
         }
         self.altered_data = {
             'filter_field': 'owner',
             'values': '1',
-            'account_user': self.owner.accountuser.id,
+            'accountuser': self.owner.accountuser.id,
             'permission': Permission.objects.first().id,
         }
         self.set_authorization_bearer()
@@ -44,7 +44,7 @@ class FilterPermissionAPITestCase(APILiveServerTestCase):
         data.update({
             'filter_field': filter_field,
             'values': '1',
-            'account_user': accountuser_id,
+            'accountuser': accountuser_id,
             'permission': Permission.objects.first().id,
         })
 

@@ -44,7 +44,7 @@ class AccountGroupSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class FilterRestrictionSerializer(serializers.HyperlinkedModelSerializer):
-    account_user = serializers.PrimaryKeyRelatedField()
+    accountuser = serializers.PrimaryKeyRelatedField()
     permission = serializers.PrimaryKeyRelatedField()
 
     class Meta:

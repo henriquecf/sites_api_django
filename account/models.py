@@ -32,6 +32,19 @@ class Account(Common):
         return self.owner.username
 
 
+class AccountGroup(Group):
+    role = models.CharField(max_length=100)
+    account = models.ForeignKey(Account, blank=True)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        self.name = '{0}-{1}'.format(self.account, self.role)
+        super(AccountGroup, self).save()
+
+    def __str__(self):
+        return '{0}-{1}'.format(self.account, self.role)
+
+
 class AccountUser(Common):
     user = models.OneToOneField(User, blank=True)
     account = models.ForeignKey(Account, blank=True)
@@ -50,24 +63,5 @@ class FilterRestriction(models.Model):
     filter_field = models.CharField(max_length=100)
     values = models.TextField()
     permission = models.ForeignKey(Permission)
-    account_user = models.ForeignKey(AccountUser)
-
-    def __str__(self):
-        return '{0} - {1} - {2} - {3}'.format(self.account_user, self.permission, self.filter_field, self.values)
-
-    class Meta:
-        pass#unique_together = ['filter_field', 'permission', 'account_user']
-
-
-class AccountGroup(Group):
-    role = models.CharField(max_length=100)
-    account = models.ForeignKey(Account, blank=True)
-
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        self.name = '{0}-{1}'.format(self.account, self.role)
-        super(AccountGroup, self).save()
-
-    def __str__(self):
-        return '{0}-{1}'.format(self.account, self.role)
+    accountuser = models.ForeignKey(AccountUser)
 

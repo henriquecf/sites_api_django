@@ -167,10 +167,10 @@ class FilterRestrictionViewSet(ModelViewSet):
         if user.is_superuser:
             return queryset
         else:
-            return queryset.filter(account_user__account=user.accountuser.account)
+            return queryset.filter(accountuser__account=user.accountuser.account)
 
     def pre_save(self, obj):
-        if obj.account_user.account != self.request.user.accountuser.account:
+        if obj.accountuser.account != self.request.user.accountuser.account:
             raise BadRequestValidationError('You can not alter other account users permissions')
         else:
             super(FilterRestrictionViewSet, self).pre_save(obj)
