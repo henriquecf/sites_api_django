@@ -6,21 +6,19 @@ from publication.tests import routines as publication_routines
 import test_routines
 import test_fixtures
 from resource import routines as resource_routines
-from news.models import News
+from file_explorer.models import File
 
 
-class NewsAPITestCase(APILiveServerTestCase):
-    model = News
+class FileAPITestCase(APILiveServerTestCase):
+    model = File
 
     def setUp(self):
-        self.url = reverse('news-list')
+        self.url = reverse('file-list')
         self.data = {
-            'title': 'First news',
-            'content': 'Content',
+            'title': 'First file',
         }
         self.altered_data = {
-            'title': 'First news altered',
-            'content': 'Content altered',
+            'title': 'First file altered',
         }
         test_fixtures.user_accountuser_account_token_fixture(self)
         self.set_authorization_bearer()
@@ -50,7 +48,7 @@ class NewsAPITestCase(APILiveServerTestCase):
         publication_routines.test_unpublish_routine(self)
 
     def test_search_fields(self):
-        fields = ['title', 'description', 'content']
+        fields = ['title', 'description']
         test_routines.test_search_fields_routine(self, search_fields=fields)
 
     def test_resource_owner_is_request_user(self):
@@ -65,7 +63,7 @@ class NewsAPITestCase(APILiveServerTestCase):
     def test_model_has_custom_permission(self):
         test_routines.test_model_has_custom_permission_routine(self)
 
-    def test_resource_serializer_read_only_fields(self):
+    def test_resorce_serializer_read_only_fields(self):
         resource_routines.test_resource_serializer_read_only_fields_routine(self, fields=[])
 
     def test_add_category(self):
@@ -79,3 +77,6 @@ class NewsAPITestCase(APILiveServerTestCase):
 
     def test_custom_object_permission(self):
         test_routines.test_custom_object_permission_routine(self)
+
+    def test_admin_permission(self):
+        test_routines.test_admin_permission_routine(self)
