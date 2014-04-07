@@ -20,7 +20,7 @@ class NewsAPITestCase(APILiveServerTestCase):
             'title': 'First news altered',
             'content': 'Content altered',
         }
-        fixtures.user_accountuser_account_token_fixture('news', self)
+        fixtures.user_accountuser_account_token_fixture(self)
         self.set_authorization_bearer()
         self.first_object_response = self.client.post(self.url, self.data)
 
