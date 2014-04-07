@@ -3,8 +3,8 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
-from fixtures import user_account_token_fixture
-import routines
+from test_fixtures import user_account_token_fixture
+import test_routines
 from account.models import AccountUser
 
 
@@ -51,7 +51,7 @@ class AccountUserAPITestCase(APILiveServerTestCase):
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
 
     def test_admin_permission(self):
-        routines.test_admin_permission_routine(self)
+        test_routines.test_admin_permission_routine(self)
 
     def test_accountuser_created_has_same_account_as_request_user(self):
         owner_user = User.objects.get(username=self.owner_token)
@@ -61,11 +61,11 @@ class AccountUserAPITestCase(APILiveServerTestCase):
 
     def test_serializer_hyperlinked_fields(self):
         fields = ['user', 'account']
-        routines.test_serializer_hyperlinked_fields_routine(self, fields=fields)
+        test_routines.test_serializer_hyperlinked_fields_routine(self, fields=fields)
 
     def test_model_has_custom_permission(self):
-        routines.test_model_has_custom_permission_routine(self)
+        test_routines.test_model_has_custom_permission_routine(self)
 
     def test_serializer_read_only_fields(self):
         fields = ['user', 'account']
-        routines.test_serializer_read_only_fields_routine(self, fields=fields)
+        test_routines.test_serializer_read_only_fields_routine(self, fields=fields)

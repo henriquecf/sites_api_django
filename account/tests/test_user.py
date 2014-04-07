@@ -5,8 +5,8 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
-from fixtures import user_accountuser_account_token_fixture
-import routines
+from test_fixtures import user_accountuser_account_token_fixture
+import test_routines
 
 
 class UserAPITestCase(APILiveServerTestCase):
@@ -45,11 +45,11 @@ class UserAPITestCase(APILiveServerTestCase):
 
     def test_api_basic_methods(self):
         self.alter_username()
-        routines.test_api_basic_methods_routine(self, count=5)
+        test_routines.test_api_basic_methods_routine(self, count=5)
 
     def test_resource_permission(self):
         self.alter_username()
-        routines.test_resource_permission_routine(self)
+        test_routines.test_resource_permission_routine(self)
 
     def test_required_email(self):
         data = copy(self.data)
@@ -58,7 +58,7 @@ class UserAPITestCase(APILiveServerTestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
 
     def test_admin_permission(self):
-        routines.test_admin_permission_routine(self)
+        test_routines.test_admin_permission_routine(self)
 
     def test_search_fields(self):
         search_fields = ['username', 'email']
@@ -83,7 +83,7 @@ class UserAPITestCase(APILiveServerTestCase):
 
     def test_serializer_hyperlinked_fields(self):
         fields = ['accountuser', 'user_permissions', 'groups']
-        routines.test_serializer_hyperlinked_fields_routine(self, fields=fields)
+        test_routines.test_serializer_hyperlinked_fields_routine(self, fields=fields)
 
     def test_accountuser_created_has_same_account_as_request_user(self):
         account_user_url = self.first_object_response.data['accountuser']
@@ -95,4 +95,4 @@ class UserAPITestCase(APILiveServerTestCase):
 
     def test_serializer_read_only_fields(self):
         fields = ['accountuser']
-        routines.test_serializer_read_only_fields_routine(self, fields=fields)
+        test_routines.test_serializer_read_only_fields_routine(self, fields=fields)

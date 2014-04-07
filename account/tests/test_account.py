@@ -3,8 +3,8 @@ import datetime
 from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
-from fixtures import user_token_fixture
-import routines
+from test_fixtures import user_token_fixture
+import test_routines
 from account.models import Account
 
 
@@ -51,22 +51,22 @@ class AccountAPITestCase(APILiveServerTestCase):
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
 
     def test_admin_permission(self):
-        routines.test_admin_permission_routine(self)
+        test_routines.test_admin_permission_routine(self)
 
     def test_serializer_hyperlinked_fields(self):
         accountuser_url = reverse('accountuser-list')
         response = self.client.post(accountuser_url, {})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         fields = ['owner']
-        routines.test_serializer_hyperlinked_fields_routine(self, fields)
+        test_routines.test_serializer_hyperlinked_fields_routine(self, fields)
 
     def test_default_expiration_date(self):
         self.assertEqual(self.first_object_response.data['expiration_date'],
                          datetime.date.today() + datetime.timedelta(30))
 
     def test_model_has_custom_permission(self):
-        routines.test_model_has_custom_permission_routine(self)
+        test_routines.test_model_has_custom_permission_routine(self)
 
     def test_serializer_read_only_fields(self):
         fields = ['owner']
-        routines.test_serializer_read_only_fields_routine(self, fields)
+        test_routines.test_serializer_read_only_fields_routine(self, fields)

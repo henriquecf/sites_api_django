@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-from copy import copy
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 
-import routines
-import fixtures
-from publication import routines as publication_routines
+from publication.tests import routines as publication_routines
+import test_routines
+import test_fixtures
 from resource import routines as resource_routines
 from publication.models import Publication
 
@@ -21,7 +20,7 @@ class PublicationAPITestCase(APILiveServerTestCase):
         self.altered_data = {
             'title': 'First publication altered'
         }
-        fixtures.user_accountuser_account_token_fixture(self)
+        test_fixtures.user_accountuser_account_token_fixture(self)
         self.set_authorization_bearer()
         self.first_object_response = self.client.post(self.url, self.data)
 
@@ -31,16 +30,16 @@ class PublicationAPITestCase(APILiveServerTestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Bearer {0}'.format(token))
 
     def test_api_basic_methods(self):
-        routines.test_api_basic_methods_routine(self)
+        test_routines.test_api_basic_methods_routine(self)
 
     def test_resource_permission(self):
-        routines.test_resource_permission_routine(self)
+        test_routines.test_resource_permission_routine(self)
 
     def test_admin_permission(self):
-        routines.test_admin_permission_routine(self)
+        test_routines.test_admin_permission_routine(self)
 
     def test_custom_object_permission(self):
-        routines.test_custom_object_permission_routine(self)
+        test_routines.test_custom_object_permission_routine(self)
 
     def test_slug_is_slugified_title(self):
         publication_routines.test_slug_is_slugified_title_routine(self)
@@ -62,7 +61,7 @@ class PublicationAPITestCase(APILiveServerTestCase):
 
     def test_search_fields(self):
         search_fields = ['title', 'description']
-        routines.test_search_fields_routine(self, search_fields=search_fields)
+        test_routines.test_search_fields_routine(self, search_fields=search_fields)
 
     def test_owner_is_request_user(self):
         resource_routines.test_resource_owner_is_request_user_routine(self)
@@ -74,7 +73,7 @@ class PublicationAPITestCase(APILiveServerTestCase):
         resource_routines.test_resource_user_and_account_coincide_with_request_user_routine(self)
 
     def test_model_has_custom_permission(self):
-        routines.test_model_has_custom_permission_routine(self)
+        test_routines.test_model_has_custom_permission_routine(self)
 
     def test_publication_serializer_read_only_fields(self):
         resource_routines.test_serializer_read_only_fields_routine(self, [])

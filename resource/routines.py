@@ -2,7 +2,7 @@
 from django.contrib.auth.models import User
 from rest_framework import status
 from resource.models import Resource
-from routines import test_serializer_hyperlinked_fields_routine, test_serializer_read_only_fields_routine
+from test_routines import test_serializer_hyperlinked_fields_routine, test_serializer_read_only_fields_routine
 
 def test_resource_owner_is_request_user_routine(test_case):
     test_case.set_authorization_bearer(test_case.second_owner_token)

@@ -3,8 +3,8 @@ from copy import copy
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 
-import routines
-import fixtures
+import test_routines
+import test_fixtures
 from resource import routines as resource_routines
 from publication.models import Category
 
@@ -22,7 +22,7 @@ class CategoryAPITestCase(APILiveServerTestCase):
             'name': 'Category 1 altered',
             'model_name': 'uncategorized'
         }
-        fixtures.user_accountuser_account_token_fixture(self)
+        test_fixtures.user_accountuser_account_token_fixture(self)
         self.set_authorization_bearer()
         self.first_object_response = self.client.post(self.url, self.data)
 
@@ -32,23 +32,23 @@ class CategoryAPITestCase(APILiveServerTestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Bearer {0}'.format(token))
 
     def test_api_basic_methods(self):
-        routines.test_api_basic_methods_routine(self)
+        test_routines.test_api_basic_methods_routine(self)
 
     def test_resource_permission(self):
-        routines.test_resource_permission_routine(self)
+        test_routines.test_resource_permission_routine(self)
 
     def test_admin_permission(self):
-        routines.test_admin_permission_routine(self)
+        test_routines.test_admin_permission_routine(self)
 
     def test_custom_object_permission(self):
-        routines.test_custom_object_permission_routine(self)
+        test_routines.test_custom_object_permission_routine(self)
 
     def test_resource_hyperlinked_fields(self):
         fields = ['get_descendants']
         resource_routines.test_resource_serializer_hyperlinked_fields_routine(self, fields)
 
     def test_model_has_custom_permission(self):
-        routines.test_model_has_custom_permission_routine(self)
+        test_routines.test_model_has_custom_permission_routine(self)
 
     def test_if_creates_with_parent(self):
         response = self.client.post(self.url, self.data)

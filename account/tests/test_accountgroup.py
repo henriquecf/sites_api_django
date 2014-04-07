@@ -4,8 +4,8 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
-from fixtures import user_accountuser_account_token_fixture
-import routines
+from test_fixtures import user_accountuser_account_token_fixture
+import test_routines
 from account.models import AccountUser
 
 
@@ -64,22 +64,22 @@ class AccountUserAPITestCase(APILiveServerTestCase):
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
 
     def test_admin_permission(self):
-        routines.test_admin_permission_routine(self)
+        test_routines.test_admin_permission_routine(self)
 
     def test_resource_permission(self):
-        routines.test_resource_permission_routine(self)
+        test_routines.test_resource_permission_routine(self)
 
     def test_search_fields(self):
         fields = ['role']
-        routines.test_search_fields_routine(self, search_fields=fields)
+        test_routines.test_search_fields_routine(self, search_fields=fields)
 
     def test_hyperlinked_fields(self):
         fields = ['account']
-        routines.test_serializer_hyperlinked_fields_routine(self, fields=fields)
+        test_routines.test_serializer_hyperlinked_fields_routine(self, fields=fields)
 
     def test_read_only_fields(self):
         fields = ['account', 'name']
-        routines.test_serializer_read_only_fields_routine(self, fields=fields)
+        test_routines.test_serializer_read_only_fields_routine(self, fields=fields)
 
     def test_role_and_account_are_unique_together(self):
         response = self.client.post(self.url, self.data)

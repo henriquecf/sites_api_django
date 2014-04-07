@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
-import routines, fixtures
+
+from publication.tests import routines as publication_routines
+import test_routines
+import test_fixtures
 from resource import routines as resource_routines
-from publication import routines as publication_routines
 from news.models import News
 
 
@@ -20,7 +22,7 @@ class NewsAPITestCase(APILiveServerTestCase):
             'title': 'First news altered',
             'content': 'Content altered',
         }
-        fixtures.user_accountuser_account_token_fixture(self)
+        test_fixtures.user_accountuser_account_token_fixture(self)
         self.set_authorization_bearer()
         self.first_object_response = self.client.post(self.url, self.data)
 
@@ -49,7 +51,7 @@ class NewsAPITestCase(APILiveServerTestCase):
 
     def test_search_fields(self):
         fields = ['title', 'description', 'content']
-        routines.test_search_fields_routine(self, search_fields=fields)
+        test_routines.test_search_fields_routine(self, search_fields=fields)
 
     def test_resource_owner_is_request_user(self):
         resource_routines.test_resource_owner_is_request_user_routine(self)
@@ -61,19 +63,19 @@ class NewsAPITestCase(APILiveServerTestCase):
         resource_routines.test_resource_user_and_account_coincide_with_request_user_routine(self)
 
     def test_model_has_custom_permission(self):
-        routines.test_model_has_custom_permission_routine(self)
+        test_routines.test_model_has_custom_permission_routine(self)
 
     def test_resorce_serializer_read_only_fields(self):
         resource_routines.test_resource_serializer_read_only_fields_routine(self, fields=[])
 
     def test_add_category(self):
-        routines.add_category_routine(self)
+        test_routines.add_category_routine(self)
 
     def test_api_basic_methods(self):
-        routines.test_api_basic_methods_routine(self)
+        test_routines.test_api_basic_methods_routine(self)
 
     def test_resource_permission(self):
-        routines.test_resource_permission_routine(self)
+        test_routines.test_resource_permission_routine(self)
 
     def test_custom_object_permission(self):
-        routines.test_custom_object_permission_routine(self)
+        test_routines.test_custom_object_permission_routine(self)
