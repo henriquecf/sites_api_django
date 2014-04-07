@@ -65,7 +65,7 @@ class NewsAPITestCase(APILiveServerTestCase):
     def test_model_has_custom_permission(self):
         test_routines.test_model_has_custom_permission_routine(self)
 
-    def test_resorce_serializer_read_only_fields(self):
+    def test_resource_serializer_read_only_fields(self):
         resource_routines.test_resource_serializer_read_only_fields_routine(self, fields=[])
 
     def test_add_category(self):
