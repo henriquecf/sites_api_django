@@ -77,3 +77,6 @@ class PublicationAPITestCase(APILiveServerTestCase):
 
     def test_publication_serializer_read_only_fields(self):
         resource_routines.test_serializer_read_only_fields_routine(self, [])
+
+    def test_resource_sites_field(self):
+        resource_routines.test_resource_sites_field_routine(self)

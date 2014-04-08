@@ -50,6 +50,9 @@ class CategoryAPITestCase(APILiveServerTestCase):
     def test_model_has_custom_permission(self):
         test_routines.test_model_has_custom_permission_routine(self)
 
+    def test_resource_sites_field(self):
+        resource_routines.test_resource_sites_field_routine(self)
+
     def test_if_creates_with_parent(self):
         response = self.client.post(self.url, self.data)
         children_data = copy(self.data)

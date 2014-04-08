@@ -8,6 +8,7 @@ from publication import views as publication_views
 from news import views as news_views
 from file_explorer import views as file_explorer_views
 from newsletter import views as newsletter_views
+from resource import views as resource_views
 
 
 admin.autodiscover()
@@ -33,5 +34,6 @@ urlpatterns = patterns('',
                        url(r'^permission/(?P<pk>[\d]+)/$', account_views.PermissionDetailView.as_view(),
                            name='permission-detail'),
                        url(r'^group/(?P<pk>[\d]+)/$', account_views.GroupDetailView.as_view(), name='group-detail'),
+                       url(r'^site/(?P<pk>[\d]+)/$', resource_views.SiteRetrieveAPIView.as_view(), name='site-detail'),
                        url(r'^', include(router.urls), name='api'),
 )

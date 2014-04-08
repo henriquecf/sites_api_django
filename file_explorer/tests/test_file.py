@@ -81,3 +81,6 @@ class FileAPITestCase(APILiveServerTestCase):
 
     def test_admin_permission(self):
         test_routines.test_admin_permission_routine(self)
+
+    def test_resource_sites_field(self):
+        resource_routines.test_resource_sites_field_routine(self)
