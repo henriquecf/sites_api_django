@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
-from copy import copy
-from django.core.urlresolvers import reverse
 import random
-from rest_framework import status
 from django.contrib.auth.models import Permission
-from django.contrib.auth.models import User
 from rest_framework import status
-from resource.models import Resource
 
 
 def test_api_basic_methods_routine(test_case, token=None, count=2, object_url=None):
@@ -114,26 +109,6 @@ def test_custom_object_permission_routine(test_case, count=3):
 
     # He should get restrictions to owner resources now
     test_resource_permission_routine(test_case, token=test_case.account_user_token2, count=count)
-
-
-def add_category_routine(test_case):
-    data2 = copy(test_case.data)
-    category_data = {
-        'name': 'Category 1',
-        'model_name': test_case.model._meta.model_name,
-    }
-    category_url = reverse('category-list')
-    response = test_case.client.post(category_url, category_data)
-    cat1_url = response.data['url']
-    data2.update({'categories': [cat1_url]})
-    response2 = test_case.client.post(test_case.url, data2)
-    test_case.assertEqual(response2.status_code, status.HTTP_201_CREATED)
-    try:
-        model_categories = response2.data['categories']
-    except KeyError:
-        model_categories = None
-    test_case.assertEqual(model_categories, [cat1_url],
-                          'Field categories not found in model "{0}"'.format(test_case.model._meta.model_name))
 
 
 def test_resource_permission_routine(test_case, token=None, count=2):

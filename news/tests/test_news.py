@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
+from category.tests.routines import test_add_category_routine, test_filter_categories
 
 from publication.tests import routines as publication_routines
 import test_routines
@@ -69,7 +70,7 @@ class NewsAPITestCase(APILiveServerTestCase):
         resource_routines.test_resource_serializer_read_only_fields_routine(self, fields=[])
 
     def test_add_category(self):
-        test_routines.add_category_routine(self)
+        test_add_category_routine(self)
 
     def test_api_basic_methods(self):
         test_routines.test_api_basic_methods_routine(self)
@@ -79,3 +80,6 @@ class NewsAPITestCase(APILiveServerTestCase):
 
     def test_custom_object_permission(self):
         test_routines.test_custom_object_permission_routine(self)
+
+    def test_filter_categories(self):
+        test_filter_categories(self)
