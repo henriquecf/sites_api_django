@@ -1,11 +1,1 @@
-Django==1.6.2
-Pygments==1.6
-djangorestframework==2.3.13
-shortuuid==0.4
-django-oauth-toolkit==0.7.0
-django-braces==1.4.0
-six==1.5.2
-oauthlib==0.6.1
-django-mptt==0.6.0
-Pillow==2.3.0
-django-filter==0.7
+-r reqs/prod.txt

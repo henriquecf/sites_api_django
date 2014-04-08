@@ -12,17 +12,12 @@ class Subscription(Resource):
     and put subscription status in a boolean field.
     """
     name = models.CharField(max_length=50)
-    email = models.EmailField(max_length=200)
+    email = models.EmailField(max_length=200, unique=True)
     token = models.CharField(max_length=30, editable=False)
     active = models.BooleanField(default=True, editable=False)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        equal_subscriptions = Subscription.objects.filter(creator_id=self.creator.id, email=self.email)
-        active = self.active
-        for subscription in equal_subscriptions:
-            if not subscription == self:
-                subscription.delete()
         self.token = random.randint(948284593853, 958272838472748584737484748234)
         return super(Subscription, self).save()
 

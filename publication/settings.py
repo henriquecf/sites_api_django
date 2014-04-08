@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     'oauth2_provider',
     'rest_framework',
@@ -52,6 +53,7 @@ INSTALLED_APPS = (
     'file_explorer',
     'newsletter',
     'resource',
+    'category',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -109,7 +111,8 @@ DJANGO_FILTERS = (
 )
 
 OTHER_FILTERS = (
-    'resource.backends.ResourceFilterBackend',
+    'account.backends.FilterRestrictionBackend',
+    'resource.backends.SiteDomainFilterBackend',
 )
 
 REST_FRAMEWORK = {
@@ -126,3 +129,5 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_FILTER_BACKENDS': OTHER_FILTERS + DJANGO_FILTERS
 }
+
+SITE_ID = 1
