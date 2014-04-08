@@ -169,6 +169,7 @@ class FilterRestrictionViewSet(ModelViewSet):
         else:
             return queryset.filter(accountuser__account=user.accountuser.account)
 
+    # TODO This viewset (or the serializer) need to assign the permission to the user or group if not assigned yet
     def pre_save(self, obj):
         if obj.accountuser.account != self.request.user.accountuser.account:
             raise BadRequestValidationError('You can not alter other account users permissions')

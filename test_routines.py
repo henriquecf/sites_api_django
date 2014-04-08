@@ -94,7 +94,7 @@ def test_search_fields_routine(test_case, search_fields):
         test_case.client.post(test_case.url, test_case.altered_data)
         query_parameter = {'search': filter_parameter}
         response = test_case.client.get(test_case.url, query_parameter)
-        test_case.assertEqual(response.data['count'], 1, 'Field "{0}" not in search fields'.format(field))
+        test_case.assertEqual(1, response.data['count'], 'Field "{0}" not in search fields'.format(field))
 
 
 def test_custom_object_permission_routine(test_case, count=3):

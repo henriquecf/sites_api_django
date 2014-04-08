@@ -65,3 +65,6 @@ class FilterRestriction(models.Model):
     permission = models.ForeignKey(Permission)
     accountuser = models.ForeignKey(AccountUser)
 
+    def __str__(self):
+        return '{0} - {1} - {2} - {3}'.format(self.accountuser, self.permission, self.filter_field, self.values)
+

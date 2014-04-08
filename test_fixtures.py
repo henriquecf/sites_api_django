@@ -52,10 +52,11 @@ def user_accountuser_account_permissions_token_fixture(test_case):
         test_case.owner.user_permissions.add(permission)
         test_case.second_owner.user_permissions.add(permission)
         test_case.account_user2.user_permissions.add(permission)
-        filter_permission = FilterRestriction.objects.create(permission=permission,
+        FilterRestriction.objects.create(permission=permission,
                                                             accountuser=test_case.account_user2.accountuser,
                                                             filter_field='creator',
-                                                            values='{0}'.format(test_case.account_user2.id))
+                                                            values='{0},{1}'.format(test_case.account_user2.id,
+                                                                                    test_case.owner.id))
 
 
 def user_token_fixture(test_case):
