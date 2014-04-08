@@ -33,17 +33,23 @@ class Account(Common):
         return self.owner.username
 
 
-class AccountGroup(Group):
+class AccountGroup(Common):
+    group = models.OneToOneField(Group, blank=True)
     role = models.CharField(max_length=100)
     account = models.ForeignKey(Account, blank=True)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        self.name = '{0}-{1}'.format(self.account, self.role)
+        name = '{0} - {1}'.format(self.account, self.role)
+        self.group = Group.objects.get_or_create(name=name)[0]
         super(AccountGroup, self).save()
 
+    def delete(self, using=None):
+        self.group.delete()
+        super(AccountGroup, self).delete()
+
     def __str__(self):
-        return '{0}-{1}'.format(self.account, self.role)
+        return '{0} - {1}'.format(self.account, self.role)
 
 
 class AccountUser(Common):
@@ -64,21 +70,34 @@ class FilterRestriction(models.Model):
     filter_field = models.CharField(max_length=100)
     values = models.TextField()
     permission = models.ForeignKey(Permission)
-    accountuser = models.ForeignKey(AccountUser)
+    accountuser = models.ForeignKey(AccountUser, null=True, blank=True)
+    accountgroup = models.ForeignKey(AccountGroup, null=True, blank=True)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        try:
-            self.accountuser.user.user_permissions.add(self.permission)
-        except IntegrityError:
-            pass
+        if self.accountuser:
+            try:
+                self.accountuser.user.user_permissions.add(self.permission)
+            except IntegrityError:
+                pass
+        elif self.accountgroup:
+            try:
+                self.accountgroup.group.permissions.add(self.permission)
+            except IntegrityError:
+                pass
         super(FilterRestriction, self).save()
 
     def delete(self, using=None):
-        try:
-            self.accountuser.user.user_permissions.remove(self.permission)
-        except IntegrityError:
-            pass
+        if self.accountuser:
+            try:
+                self.accountuser.user.user_permissions.remove(self.permission)
+            except IntegrityError:
+                pass
+        elif self.accountgroup:
+            try:
+                self.accountgroup.group.permissions.remove(self.permission)
+            except IntegrityError:
+                pass
         super(FilterRestriction, self).delete()
 
     def __str__(self):

@@ -171,8 +171,16 @@ class FilterRestrictionViewSet(ModelViewSet):
 
     # TODO This viewset (or the serializer) need to assign the permission to the user or group if not assigned yet
     def pre_save(self, obj):
-        if obj.accountuser.account != self.request.user.accountuser.account:
-            raise BadRequestValidationError('You can not alter other account users permissions')
+        try:
+            account = obj.accountuser.account
+        except AttributeError:
+            try:
+                account = obj.accountgroup.account
+            except AttributeError:
+                raise BadRequestValidationError('Accountuser or accountgroup is required.')
+
+        if account != self.request.user.accountuser.account:
+            raise BadRequestValidationError('You can not alter other account permissions.')
         else:
             super(FilterRestrictionViewSet, self).pre_save(obj)
 
@@ -182,6 +190,7 @@ class PermissionDetailView(generics.RetrieveAPIView):
     permission_classes = (
         permissions.IsAdminUser,
     )
+    filter_backends = ()
 
 
 class GroupDetailView(generics.RetrieveAPIView):
@@ -189,3 +198,4 @@ class GroupDetailView(generics.RetrieveAPIView):
     permission_classes = (
         permissions.IsAdminUser,
     )
+    filter_backends = ()

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import random
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import Permission, Group
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
 from test_fixtures import user_accountuser_account_token_fixture
@@ -92,3 +92,30 @@ class FilterPermissionAPITestCase(APILiveServerTestCase):
         self.client.delete(self.first_object_response.data['url'])
         permission = Permission.objects.get(id=self.data['permission'])
         self.assertNotIn(permission, self.owner.user_permissions.all())
+
+    def test_filter_permission_with_accountgroup(self):
+        self.data.pop('accountuser')
+        accountgroup_url = reverse('accountgroup-list')
+        response = self.client.post(accountgroup_url, data={'role': 'Test group'})
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code, response.data)
+        self.data.update({'accountgroup': response.data['url']})
+        test_routines.test_api_basic_methods_routine(self, count=1)
+
+    def test_permission_is_assigned_and_unassigned_to_group(self):
+        self.data.pop('accountuser')
+        accountgroup_url = reverse('accountgroup-list')
+        response = self.client.post(accountgroup_url, data={'role': 'Test group'})
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code, response.data)
+        self.data.update({'accountgroup': response.data['url']})
+        response3 = self.client.post(self.url, self.data)
+        self.assertEqual(status.HTTP_201_CREATED, response3.status_code, response3.data)
+
+        permission = Permission.objects.get(id=self.data['permission'])
+
+        group_id = response.data['group'].split('/')[-2]
+        group = Group.objects.get(id=group_id)
+        self.assertIn(permission, group.permissions.all(), group)
+
+        response2 = self.client.delete(response.data['url'])
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response2.status_code, response2.data)
+        self.assertNotIn(permission, group.permissions.all())

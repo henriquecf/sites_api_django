@@ -74,11 +74,11 @@ class AccountGruopAPITestCase(APILiveServerTestCase):
         test_routines.test_search_fields_routine(self, search_fields=fields)
 
     def test_hyperlinked_fields(self):
-        fields = ['account']
+        fields = ['account', 'group']
         test_routines.test_serializer_hyperlinked_fields_routine(self, fields=fields)
 
     def test_read_only_fields(self):
-        fields = ['account', 'name']
+        fields = ['account', 'group']
         test_routines.test_serializer_read_only_fields_routine(self, fields=fields)
 
     def test_role_and_account_are_unique_together(self):
