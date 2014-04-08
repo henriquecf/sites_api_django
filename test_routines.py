@@ -9,25 +9,28 @@ from rest_framework import status
 from resource.models import Resource
 
 
-def test_api_basic_methods_routine(test_case, token=None, count=2):
+def test_api_basic_methods_routine(test_case, token=None, count=2, object_url=None):
     if not token:
         token = test_case.owner_token
     test_case.set_authorization_bearer(token)
+
+    if not object_url:
+        object_url = test_case.first_object_response.data['url']
 
     # Test POST
     response = test_case.client.post(test_case.url, test_case.data)
     test_case.assertEqual(status.HTTP_201_CREATED, response.status_code, response.data)
 
     # Test PUT
-    response = test_case.client.put(test_case.first_object_response.data['url'], test_case.altered_data)
+    response = test_case.client.put(object_url, test_case.altered_data)
     test_case.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
 
     # Test PATCH
-    response = test_case.client.patch(test_case.first_object_response.data['url'], test_case.altered_data)
+    response = test_case.client.patch(object_url, test_case.altered_data)
     test_case.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
 
     # Test RETRIEVE
-    response = test_case.client.get(test_case.first_object_response.data['url'])
+    response = test_case.client.get(object_url)
     test_case.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
 
     # Test LIST
@@ -36,7 +39,7 @@ def test_api_basic_methods_routine(test_case, token=None, count=2):
     test_case.assertEqual(count, response.data['count'])
 
     # Test DELETE
-    response = test_case.client.delete(test_case.first_object_response.data['url'])
+    response = test_case.client.delete(object_url)
     test_case.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code, response.data)
     
 
@@ -65,6 +68,7 @@ def test_admin_permission_routine(test_case, token=None):
 
 
 def test_serializer_hyperlinked_fields_routine(test_case, fields):
+    fields.extend(['url'])
     for field in fields:
         response = test_case.client.get(test_case.first_object_response.data[field])
         test_case.assertEqual(response.status_code, status.HTTP_200_OK, 'Error with field {0}'.format(field))
@@ -90,7 +94,7 @@ def test_search_fields_routine(test_case, search_fields):
         test_case.client.post(test_case.url, test_case.altered_data)
         query_parameter = {'search': filter_parameter}
         response = test_case.client.get(test_case.url, query_parameter)
-        test_case.assertEqual(response.data['count'], 1, 'Field "{0}" not in search fields'.format(field))
+        test_case.assertEqual(1, response.data['count'], 'Field "{0}" not in search fields'.format(field))
 
 
 def test_custom_object_permission_routine(test_case, count=3):
@@ -106,7 +110,7 @@ def test_custom_object_permission_routine(test_case, count=3):
     test_api_basic_methods_routine(test_case, token=test_case.account_user_token2)
 
     # Now the global permissions are removed from the user that had them
-    test_case.account_user2.accountuser.global_permissions.clear()
+    test_case.account_user2.accountuser.filter_permissions.clear()
 
     # He should get restrictions to owner resources now
     test_resource_permission_routine(test_case, token=test_case.account_user_token2, count=count)

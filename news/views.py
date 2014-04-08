@@ -1,8 +1,9 @@
-
+from rest_framework import filters
 from publication.views import PublicationBaseViewSet
-from .serializers import NewsSerializer
-from .models import News
-from .filtersets import NewsFilterSet
+from news.serializers import NewsSerializer
+from news.models import News
+from news.filtersets import NewsFilterSet
+from account.backends import FilterRestrictionBackend
 
 
 class NewsViewSet(PublicationBaseViewSet):

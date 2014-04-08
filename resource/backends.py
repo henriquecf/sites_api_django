@@ -1,16 +1,6 @@
 # -*- coding: utf-8 -*-
 from rest_framework import filters, permissions
-
-
-custom_permissions_map = {
-    'GET': ['%(app_label)s.view_%(model_name)s'],
-    'OPTIONS': [],
-    'HEAD': [],
-    'POST': ['%(app_label)s.add_%(model_name)s'],
-    'PUT': ['%(app_label)s.change_%(model_name)s'],
-    'PATCH': ['%(app_label)s.change_%(model_name)s'],
-    'DELETE': ['%(app_label)s.delete_%(model_name)s'],
-}
+from account.backends import custom_permissions_map
 
 
 class CustomDjangoModelPermissions(permissions.DjangoModelPermissions):
@@ -44,7 +34,7 @@ class ResourceFilterBackend(filters.BaseFilterBackend):
                 permission = custom_permissions_map[request.method][0] % kwargs
             except KeyError:
                 permission = None
-            if permission and request.user.accountuser.has_global_permission(permission):
+            if permission and request.user.accountuser.has_filter_permission(permission):
                 return queryset.filter(account=request.user.accountuser.account)
             else:
                 return queryset.filter(creator=request.user)

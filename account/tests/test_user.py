@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
-from test_fixtures import user_accountuser_account_token_fixture
+from test_fixtures import user_accountuser_account_permissions_token_fixture
 import test_routines
 
 
@@ -24,7 +24,7 @@ class UserAPITestCase(APILiveServerTestCase):
             'password': '123altered',
             'email': 'user-altered@user.com'
         }
-        user_accountuser_account_token_fixture(self)
+        user_accountuser_account_permissions_token_fixture(self)
         self.set_authorization_bearer()
         self.first_object_response = self.client.post(self.url, self.data)
 

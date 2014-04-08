@@ -110,7 +110,7 @@ DJANGO_FILTERS = (
 )
 
 OTHER_FILTERS = (
-    'resource.backends.ResourceFilterBackend',
+    'account.backends.FilterRestrictionBackend',
 )
 
 REST_FRAMEWORK = {

@@ -20,7 +20,7 @@ class PublicationAPITestCase(APILiveServerTestCase):
         self.altered_data = {
             'title': 'First publication altered'
         }
-        test_fixtures.user_accountuser_account_token_fixture(self)
+        test_fixtures.user_accountuser_account_permissions_token_fixture(self)
         self.set_authorization_bearer()
         self.first_object_response = self.client.post(self.url, self.data)
 

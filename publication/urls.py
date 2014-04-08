@@ -24,6 +24,7 @@ router.register(r'submission', newsletter_views.SubmissionViewSet)
 router.register(r'accountuser', account_views.AccountUserViewSet)
 router.register(r'user', account_views.UserViewSet)
 router.register(r'accountgroup', account_views.AccountGroupViewSet)
+router.register(r'filterrestriction', account_views.FilterRestrictionViewSet)
 
 urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
