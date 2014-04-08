@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 from django.db import models
+from django.db.utils import IntegrityError
 from django.contrib.auth.models import User, Permission, Group
 
 
@@ -64,6 +65,21 @@ class FilterRestriction(models.Model):
     values = models.TextField()
     permission = models.ForeignKey(Permission)
     accountuser = models.ForeignKey(AccountUser)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        try:
+            self.accountuser.user.user_permissions.add(self.permission)
+        except IntegrityError:
+            pass
+        super(FilterRestriction, self).save()
+
+    def delete(self, using=None):
+        try:
+            self.accountuser.user.user_permissions.remove(self.permission)
+        except IntegrityError:
+            pass
+        super(FilterRestriction, self).delete()
 
     def __str__(self):
         return '{0} - {1} - {2} - {3}'.format(self.accountuser, self.permission, self.filter_field, self.values)

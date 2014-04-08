@@ -83,3 +83,12 @@ class FilterPermissionAPITestCase(APILiveServerTestCase):
         response = self.client.post(self.url, self.data)
         test_routines.test_api_basic_methods_routine(self, token=self.second_owner_token,
                                                      object_url=response.data['url'])
+
+    def test_permission_is_assigned_to_user(self):
+        permission = Permission.objects.get(id=self.data['permission'])
+        self.assertIn(permission, self.owner.user_permissions.all())
+
+    def test_permission_is_unassigned_when_filter_is_deleted(self):
+        self.client.delete(self.first_object_response.data['url'])
+        permission = Permission.objects.get(id=self.data['permission'])
+        self.assertNotIn(permission, self.owner.user_permissions.all())
