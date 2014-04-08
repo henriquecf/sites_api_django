@@ -1,1 +1,3 @@
--r reqs/prod.txt
+-r reqs/common.txt
+
+django-sslify==0.2.3
