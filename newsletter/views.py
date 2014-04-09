@@ -17,7 +17,7 @@ class SubscriptionViewSet(ResourceViewSet):
             subscription = Subscription.objects.get(email=request.DATA['email'])
             subscription.active = True
             subscription.save()
-            serialized_data = SubscriptionSerializer(subscription)
+            serialized_data = SubscriptionSerializer(subscription, context={'request': request})
             return Response(data=serialized_data.data, status=201)
         except ObjectDoesNotExist:
             return super(SubscriptionViewSet, self).create(request, *args, **kwargs)
