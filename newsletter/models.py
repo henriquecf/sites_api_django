@@ -23,7 +23,7 @@ class Subscription(Resource):
         return super(Subscription, self).save()
 
     def __str__(self):
-        return self.name
+        return self.email
 
 
 class Newsletter(Resource):
@@ -60,8 +60,8 @@ class Submission(Resource):
 
     This model is related with a newsletter object and a subscription object.
     """
-    subscription = models.ForeignKey(Subscription)
-    newsletter = models.ForeignKey(Newsletter)
+    subscription = models.ForeignKey(Subscription, related_name='submissions')
+    newsletter = models.ForeignKey(Newsletter, related_name='submissions')
     status = models.CharField(max_length='10', default='new')
 
     def send_newsletter(self):
@@ -85,5 +85,9 @@ class Submission(Resource):
                 self.save()
         return True
 
+    def __str__(self):
+        return '{0} - {1}'.format(self.status, self.subscription)
+
     class Meta:
         unique_together = ('subscription', 'newsletter')
+        ordering = ['status']

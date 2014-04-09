@@ -1,7 +1,6 @@
-
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import link, action
 from rest_framework.response import Response
+from rest_framework.generics import RetrieveAPIView
 from resource.views import ResourceViewSet
 from .serializers import SubscriptionSerializer, NewsletterSerializer, SubmissionSerializer
 from .models import Subscription, Newsletter, Submission
@@ -19,7 +18,7 @@ class SubscriptionViewSet(ResourceViewSet):
             subscription.save()
             serialized_data = SubscriptionSerializer(subscription, context={'request': request})
             return Response(data=serialized_data.data, status=201)
-        except ObjectDoesNotExist:
+        except:
             return super(SubscriptionViewSet, self).create(request, *args, **kwargs)
 
     @link()
@@ -54,6 +53,6 @@ class NewsletterViewSet(ResourceViewSet):
             return Response(status=202, data=data)
 
 
-class SubmissionViewSet(ResourceViewSet):
-    serializer_class = SubmissionSerializer
+class SubmissionDetailAPIView(RetrieveAPIView):
     model = Submission
+    serializer_class = SubmissionSerializer
