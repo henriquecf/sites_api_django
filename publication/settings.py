@@ -132,6 +132,6 @@ REST_FRAMEWORK = {
 
 SITE_ID = 1
 
-#TODO: This settings will be in prod settings
-#SESSION_COOKIE_SECURE = True
-#CSRF_COOKIE_SECURE = True
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
