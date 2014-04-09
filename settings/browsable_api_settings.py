@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from settings.common_settings import *
+from settings.dev_settings import *
 
 REST_FRAMEWORK = {
     'PAGINATE_BY': 10,
@@ -15,7 +15,3 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_FILTER_BACKENDS': OTHER_FILTERS + DJANGO_FILTERS
 }
-
-
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
