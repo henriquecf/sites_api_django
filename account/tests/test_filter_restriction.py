@@ -99,7 +99,7 @@ class FilterPermissionAPITestCase(APILiveServerTestCase):
         response = self.client.post(accountgroup_url, data={'role': 'Test group'})
         self.assertEqual(status.HTTP_201_CREATED, response.status_code, response.data)
         self.data.update({'accountgroup': response.data['url']})
-        test_routines.test_api_basic_methods_routine(self, count=1)
+        test_routines.test_api_basic_methods_routine(self)
 
     def test_permission_is_assigned_and_unassigned_to_group(self):
         self.data.pop('accountuser')
@@ -116,6 +116,6 @@ class FilterPermissionAPITestCase(APILiveServerTestCase):
         group = Group.objects.get(id=group_id)
         self.assertIn(permission, group.permissions.all(), group)
 
-        response2 = self.client.delete(response.data['url'])
+        response2 = self.client.delete(response3.data['url'])
         self.assertEqual(status.HTTP_204_NO_CONTENT, response2.status_code, response2.data)
         self.assertNotIn(permission, group.permissions.all())
