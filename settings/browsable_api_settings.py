@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from publication.settings import *
+from settings.common_settings import *
 
 REST_FRAMEWORK = {
     'PAGINATE_BY': 10,
