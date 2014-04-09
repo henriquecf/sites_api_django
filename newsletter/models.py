@@ -1,5 +1,6 @@
 import random
 from django.db import models
+from django.db.utils import IntegrityError
 from django.core.mail import EmailMultiAlternatives
 from resource.models import Resource
 
@@ -34,13 +35,24 @@ class Newsletter(Resource):
 
     def send_newsletter(self, account):
         subscriptions = Subscription.objects.filter(account=account)
+        resent = Submission.objects.filter(newsletter=self, status='failed')
         for subscription in subscriptions:
-            submission = Submission.objects.create(account=self.account,
-                                                   creator=self.account.owner,
-                                                   newsletter=self,
-                                                   subscription=subscription)
+            try:
+                Submission.objects.create(account=self.account,
+                                          creator=self.account.owner,
+                                          newsletter=self,
+                                          subscription=subscription,)
+            except IntegrityError:
+                pass
+        new = Submission.objects.filter(newsletter=self, status='new')
+        for submission in new:
             submission.send_newsletter()
-        return True
+        for submission in resent:
+            submission.send_newsletter()
+        status = dict(new=new.count(),
+                      successful=Submission.objects.filter(newsletter=self, status='sent').count(),
+                      resubmissions=resent.count())
+        return status
 
 
 class Submission(Resource):
@@ -50,6 +62,7 @@ class Submission(Resource):
     """
     subscription = models.ForeignKey(Subscription)
     newsletter = models.ForeignKey(Newsletter)
+    status = models.CharField(max_length='10', default='new')
 
     def send_newsletter(self):
         """Sends a newsletter to the subscription in the subscription field.
@@ -58,12 +71,14 @@ class Submission(Resource):
 
         user -- Not used in this context. Held for compatibility.
         """
-        message = EmailMultiAlternatives(self.newsletter.subject,
-                                         self.newsletter.content,
-                                         'localhost',
-                                         [self.subscription.email])
-        status = message.send()
-        print(message.get_connection().status)
+        if not self.status == 'sent':
+            message = EmailMultiAlternatives(self.newsletter.subject,
+                                             self.newsletter.content,
+                                             'localhost',
+                                             [self.subscription.email])
+            status = message.send()
+            self.status = 'sent'
+            self.save()
         return True
 
     class Meta:

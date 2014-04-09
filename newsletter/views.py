@@ -48,7 +48,10 @@ class NewsletterViewSet(ResourceViewSet):
         newsletter = self.get_object()
         status = newsletter.send_newsletter(account=request.user.accountuser.account)
         if status:
-            return Response(status=200)
+            data = {
+                'submissions': status,
+            }
+            return Response(status=202, data=data)
 
 
 class SubmissionViewSet(ResourceViewSet):

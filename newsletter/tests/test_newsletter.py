@@ -8,6 +8,7 @@ import test_routines
 import test_fixtures
 from resource import routines as resource_routines
 from newsletter.models import Newsletter
+from ..models import Subscription, Submission
 
 
 class NewsletterAPITestCase(APILiveServerTestCase):
@@ -66,7 +67,7 @@ class NewsletterAPITestCase(APILiveServerTestCase):
         response = self.client.post(self.url, self.data)
         send_url = response.data['send_newsletter']
 
-    def test_send_newsletter_when_submissions_has_been_successfull(self):
+    def test_send_when_newsletter_has_two_successful_submissions(self):
         response1 = self.client.post(reverse('subscription-list'),
                                     data={'name': 'ivan', 'email': 'ivan@ivan.com.br'})
         self.assertEqual(status.HTTP_201_CREATED, response1.status_code)
@@ -74,4 +75,18 @@ class NewsletterAPITestCase(APILiveServerTestCase):
                                     data={'name': 'idan', 'email': 'idan@idan.com.br'})
         self.assertEqual(status.HTTP_201_CREATED, response2.status_code)
         response3 = self.client.post(self.first_object_response.data['send_newsletter'])
-        self.assertEqual(status.HTTP_200_OK, response3.status_code)
+        self.assertEqual(status.HTTP_202_ACCEPTED, response3.status_code)
+        data = {
+            'new': 2,
+            'successful': 2,
+            'resubmissions': 0,
+        }
+        self.assertEqual(data, response3.data['submissions'])
+        response4 = self.client.post(self.first_object_response.data['send_newsletter'])
+        data = {
+            'new': 0,
+            'successful': 2,
+            'resubmissions': 0,
+        }
+        self.assertEqual(data, response4.data['submissions'])
+        self.assertEqual(status.HTTP_202_ACCEPTED, response3.status_code)
