@@ -76,9 +76,13 @@ class Submission(Resource):
                                              self.newsletter.content,
                                              'localhost',
                                              [self.subscription.email])
-            status = message.send()
-            self.status = 'sent'
-            self.save()
+            try:
+                message.send(fail_silently=False)
+                self.status = 'sent'
+                self.save()
+            except:
+                self.status = 'failed'
+                self.save()
         return True
 
     class Meta:

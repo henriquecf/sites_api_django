@@ -25,5 +25,3 @@ class SubmissionAPITestCase(APILiveServerTestCase):
         if not token:
             token = self.owner_token
         self.client.credentials(HTTP_AUTHORIZATION='Bearer {0}'.format(token))
-
-    # TODO Submission was not implemented yet

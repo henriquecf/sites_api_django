@@ -18,6 +18,8 @@ class NewsletterSerializer(ResourceSerializer):
 
 
 class SubmissionSerializer(ResourceSerializer):
+    newsletter = serializers.HyperlinkedRelatedField(view_name='newsletter-detail', read_only=True)
+    subscription = serializers.HyperlinkedRelatedField(view_name='subscription-detail', read_only=True)
 
     class Meta(ResourceSerializer.Meta):
         model = Submission

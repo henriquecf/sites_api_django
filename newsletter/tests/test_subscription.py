@@ -42,7 +42,6 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
     def test_resource_permission(self):
         test_routines.test_resource_permission_routine(self)
 
-    #TODO: Refactor test to permit customization
     def test_custom_object_permission(self):
         test_routines.test_custom_object_permission_routine(self, count=2)
 
