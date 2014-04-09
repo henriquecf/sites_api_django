@@ -5,7 +5,10 @@ from file_explorer.models import File
 
 
 class FileSerializer(PublicationSerializer):
-    file = serializers.FileField(blank=True)
 
     class Meta(PublicationSerializer.Meta):
         model = File
+
+
+class FileSerializerTest(FileSerializer):
+    file = serializers.FileField(blank=True)

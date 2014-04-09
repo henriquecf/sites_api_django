@@ -12,8 +12,7 @@ class File(Publication):
     file - A path to the location of file.
     categories - A many to many relation with categories. It accepts null values.
     """
-    # TODO Find a way to test post file. This field must not be blank
-    file = models.FileField(upload_to='media/files', default='media/files/image.png')
+    file = models.FileField(upload_to='media/files')
     categories = models.ManyToManyField(Category, null=True, blank=True, related_name='files')
 
     def __str__(self):
