@@ -90,3 +90,23 @@ class NewsletterAPITestCase(APILiveServerTestCase):
         }
         self.assertEqual(data, response4.data['submissions'])
         self.assertEqual(status.HTTP_202_ACCEPTED, response3.status_code)
+
+    def test_send_when_newsletter_has_three_new_submissions(self):
+        response1 = self.client.post(reverse('subscription-list'),
+                                    data={'name': 'ivan', 'email': 'ivan@ivan.com.br'})
+        self.assertEqual(status.HTTP_201_CREATED, response1.status_code)
+        response2 = self.client.post(reverse('subscription-list'),
+                                    data={'name': 'idan', 'email': 'idan@idan.com.br'})
+        self.assertEqual(status.HTTP_201_CREATED, response2.status_code)
+        response3 = self.client.post(reverse('subscription-list'),
+                                     data={'name': 'iran', 'email': 'iran@iran.com.br'})
+        self.assertEqual(status.HTTP_201_CREATED, response3.status_code)
+        response4 = self.client.post(self.first_object_response.data['send_newsletter'])
+        self.assertEqual(status.HTTP_202_ACCEPTED, response4.status_code)
+        data = {
+            'new': 3,
+            'successful': 3,
+            'resubmissions': 0,
+        }
+        self.assertEqual(status.HTTP_202_ACCEPTED, response4.status_code)
+        self.assertEqual(data, response4.data['submissions'])
