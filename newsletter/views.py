@@ -1,7 +1,6 @@
-
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import link, action
 from rest_framework.response import Response
+from rest_framework.generics import RetrieveAPIView
 from resource.views import ResourceViewSet
 from .serializers import SubscriptionSerializer, NewsletterSerializer, SubmissionSerializer
 from .models import Subscription, Newsletter, Submission
@@ -17,9 +16,9 @@ class SubscriptionViewSet(ResourceViewSet):
             subscription = Subscription.objects.get(email=request.DATA['email'])
             subscription.active = True
             subscription.save()
-            serialized_data = SubscriptionSerializer(subscription)
+            serialized_data = SubscriptionSerializer(subscription, context={'request': request})
             return Response(data=serialized_data.data, status=201)
-        except ObjectDoesNotExist:
+        except:
             return super(SubscriptionViewSet, self).create(request, *args, **kwargs)
 
     @link()
@@ -42,15 +41,18 @@ class NewsletterViewSet(ResourceViewSet):
     model = Newsletter
     filter_class = NewsletterFilterSet
 
-    @link()
+    @action(methods=['post'])
     def send_newsletter(self, request, *args, **kwargs):
         """Send the newsletter calling the model function."""
         newsletter = self.get_object()
-        status = newsletter.send_newsletter()
+        status = newsletter.send_newsletter(account=request.user.accountuser.account)
         if status:
-            return Response(status=200)
+            data = {
+                'submissions': status,
+            }
+            return Response(status=202, data=data)
 
 
-class SubmissionViewSet(ResourceViewSet):
-    serializer_class = SubmissionSerializer
+class SubmissionDetailAPIView(RetrieveAPIView):
     model = Submission
+    serializer_class = SubmissionSerializer

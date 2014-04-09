@@ -50,7 +50,7 @@ def test_resource_sites_field_routine(test_case):
     site_url2 = reverse('site-detail', args=(my_site.id,))
     my_site_url = test_case.client.get(site_url2).data['url']
     test_case.data.update({'sites': [my_site_url]})
-    response3 = test_case.client.post(test_case.url, test_case.data)
+    response3 = test_case.client.put(response.data['url'], test_case.data)
     test_case.assertIn(my_site_url, response3.data['sites'])
     response4 = test_case.client.get(test_case.url)
-    test_case.assertEqual(2, response4.data['count'], 'Looks like filter is not working properly')
+    test_case.assertEqual(1, response4.data['count'], 'Looks like filter is not working properly')

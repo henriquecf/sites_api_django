@@ -1,5 +1,6 @@
 import random
 from django.db import models
+from django.db.utils import IntegrityError
 from django.core.mail import EmailMultiAlternatives
 from resource.models import Resource
 
@@ -22,7 +23,7 @@ class Subscription(Resource):
         return super(Subscription, self).save()
 
     def __str__(self):
-        return self.name
+        return self.email
 
 
 class Newsletter(Resource):
@@ -32,15 +33,26 @@ class Newsletter(Resource):
     subject = models.CharField(max_length=200)
     content = models.TextField()
 
-    def send_newsletter(self, user):
-        subscriptions = Subscription.objects.filter(owner=user)
+    def send_newsletter(self, account):
+        subscriptions = Subscription.objects.filter(account=account)
+        resent = Submission.objects.filter(newsletter=self, status='failed')
         for subscription in subscriptions:
-            message = EmailMultiAlternatives(self.title,
-                                             self.content,
-                                             'localhost',
-                                             subscription.email)
-            message.send()
-        return True
+            try:
+                Submission.objects.create(account=self.account,
+                                          creator=self.account.owner,
+                                          newsletter=self,
+                                          subscription=subscription,)
+            except IntegrityError:
+                pass
+        new = Submission.objects.filter(newsletter=self, status='new')
+        for submission in new:
+            submission.send_newsletter()
+        for submission in resent:
+            submission.send_newsletter()
+        status = dict(new=new.count(),
+                      successful=Submission.objects.filter(newsletter=self, status='sent').count(),
+                      resubmissions=resent.count())
+        return status
 
 
 class Submission(Resource):
@@ -48,19 +60,34 @@ class Submission(Resource):
 
     This model is related with a newsletter object and a subscription object.
     """
-    subscription = models.ForeignKey(Subscription)
-    newsletter = models.ForeignKey(Newsletter)
+    subscription = models.ForeignKey(Subscription, related_name='submissions')
+    newsletter = models.ForeignKey(Newsletter, related_name='submissions')
+    status = models.CharField(max_length='10', default='new')
 
-    def send_newsletter(self, user):
+    def send_newsletter(self):
         """Sends a newsletter to the subscription in the subscription field.
 
         Keyword arguments:
 
         user -- Not used in this context. Held for compatibility.
         """
-        message = EmailMultiAlternatives(self.title,
-                                         self.newsletter.content,
-                                         'localhost',
-                                         self.subscription.email)
-        message.send()
+        if not self.status == 'sent':
+            message = EmailMultiAlternatives(self.newsletter.subject,
+                                             self.newsletter.content,
+                                             'localhost',
+                                             [self.subscription.email])
+            try:
+                message.send(fail_silently=False)
+                self.status = 'sent'
+                self.save()
+            except:
+                self.status = 'failed'
+                self.save()
         return True
+
+    def __str__(self):
+        return '{0} - {1}'.format(self.status, self.subscription)
+
+    class Meta:
+        unique_together = ('subscription', 'newsletter')
+        ordering = ['status']
