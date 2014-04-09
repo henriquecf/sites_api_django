@@ -51,6 +51,7 @@ class Newsletter(Resource):
             submission.send_newsletter()
         status = dict(new=new.count(),
                       successful=Submission.objects.filter(newsletter=self, status='sent').count(),
+                      failed=Submission.objects.filter(newsletter=self, status='failed').count(),
                       resubmissions=resent.count())
         return status
 

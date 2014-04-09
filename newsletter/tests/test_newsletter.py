@@ -67,8 +67,24 @@ class NewsletterAPITestCase(APILiveServerTestCase):
         resource_routines.test_resource_sites_field_routine(self)
 
     def test_send_newsletter_just_to_own_subscribers(self):
+        self.set_authorization_bearer(self.second_owner_token)
+        response = self.client.post(self.url, self.data)
+        response1 = self.client.post(reverse('subscription-list'),
+                                     data={'name': 'ivan', 'email': 'ivan@ivan.com.br'})
+        self.set_authorization_bearer(self.owner_token)
+        response1 = self.client.post(reverse('subscription-list'),
+                                     data={'name': 'ivan', 'email': 'ivan@ivan.com.br'})
         response = self.client.post(self.url, self.data)
         send_url = response.data['send_newsletter']
+        response2 = self.client.post(send_url)
+        data = {
+            'new': 1,
+            'successful': 1,
+            'resubmissions': 0,
+            'failed': 0,
+        }
+        self.assertEqual(data, response2.data['submissions'], response2.data)
+        self.assertEqual(status.HTTP_202_ACCEPTED, response2.status_code)
 
     def test_send_when_newsletter_has_two_successful_submissions(self):
         response1 = self.client.post(reverse('subscription-list'),
@@ -83,6 +99,7 @@ class NewsletterAPITestCase(APILiveServerTestCase):
             'new': 2,
             'successful': 2,
             'resubmissions': 0,
+            'failed': 0,
         }
         self.assertEqual(data, response3.data['submissions'])
         response4 = self.client.post(self.first_object_response.data['send_newsletter'])
@@ -90,6 +107,7 @@ class NewsletterAPITestCase(APILiveServerTestCase):
             'new': 0,
             'successful': 2,
             'resubmissions': 0,
+            'failed': 0,
         }
         self.assertEqual(data, response4.data['submissions'])
         self.assertEqual(status.HTTP_202_ACCEPTED, response3.status_code)
@@ -106,10 +124,34 @@ class NewsletterAPITestCase(APILiveServerTestCase):
         self.assertEqual(status.HTTP_201_CREATED, response3.status_code)
         response4 = self.client.post(self.first_object_response.data['send_newsletter'])
         self.assertEqual(status.HTTP_202_ACCEPTED, response4.status_code)
-        data = {
-            'new': 3,
-            'successful': 3,
-            'resubmissions': 0,
-        }
+        data = dict(new=3, successful=3, resubmissions=0, failed=0)
         self.assertEqual(status.HTTP_202_ACCEPTED, response4.status_code)
         self.assertEqual(data, response4.data['submissions'])
+
+    def test_submission_field(self):
+        response1 = self.client.post(reverse('subscription-list'),
+                                     data={'name': 'ivan', 'email': 'ivan@ivan.com.br'})
+        response2 = self.client.get(self.url)
+        response3 = self.client.post(self.first_object_response.data['send_newsletter'])
+        response4 = self.client.get(self.url)
+        self.assertEqual(status.HTTP_201_CREATED, response1.status_code)
+        self.assertEqual([], response2.data['results'][0]['submissions'], response2.data)
+        self.assertEqual(['sent - ivan@ivan.com.br'], response4.data['results'][0]['submissions'])
+
+    '''def test_send_when_newsletter_has_two_failed_submissions(self):
+        response1 = self.client.post(reverse('subscription-list'),
+                                     data={'name': 'ivan', 'email': 'ivan@ivan.com.br'})
+        self.assertEqual(status.HTTP_201_CREATED, response1.status_code)
+        response2 = self.client.post(reverse('subscription-list'),
+                                     data={'name': 'idan', 'email': 'idan@idan.com.br'})
+        self.assertEqual(status.HTTP_201_CREATED, response2.status_code)
+        response3 = self.client.post(self.first_object_response.data['send_newsletter'])
+        self.assertEqual(status.HTTP_202_ACCEPTED, response3.status_code)
+        data = dict(new=2, successful=0, resubmissions=0, failed=2)
+        self.assertEqual(status.HTTP_202_ACCEPTED, response3.status_code)
+        self.assertEqual(data, response3.data['submissions'])
+        response3 = self.client.post(self.first_object_response.data['send_newsletter'])
+        self.assertEqual(status.HTTP_202_ACCEPTED, response3.status_code)
+        data = dict(new=0, successful=2, resubmissions=2, failed=0)
+        self.assertEqual(status.HTTP_202_ACCEPTED, response3.status_code)
+        self.assertEqual(data, response3.data['submissions'])'''
