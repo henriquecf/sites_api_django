@@ -42,11 +42,11 @@ class NewsletterViewSet(ResourceViewSet):
     model = Newsletter
     filter_class = NewsletterFilterSet
 
-    @link()
+    @action(methods=['post'])
     def send_newsletter(self, request, *args, **kwargs):
         """Send the newsletter calling the model function."""
         newsletter = self.get_object()
-        status = newsletter.send_newsletter()
+        status = newsletter.send_newsletter(account=request.user.accountuser.account)
         if status:
             return Response(status=200)
 

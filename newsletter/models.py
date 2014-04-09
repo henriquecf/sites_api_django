@@ -32,14 +32,14 @@ class Newsletter(Resource):
     subject = models.CharField(max_length=200)
     content = models.TextField()
 
-    def send_newsletter(self, user):
-        subscriptions = Subscription.objects.filter(owner=user)
+    def send_newsletter(self, account):
+        subscriptions = Subscription.objects.filter(account=account)
         for subscription in subscriptions:
-            message = EmailMultiAlternatives(self.title,
-                                             self.content,
-                                             'localhost',
-                                             subscription.email)
-            message.send()
+            submission = Submission.objects.create(account=self.account,
+                                                   creator=self.account.owner,
+                                                   newsletter=self,
+                                                   subscription=subscription)
+            submission.send_newsletter()
         return True
 
 
@@ -51,16 +51,20 @@ class Submission(Resource):
     subscription = models.ForeignKey(Subscription)
     newsletter = models.ForeignKey(Newsletter)
 
-    def send_newsletter(self, user):
+    def send_newsletter(self):
         """Sends a newsletter to the subscription in the subscription field.
 
         Keyword arguments:
 
         user -- Not used in this context. Held for compatibility.
         """
-        message = EmailMultiAlternatives(self.title,
+        message = EmailMultiAlternatives(self.newsletter.subject,
                                          self.newsletter.content,
                                          'localhost',
-                                         self.subscription.email)
-        message.send()
+                                         [self.subscription.email])
+        status = message.send()
+        print(message.get_connection().status)
         return True
+
+    class Meta:
+        unique_together = ('subscription', 'newsletter')
