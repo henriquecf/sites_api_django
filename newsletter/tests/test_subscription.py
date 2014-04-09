@@ -59,6 +59,9 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
     def test_user_and_account_coincide_with_request_user(self):
         resource_routines.test_resource_owner_is_request_user_routine(self)
 
+    def test_resource_sites_field(self):
+        resource_routines.test_resource_sites_field_routine(self)
+
     def test_email_is_unique(self):
         self.client.post(self.url, self.data)
         count = Subscription.objects.count()

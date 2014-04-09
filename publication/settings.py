@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     'oauth2_provider',
     'rest_framework',
@@ -111,6 +112,7 @@ DJANGO_FILTERS = (
 
 OTHER_FILTERS = (
     'account.backends.FilterRestrictionBackend',
+    'resource.backends.SiteDomainFilterBackend',
 )
 
 REST_FRAMEWORK = {
@@ -127,3 +129,8 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_FILTER_BACKENDS': OTHER_FILTERS + DJANGO_FILTERS
 }
+
+SITE_ID = 1
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True

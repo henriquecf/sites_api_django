@@ -1,4 +1,5 @@
 import datetime
+from django.db.models import Q
 from django.contrib.auth import hashers
 from django.contrib.auth.models import User, Permission, Group
 from django.core.exceptions import ObjectDoesNotExist
@@ -167,7 +168,8 @@ class FilterRestrictionViewSet(ModelViewSet):
         if user.is_superuser:
             return queryset
         else:
-            return queryset.filter(accountuser__account=user.accountuser.account)
+            return queryset.filter(
+                Q(accountuser__account=user.accountuser.account) | Q(accountgroup__account=user.accountuser.account))
 
     # TODO This viewset (or the serializer) need to assign the permission to the user or group if not assigned yet
     def pre_save(self, obj):

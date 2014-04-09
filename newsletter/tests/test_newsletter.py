@@ -63,6 +63,9 @@ class NewsletterAPITestCase(APILiveServerTestCase):
     def test_resource_user_and_account_coincide_with_request_user(self):
         resource_routines.test_resource_user_and_account_coincide_with_request_user_routine(self)
 
+    def test_resource_sites_field(self):
+        resource_routines.test_resource_sites_field_routine(self)
+
     def test_send_newsletter_just_to_own_subscribers(self):
         response = self.client.post(self.url, self.data)
         send_url = response.data['send_newsletter']

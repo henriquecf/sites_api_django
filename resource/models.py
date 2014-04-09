@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.db import models
 
 from account.models import Account, Common
@@ -13,6 +14,7 @@ class Resource(Common):
     """
     account = models.ForeignKey(Account, editable=False)
     creator = models.ForeignKey(User, editable=False, related_name='creators')
+    sites = models.ManyToManyField(Site, null=True, blank=True)
 
     def __str__(self):
-        return self.creator.username
+        return '{0} - {1}'.format(self.account, self.creator)

@@ -8,6 +8,7 @@ class CustomDjangoModelPermissions(permissions.DjangoModelPermissions):
     perms_map = custom_permissions_map
 
 
+# TODO This backend is duplicated (account FilterRestrictionBackend) and there must happen a separation between then
 class ResourceFilterBackend(filters.BaseFilterBackend):
     """This filter analise the user and its permissions.
 
@@ -38,3 +39,9 @@ class ResourceFilterBackend(filters.BaseFilterBackend):
                 return queryset.filter(account=request.user.accountuser.account)
             else:
                 return queryset.filter(creator=request.user)
+
+
+class SiteDomainFilterBackend(filters.BaseFilterBackend):
+
+    def filter_queryset(self, request, queryset, view):
+        return queryset.filter(sites__domain=request.META.get('SERVER_NAME'))

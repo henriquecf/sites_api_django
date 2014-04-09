@@ -83,3 +83,6 @@ class NewsAPITestCase(APILiveServerTestCase):
 
     def test_filter_categories(self):
         test_filter_categories(self)
+
+    def test_resource_sites_field(self):
+        resource_routines.test_resource_sites_field_routine(self)
