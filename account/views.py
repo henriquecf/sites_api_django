@@ -59,7 +59,11 @@ class AccountUserViewSet(ModelViewSet):
         if self.request.user.is_superuser:
             return queryset
         else:
-            return queryset.filter(account=self.request.user.accountuser.account)
+            try:
+                account = self.request.user.accountuser.account
+            except ObjectDoesNotExist:
+                account = self.request.user.account
+            return queryset.filter(account=account)
 
     def pre_save(self, obj):
         """

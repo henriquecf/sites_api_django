@@ -1,13 +1,12 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.sites.models import Site, get_current_site
+from django.contrib.sites.models import Site
 from django.views.generic import FormView
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.utils import IntegrityError
 from rest_framework import viewsets, permissions
 from rest_framework.generics import RetrieveAPIView
-from resource.models import Resource
-from resource.serializers import ResourceSerializer, SiteSerializer
+from resource.models import Resource, AccountSite
+from resource.serializers import ResourceSerializer, AccountSiteSerializer
 
 
 class UserLoginView(FormView):
@@ -52,13 +51,18 @@ class ResourceViewSet(viewsets.ModelViewSet):
             if not domain:
                 domain = self.request.META.get('SERVER_NAME')
             site, created = Site.objects.get_or_create(domain=domain)
-            obj.sites.add(site)
+            account_site, created2 = AccountSite.objects.get_or_create(site=site, account=obj.account)
+            obj.sites.add(account_site)
 
 
-class SiteRetrieveAPIView(RetrieveAPIView):
-    model = Site
-    serializer_class = SiteSerializer
+class AccountSiteRetrieveAPIView(RetrieveAPIView):
+    model = AccountSite
+    serializer_class = AccountSiteSerializer
     permission_classes = (
         permissions.IsAuthenticated,
     )
     filter_backends = ()
+
+    def get_queryset(self):
+        return super(AccountSiteRetrieveAPIView, self).get_queryset().filter(
+            account=self.request.user.accountuser.account)
