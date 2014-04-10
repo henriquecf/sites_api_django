@@ -13,7 +13,8 @@ class SubscriptionViewSet(ResourceViewSet):
 
     def create(self, request, *args, **kwargs):
         try:
-            subscription = Subscription.objects.get(email=request.DATA['email'])
+            subscription = Subscription.objects.get(email=request.DATA['email'],
+                                                    account=request.user.accountuser.account)
             subscription.active = True
             subscription.save()
             serialized_data = SubscriptionSerializer(subscription, context={'request': request})

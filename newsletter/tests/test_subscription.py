@@ -94,3 +94,13 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
         unsubscribe_response = self.client.post(response.data['unsubscribe'], data={'token': None})
         self.assertEqual(unsubscribe_response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_can_subscribe_with_same_email_in_different_account(self):
+        self.client.post(self.url, self.data)
+        response = self.client.get(self.url)
+        self.assertEqual(2, response.data['count'])
+        self.set_authorization_bearer(self.second_owner_token)
+        response = self.client.get(self.url)
+        self.assertEqual(0, response.data['count'])
+        self.client.post(self.url, self.data)
+        response = self.client.get(self.url)
+        self.assertEqual(1, response.data['count'])
