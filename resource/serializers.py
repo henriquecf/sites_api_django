@@ -10,7 +10,7 @@ class ResourceSerializer(serializers.HyperlinkedModelSerializer):
     def get_fields(self):
         fields = super(ResourceSerializer, self).get_fields()
         fields['sites'].queryset = AccountSite.objects.filter(
-            account=self.context['view'].request.user.accountuser.account)
+            account=self.context['request'].user.accountuser.account)
         return fields
 
     class Meta:

@@ -65,6 +65,6 @@ def test_resource_sites_field_routine(test_case):
     test_case.set_authorization_bearer(test_case.second_owner_token)
     response5 = test_case.client.get(site_url)
     test_case.assertEqual(status.HTTP_404_NOT_FOUND, response5.status_code, response5.data)
-
+    test_case.data.update({'email': 'sites@sites.com'})
     response6 = test_case.client.post(test_case.url, test_case.data)
     test_case.assertEqual(status.HTTP_400_BAD_REQUEST, response6.status_code, response6.data)
