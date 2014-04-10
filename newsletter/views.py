@@ -54,7 +54,7 @@ class NewsletterViewSet(ResourceViewSet):
             data = {
                 'submissions': status,
             }
-            return Response(status=202, data=data)
+            return Response(status=200, data=data)
 
 
 class SubmissionDetailAPIView(RetrieveAPIView):
