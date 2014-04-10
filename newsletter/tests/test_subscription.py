@@ -69,9 +69,10 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
         count_again = Subscription.objects.count()
         self.assertEqual(count, count_again)
 
-    def test_generate_token(self):
+    def test_generate_token_string(self):
         subscription = Subscription.objects.get(email='idan@gmail.com')
         self.assertTrue(subscription.token)
+        self.assertEqual(str, type(self.first_object_response.data['token']), 'This value must return a str type')
 
     def test_deactivate(self):
         response = self.client.post(self.url, self.altered_data)
