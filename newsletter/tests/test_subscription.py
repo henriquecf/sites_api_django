@@ -69,23 +69,28 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
         count_again = Subscription.objects.count()
         self.assertEqual(count, count_again)
 
-    def test_generate_token(self):
+    def test_generate_token_string(self):
         subscription = Subscription.objects.get(email='idan@gmail.com')
         self.assertTrue(subscription.token)
+        self.assertEqual(str, type(self.first_object_response.data['token']), 'This value must return a str type')
 
     def test_deactivate(self):
+        self.assertEqual(status.HTTP_201_CREATED, self.first_object_response.status_code)
         response = self.client.post(self.url, self.altered_data)
         subscription = Subscription.objects.get(email='ivan_morais@yahoo.com.br')
         self.assertTrue(subscription.active)
-        unsubscribe_response = self.client.get(response.data['unsubscribe'], data={'token': 928374869287348972})
-        self.assertEqual(unsubscribe_response.status_code, status.HTTP_401_UNAUTHORIZED)
+        unsubscribe_response = self.client.post(response.data['unsubscribe'], data={'token': '928374869287348972'})
+        self.assertEqual(unsubscribe_response.status_code, status.HTTP_400_BAD_REQUEST)
         subscription = Subscription.objects.get(email='ivan_morais@yahoo.com.br')
         self.assertTrue(subscription.active)
-        unsubscribe_response = self.client.get(response.data['unsubscribe'], data={'token': subscription.token})
-        self.assertEqual(unsubscribe_response.status_code, status.HTTP_202_ACCEPTED)
+        unsubscribe_response = self.client.post(response.data['unsubscribe'], data={'token': subscription.token})
+        self.assertEqual(unsubscribe_response.status_code, status.HTTP_200_OK)
         subscription = Subscription.objects.get(email='ivan_morais@yahoo.com.br')
         self.assertFalse(subscription.active)
         response = self.client.post(self.url, self.altered_data)
         subscription = Subscription.objects.get(email='ivan_morais@yahoo.com.br')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
         self.assertTrue(subscription.active)
+        unsubscribe_response = self.client.post(response.data['unsubscribe'], data={'token': None})
+        self.assertEqual(unsubscribe_response.status_code, status.HTTP_400_BAD_REQUEST)
+
