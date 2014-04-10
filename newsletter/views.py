@@ -21,19 +21,23 @@ class SubscriptionViewSet(ResourceViewSet):
         except:
             return super(SubscriptionViewSet, self).create(request, *args, **kwargs)
 
-    @link()
+    @action(methods=['post'])
     def unsubscribe(self, request, *args, **kwargs):
         """Verify token and subscriber to deactivate a subscritpion.
 
         If token does not match for the user, a 401 status code is returned.
         """
         subscription = self.get_object()
-        if subscription.token == request.GET['token']:
+        try:
+            token = request.DATA['token']
+        except:
+            return Response(status=400, data={'results': 'You can not unsubscribe without a valid token'})
+        if subscription.token == token:
             subscription.active = False
             subscription.save()
-            return Response(status=202)
+            return Response(status=200)
         else:
-            return Response(status=401)
+            return Response(status=400, data={'results': 'You can not unsubscribe without a valid token'})
 
 
 class NewsletterViewSet(ResourceViewSet):
