@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from itertools import chain
 from datetime import timedelta
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User, Permission, Group
 from django.utils import timezone
 from oauth2_provider.models import Application, AccessToken
 from account.models import AccountUser, Account, FilterRestriction
@@ -57,6 +57,8 @@ def user_accountuser_account_permissions_token_fixture(test_case):
                                                             filter_field='creator',
                                                             values='{0},{1}'.format(test_case.account_user2.id,
                                                                                     test_case.owner.id))
+    test_group = Group.objects.create(name='Test Group')
+    test_case.owner.groups.add(test_group)
 
 
 def user_token_fixture(test_case):

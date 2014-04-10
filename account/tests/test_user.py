@@ -74,7 +74,9 @@ class UserAPITestCase(APILiveServerTestCase):
             self.assertEqual(response.data['count'], 1, 'Field "{0}" not in search fields'.format(field))
 
     def test_hashed_password(self):
-        self.assertNotEqual(self.first_object_response.data['password'], self.data['password'])
+        user_id = self.first_object_response.data['url'].split('/')[-2]
+        user = User.objects.get(id=user_id)
+        self.assertNotEqual(self.data['password'], user.password)
 
     def test_excluded_serializer_fields(self):
         self.assertNotIn('is_superuser', self.first_object_response.data)
@@ -96,3 +98,12 @@ class UserAPITestCase(APILiveServerTestCase):
     def test_serializer_read_only_fields(self):
         fields = ['accountuser', 'date_joined', 'last_login', 'is_active']
         test_routines.test_serializer_read_only_fields_routine(self, fields=fields)
+
+    def test_owner_is_staff_user_permissions_groups_fields(self):
+        data = {'user_permissions': [], 'groups': [], 'is_staff': False}
+        owner_url = reverse('user-detail', args=(self.owner.id,))
+        response = self.client.patch(owner_url, data)
+        self.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
+        self.assertTrue(response.data['is_staff'], 'Owner must not change its staff status')
+        self.assertNotEqual([], response.data['user_permissions'], 'Owner must not change its user permissions')
+        self.assertNotEqual([], response.data['groups'], 'Owner must not change its groups')

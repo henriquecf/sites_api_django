@@ -18,24 +18,22 @@ class AccountUserSerializer(serializers.HyperlinkedModelSerializer):
         model = AccountUser
 
 
-class UserCreateChangeSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.HyperlinkedModelSerializer):
     """Must be called when a non safe method is being requested."""
     email = serializers.EmailField(required=True)
     accountuser = serializers.HyperlinkedRelatedField(view_name='accountuser-detail', read_only=True)
-    date_joined = serializers.DateTimeField(read_only=True)
-    last_login = serializers.DateTimeField(read_only=True)
-    is_active = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = User
         exclude = ['is_superuser']
+        read_only_fields = ('date_joined', 'last_login', 'is_active')
+        write_only_fields = ('password',)
 
 
-class UserSerializer(UserCreateChangeSerializer):
-    """Must be called when a safe method is being requested."""
+class RestrictedOwnerUserSerializer(UserSerializer):
 
-    class Meta(UserCreateChangeSerializer.Meta):
-        exclude = ['is_superuser', 'password']
+    class Meta(UserSerializer.Meta):
+        read_only_fields = ('date_joined', 'last_login', 'is_active', 'is_staff', 'user_permissions', 'groups')
 
 
 class AccountGroupSerializer(serializers.HyperlinkedModelSerializer):

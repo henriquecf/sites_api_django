@@ -9,10 +9,10 @@ from account.exceptions import BadRequestValidationError
 from account.serializers import (
     AccountUserSerializer,
     UserSerializer,
-    UserCreateChangeSerializer,
     AccountSerializer,
     AccountGroupSerializer,
     FilterRestrictionSerializer,
+    RestrictedOwnerUserSerializer,
 )
 from account.models import Account, AccountUser, AccountGroup, FilterRestriction
 
@@ -105,14 +105,18 @@ class UserViewSet(ModelViewSet):
             return queryset.filter(accountuser__account=self.request.user.accountuser.account)
 
     def get_serializer_class(self):
-        """Checks the request method to see which serializer is returned.
-
-        If it is a "GET" method, the serializer does not have the password field. Otherwise, it has the password field.
+        """In the case the user is the owner of the account, he must not be able to change his user_permissions, groups
+        or is_staff status
         """
-        if self.request.method == 'GET':
-            return UserSerializer
+        try:
+            obj = self.get_object()
+        except:
+            pass
         else:
-            return UserCreateChangeSerializer
+            if obj == self.request.user.accountuser.account.owner:
+                return RestrictedOwnerUserSerializer
+
+        return UserSerializer
 
     def pre_save(self, obj):
         """Hash the password if not hashed yet."""
