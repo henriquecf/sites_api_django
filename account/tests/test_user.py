@@ -64,7 +64,7 @@ class UserAPITestCase(APILiveServerTestCase):
         search_fields = ['username', 'email']
         for field in search_fields:
             filter_parameter = random.randint(1, 999999)
-            self.altered_data.update({'username': filter_parameter + 1})
+            self.altered_data.update(dict(username=filter_parameter + 1))
             if field == 'email':
                 filter_parameter = '{0}@gm.com'.format(filter_parameter)
             self.altered_data.update({field: filter_parameter})
@@ -94,5 +94,5 @@ class UserAPITestCase(APILiveServerTestCase):
         self.assertEqual(account_id, str(owner_account_id))
 
     def test_serializer_read_only_fields(self):
-        fields = ['accountuser']
+        fields = ['accountuser', 'date_joined', 'last_login', 'is_active']
         test_routines.test_serializer_read_only_fields_routine(self, fields=fields)
