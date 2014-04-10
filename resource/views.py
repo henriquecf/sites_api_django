@@ -48,7 +48,9 @@ class ResourceViewSet(viewsets.ModelViewSet):
 
     def post_save(self, obj, created=False):
         if not obj.sites.all():
-            domain = self.request.META.get('SERVER_NAME')
+            domain = self.request.META.get('HTTP_HOST')
+            if not domain:
+                domain = self.request.META.get('SERVER_NAME')
             site, created = Site.objects.get_or_create(domain=domain)
             obj.sites.add(site)
 

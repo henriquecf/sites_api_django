@@ -14,7 +14,7 @@ class Resource(Common):
     """
     account = models.ForeignKey(Account, editable=False)
     creator = models.ForeignKey(User, editable=False, related_name='creators')
-    sites = models.ManyToManyField(Site, null=True, blank=True)
+    sites = models.ManyToManyField(Site, blank=True)
 
     def __str__(self):
         return '{0} - {1}'.format(self.account, self.creator)

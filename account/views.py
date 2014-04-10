@@ -171,7 +171,6 @@ class FilterRestrictionViewSet(ModelViewSet):
             return queryset.filter(
                 Q(accountuser__account=user.accountuser.account) | Q(accountgroup__account=user.accountuser.account))
 
-    # TODO This viewset (or the serializer) need to assign the permission to the user or group if not assigned yet
     def pre_save(self, obj):
         try:
             account = obj.accountuser.account
