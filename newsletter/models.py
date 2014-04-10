@@ -1,4 +1,4 @@
-import random
+import random, string
 from django.db import models
 from django.db.utils import IntegrityError
 from django.core.mail import EmailMultiAlternatives
@@ -19,7 +19,7 @@ class Subscription(Resource):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        self.token = random.randint(948284593853, 958272838472748584737484748234)
+        self.token = ''.join(random.sample(string.ascii_letters, 15))
         return super(Subscription, self).save()
 
     def __str__(self):
