@@ -2,8 +2,13 @@
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
-from resource.models import Resource
-from test_routines import test_serializer_hyperlinked_fields_routine, test_serializer_read_only_fields_routine
+from rest_framework import status
+from resource.models import Resource, AccountSite
+from test_routines import (
+    test_serializer_hyperlinked_fields_routine,
+    test_serializer_read_only_fields_routine,
+    test_resource_permission_routine,
+)
 
 
 def test_resource_owner_is_request_user_routine(test_case):
@@ -36,7 +41,8 @@ def test_resource_serializer_read_only_fields_routine(test_case, fields):
 
 def test_resource_sites_field_routine(test_case):
     main_site, created = Site.objects.get_or_create(domain='testserver')
-    site_url = reverse('site-detail', args=(main_site.id,))
+    accountsite = AccountSite.objects.get(site=main_site, account=test_case.owner.account)
+    site_url = reverse('accountsite-detail', args=(accountsite.id,))
     response0 = test_case.client.get(site_url)
     test_case.assertIn('url', response0.data, response0.data)
     site_obj_url = response0.data['url']
@@ -47,10 +53,18 @@ def test_resource_sites_field_routine(test_case):
     response2 = test_case.client.get(test_case.url)
     test_case.assertEqual(2, response2.data['count'], 'Looks like there is no filter for domain')
     my_site = Site.objects.create(domain='otherserver.com')
-    site_url2 = reverse('site-detail', args=(my_site.id,))
+    my_accountsite = AccountSite.objects.create(site=my_site, account=test_case.owner.account)
+    site_url2 = reverse('accountsite-detail', args=(my_accountsite.id,))
     my_site_url = test_case.client.get(site_url2).data['url']
     test_case.data.update({'sites': [my_site_url]})
     response3 = test_case.client.put(response.data['url'], test_case.data)
     test_case.assertIn(my_site_url, response3.data['sites'])
     response4 = test_case.client.get(test_case.url)
     test_case.assertEqual(1, response4.data['count'], 'Looks like filter is not working properly')
+
+    test_case.set_authorization_bearer(test_case.second_owner_token)
+    response5 = test_case.client.get(site_url)
+    test_case.assertEqual(status.HTTP_404_NOT_FOUND, response5.status_code, response5.data)
+
+    response6 = test_case.client.post(test_case.url, test_case.data)
+    test_case.assertEqual(status.HTTP_400_BAD_REQUEST, response6.status_code, response6.data)

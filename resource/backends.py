@@ -44,4 +44,7 @@ class ResourceFilterBackend(filters.BaseFilterBackend):
 class SiteDomainFilterBackend(filters.BaseFilterBackend):
 
     def filter_queryset(self, request, queryset, view):
-        return queryset.filter(sites__domain=request.META.get('SERVER_NAME'))
+        domain = request.META.get('HTTP_HOST')
+        if not domain:
+            domain = request.META.get('SERVER_NAME')
+        return queryset.filter(sites__site__domain=domain)
