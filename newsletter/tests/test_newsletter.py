@@ -84,7 +84,7 @@ class NewsletterAPITestCase(APILiveServerTestCase):
             'failed': 0,
         }
         self.assertEqual(data, response2.data['submissions'], response2.data)
-        self.assertEqual(status.HTTP_202_ACCEPTED, response2.status_code)
+        self.assertEqual(status.HTTP_200_OK, response2.status_code)
 
     def test_send_when_newsletter_has_two_successful_submissions(self):
         response1 = self.client.post(reverse('subscription-list'),
@@ -94,7 +94,7 @@ class NewsletterAPITestCase(APILiveServerTestCase):
                                      data={'name': 'idan', 'email': 'idan@idan.com.br'})
         self.assertEqual(status.HTTP_201_CREATED, response2.status_code)
         response3 = self.client.post(self.first_object_response.data['send_newsletter'])
-        self.assertEqual(status.HTTP_202_ACCEPTED, response3.status_code)
+        self.assertEqual(status.HTTP_200_OK, response3.status_code)
         data = {
             'new': 2,
             'successful': 2,
@@ -110,7 +110,7 @@ class NewsletterAPITestCase(APILiveServerTestCase):
             'failed': 0,
         }
         self.assertEqual(data, response4.data['submissions'])
-        self.assertEqual(status.HTTP_202_ACCEPTED, response3.status_code)
+        self.assertEqual(status.HTTP_200_OK, response3.status_code)
 
     def test_send_when_newsletter_has_three_new_submissions(self):
         response1 = self.client.post(reverse('subscription-list'),
@@ -123,9 +123,9 @@ class NewsletterAPITestCase(APILiveServerTestCase):
                                      data={'name': 'iran', 'email': 'iran@iran.com.br'})
         self.assertEqual(status.HTTP_201_CREATED, response3.status_code)
         response4 = self.client.post(self.first_object_response.data['send_newsletter'])
-        self.assertEqual(status.HTTP_202_ACCEPTED, response4.status_code)
+        self.assertEqual(status.HTTP_200_OK, response4.status_code)
         data = dict(new=3, successful=3, resubmissions=0, failed=0)
-        self.assertEqual(status.HTTP_202_ACCEPTED, response4.status_code)
+        self.assertEqual(status.HTTP_200_OK, response4.status_code)
         self.assertEqual(data, response4.data['submissions'])
 
     def test_submission_field(self):

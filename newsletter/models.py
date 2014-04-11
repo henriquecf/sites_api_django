@@ -13,7 +13,7 @@ class Subscription(Resource):
     and put subscription status in a boolean field.
     """
     name = models.CharField(max_length=50)
-    email = models.EmailField(max_length=200, unique=True)
+    email = models.EmailField(max_length=200)
     token = models.CharField(max_length=30, editable=False)
     active = models.BooleanField(default=True, editable=False)
 
