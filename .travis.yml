@@ -9,7 +9,11 @@ env:
 install:
   - pip install $DJANGO
   - pip install -r reqs/dev.txt
+  - pip install coverage coveralls
   - export PYTHONPATH=.
 
 script:
-  - python manage.py test --settings=settings.dev_settings
+  - coverage run --source=account,category,file_explorer,news,newsletter,publication manage.py test --settings=settings.dev_settings
+
+after_success:
+  coveralls
