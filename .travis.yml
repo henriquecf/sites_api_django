@@ -1,0 +1,15 @@
+language: python
+
+python:
+  - "3.3"
+
+env:
+  - DJANGO="https://www.djangoproject.com/download/1.7b1/tarball/"
+
+install:
+  - pip install $DJANGO
+  - pip install -r reqs/dev.txt
+  - export PYTHONPATH=.
+
+script:
+  - python manage.py test --settings=settings.dev_settings
