@@ -4,7 +4,8 @@ from datetime import timedelta
 from django.contrib.auth.models import User, Permission
 from django.utils import timezone
 from oauth2_provider.models import Application, AccessToken
-from account.models import AccountUser, Account, FilterRestriction, AccountGroup
+
+from apps.account.models import AccountUser, Account, FilterRestriction, AccountGroup
 
 
 def user_accountuser_account_permissions_token_fixture(test_case):

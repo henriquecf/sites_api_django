@@ -47,13 +47,13 @@ INSTALLED_APPS = (
     'mptt',
     'django_filters',
 
-    'account',
-    'publication',
-    'news',
-    'file_explorer',
-    'newsletter',
-    'resource',
-    'category',
+    'apps.account',
+    'apps.publication',
+    'apps.news',
+    'apps.file_explorer',
+    'apps.newsletter',
+    'apps.resource',
+    'apps.category',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -113,8 +113,8 @@ DJANGO_FILTERS = (
 )
 
 OTHER_FILTERS = (
-    'account.backends.FilterRestrictionBackend',
-    'resource.backends.SiteDomainFilterBackend',
+    'apps.account.backends.FilterRestrictionBackend',
+    'apps.resource.backends.SiteDomainFilterBackend',
 )
 
 REST_FRAMEWORK = {
@@ -127,7 +127,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-        'resource.backends.CustomDjangoModelPermissions',
+        'apps.resource.backends.CustomDjangoModelPermissions',
     ),
     'DEFAULT_FILTER_BACKENDS': OTHER_FILTERS + DJANGO_FILTERS
 }

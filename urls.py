@@ -2,13 +2,13 @@ from django.conf.urls import patterns, url, include
 from django.contrib import admin
 from rest_framework.routers import DefaultRouter
 
-from account import views as account_views
-from category.views import CategoryViewSet
-from publication import views as publication_views
-from news import views as news_views
-from file_explorer import views as file_explorer_views
-from newsletter import views as newsletter_views
-from resource import views as resource_views
+from apps.account import views as account_views
+from apps.category.views import CategoryViewSet
+from apps.news import views as news_views
+from apps.publication import views as publication_views
+from apps.file_explorer import views as file_explorer_views
+from apps.newsletter import views as newsletter_views
+from apps.resource import views as resource_views
 
 
 admin.autodiscover()
@@ -33,6 +33,6 @@ router.register(r'accountsite', resource_views.AccountSiteRetrieveAPIViewSet)
 urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-                       url(r'^accounts/', include('account.urls')),
+                       url(r'^accounts/', include('apps.account.urls')),
                        url(r'^', include(router.urls), name='api'),
 )
