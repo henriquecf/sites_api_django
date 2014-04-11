@@ -1,6 +1,9 @@
+import os
 from django.db import models
+from category.models import Category
 
-from publication.models import Publication, Category
+from publication.models import Publication
+from settings.common_settings import MEDIA_ROOT
 
 
 class News(Publication):
@@ -13,7 +16,7 @@ class News(Publication):
     categories - A many to many relation with category model.
     """
     content = models.TextField()
-    image = models.ImageField(upload_to='media/news/', null=True, blank=True)
+    image = models.ImageField(upload_to=os.path.join(MEDIA_ROOT, 'files'), null=True, blank=True)
     categories = models.ManyToManyField(Category, null=True, blank=True, related_name='news')
 
     def __str__(self):

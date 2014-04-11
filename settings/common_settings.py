@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     'oauth2_provider',
     'rest_framework',
@@ -52,6 +53,7 @@ INSTALLED_APPS = (
     'file_explorer',
     'newsletter',
     'resource',
+    'category',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -63,9 +65,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'publication.urls'
+ROOT_URLCONF = 'urls'
 
-WSGI_APPLICATION = 'publication.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 
 # Database
@@ -97,6 +99,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_URL = '/media/'
+
 OAUTH2_PROVIDER = {
     # this is the list of available scopes
     'SCOPES': {'read': 'Read scope', 'write': 'Write scope'}
@@ -109,7 +113,8 @@ DJANGO_FILTERS = (
 )
 
 OTHER_FILTERS = (
-    'resource.backends.ResourceFilterBackend',
+    'account.backends.FilterRestrictionBackend',
+    'resource.backends.SiteDomainFilterBackend',
 )
 
 REST_FRAMEWORK = {
@@ -126,3 +131,51 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_FILTER_BACKENDS': OTHER_FILTERS + DJANGO_FILTERS
 }
+
+SITE_ID = 1
+
+
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+
+ADMINS = (
+    ('Henrique Cardoso de Faria', 'elo.henrique@gmail.com'),
+    ('Ivan Morais', 'ivan.eng.controle@gmail.com'),
+)
+
+MANAGERS = ADMINS
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+########## LOGGING CONFIGURATION
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+    'require_debug_false': {
+        '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler'
+        }
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins', 'console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    }
+}
+########## END LOGGING CONFIGURATION

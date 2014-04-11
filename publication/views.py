@@ -1,27 +1,13 @@
 from django.utils.text import slugify
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.decorators import link
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from resource.views import ResourceViewSet
-from publication.serializers import CategorySerializer
 from publication.serializers import PublicationSerializer
-from .models import find_available_slug, Publication, Category
-from .filtersets import PublicationFilterSet
-
-
-class CategoryViewSet(ResourceViewSet):
-    serializer_class = CategorySerializer
-    model = Category
-
-    @link()
-    def get_descendants(self, request, *agrs, **kwargs):
-        """Returns the descendants of a category."""
-        category = self.get_object()
-        return Response(
-            {'descendants': CategorySerializer(category.get_descendants(), context={'request': request},
-                                               many=True).data})
+from publication.models import find_available_slug, Publication
+from publication.filtersets import PublicationFilterSet
 
 
 class PublicationBaseViewSet(ResourceViewSet):
@@ -61,7 +47,7 @@ class PublicationBaseViewSet(ResourceViewSet):
         if not obj.publication_start_date:
             obj.publication_start_date = timezone.now()
 
-    @link()
+    @action()
     def publish(self, request, *args, **kwargs):
         """Link to publish the publication.
 
@@ -70,7 +56,7 @@ class PublicationBaseViewSet(ResourceViewSet):
         publication = self.get_object()
         return Response({'is_published': publication.publish()})
 
-    @link()
+    @action()
     def unpublish(self, request, *args, **kwargs):
         """Link to unpublish the publication.
 

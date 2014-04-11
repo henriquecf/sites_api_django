@@ -1,13 +1,20 @@
 import datetime
+from django.db.models import Q
 from django.contrib.auth import hashers
 from django.contrib.auth.models import User, Permission, Group
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework import permissions, filters, generics
 from account.exceptions import BadRequestValidationError
-from account.serializers import AccountUserSerializer, UserSerializer, UserCreateChangeSerializer
-from .serializers import AccountSerializer, AccountGroupSerializer
-from account.models import Account, AccountUser, AccountGroup
+from account.serializers import (
+    AccountUserSerializer,
+    UserSerializer,
+    AccountSerializer,
+    AccountGroupSerializer,
+    FilterRestrictionSerializer,
+    RestrictedOwnerUserSerializer,
+)
+from account.models import Account, AccountUser, AccountGroup, FilterRestriction
 
 
 class AccountViewSet(ModelViewSet):
@@ -52,7 +59,11 @@ class AccountUserViewSet(ModelViewSet):
         if self.request.user.is_superuser:
             return queryset
         else:
-            return queryset.filter(account=self.request.user.accountuser.account)
+            try:
+                account = self.request.user.accountuser.account
+            except ObjectDoesNotExist:
+                account = self.request.user.account
+            return queryset.filter(account=account)
 
     def pre_save(self, obj):
         """
@@ -98,14 +109,18 @@ class UserViewSet(ModelViewSet):
             return queryset.filter(accountuser__account=self.request.user.accountuser.account)
 
     def get_serializer_class(self):
-        """Checks the request method to see which serializer is returned.
-
-        If it is a "GET" method, the serializer does not have the password field. Otherwise, it has the password field.
+        """In the case the user is the owner of the account, he must not be able to change his user_permissions, groups
+        or is_staff status
         """
-        if self.request.method == 'GET':
-            return UserSerializer
+        try:
+            obj = self.get_object()
+        except:
+            pass
         else:
-            return UserCreateChangeSerializer
+            if obj == self.request.user.accountuser.account.owner:
+                return RestrictedOwnerUserSerializer
+
+        return UserSerializer
 
     def pre_save(self, obj):
         """Hash the password if not hashed yet."""
@@ -147,15 +162,49 @@ class AccountGroupViewSet(ModelViewSet):
             obj.account = self.request.user.accountuser.account
 
 
-class PermissionDetailView(generics.RetrieveAPIView):
+class FilterRestrictionViewSet(ModelViewSet):
+    model = FilterRestriction
+    serializer_class = FilterRestrictionSerializer
+    permission_classes = (
+        permissions.IsAdminUser,
+    )
+    filter_backends = ()
+
+    def get_queryset(self):
+        queryset = super(FilterRestrictionViewSet, self).get_queryset()
+        user = self.request.user
+        if user.is_superuser:
+            return queryset
+        else:
+            return queryset.filter(
+                Q(user__accountuser__account=user.accountuser.account) | Q(group__accountgroup__account=user.accountuser.account))
+
+    def pre_save(self, obj):
+        try:
+            account = obj.user.accountuser.account
+        except AttributeError:
+            try:
+                account = obj.group.accountgroup.account
+            except AttributeError:
+                raise BadRequestValidationError('You must specify either User or Group field.')
+
+        if account != self.request.user.accountuser.account:
+            raise BadRequestValidationError('You can not alter other account permissions.')
+        else:
+            super(FilterRestrictionViewSet, self).pre_save(obj)
+
+
+class PermissionDetailViewSet(ReadOnlyModelViewSet):
     model = Permission
     permission_classes = (
         permissions.IsAdminUser,
     )
+    filter_backends = ()
 
 
-class GroupDetailView(generics.RetrieveAPIView):
+class GroupDetailViewSet(ReadOnlyModelViewSet):
     model = Group
     permission_classes = (
         permissions.IsAdminUser,
     )
+    filter_backends = ()

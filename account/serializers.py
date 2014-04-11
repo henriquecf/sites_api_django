@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from account.models import AccountUser
-from .models import Account, AccountGroup
+from account.models import AccountUser, Account, AccountGroup, FilterRestriction
 
 
 class AccountSerializer(serializers.HyperlinkedModelSerializer):
@@ -19,7 +18,7 @@ class AccountUserSerializer(serializers.HyperlinkedModelSerializer):
         model = AccountUser
 
 
-class UserCreateChangeSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.HyperlinkedModelSerializer):
     """Must be called when a non safe method is being requested."""
     email = serializers.EmailField(required=True)
     accountuser = serializers.HyperlinkedRelatedField(view_name='accountuser-detail', read_only=True)
@@ -27,18 +26,28 @@ class UserCreateChangeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         exclude = ['is_superuser']
+        read_only_fields = ('date_joined', 'last_login', 'is_active')
+        write_only_fields = ('password',)
 
 
-class UserSerializer(UserCreateChangeSerializer):
-    """Must be called when a safe method is being requested."""
+class RestrictedOwnerUserSerializer(UserSerializer):
 
-    class Meta(UserCreateChangeSerializer.Meta):
-        exclude = ['is_superuser', 'password']
+    class Meta(UserSerializer.Meta):
+        read_only_fields = ('date_joined', 'last_login', 'is_active', 'is_staff', 'user_permissions', 'groups')
 
 
 class AccountGroupSerializer(serializers.HyperlinkedModelSerializer):
     account = serializers.HyperlinkedRelatedField(view_name='account-detail', read_only=True)
-    name = serializers.CharField(read_only=True)
+    group = serializers.HyperlinkedRelatedField(view_name='group-detail', read_only=True)
 
     class Meta:
         model = AccountGroup
+
+
+class FilterRestrictionSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(blank=True)
+    permission = serializers.PrimaryKeyRelatedField()
+    group = serializers.PrimaryKeyRelatedField(blank=True)
+
+    class Meta:
+        model = FilterRestriction
