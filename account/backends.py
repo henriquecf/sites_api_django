@@ -44,7 +44,7 @@ class FilterRestrictionBackend(filters.BaseFilterBackend):
             if permission and request.user.has_perm(permission):
                 app_label, codename = permission.split('.')
                 restriction_filters = FilterRestriction.objects.filter(permission__content_type__app_label=app_label,
-                                                           permission__codename=codename)
+                                                                       permission__codename=codename)
                 for filter_restriction in restriction_filters:
                     queryset = queryset.filter(
                         **{'{0}__in'.format(filter_restriction.filter_field): filter_restriction.values.split(',')})

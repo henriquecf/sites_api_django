@@ -1,13 +1,13 @@
 from django.utils.text import slugify
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.decorators import link
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from resource.views import ResourceViewSet
 from publication.serializers import PublicationSerializer
-from .models import find_available_slug, Publication
-from .filtersets import PublicationFilterSet
+from publication.models import find_available_slug, Publication
+from publication.filtersets import PublicationFilterSet
 
 
 class PublicationBaseViewSet(ResourceViewSet):
@@ -47,7 +47,7 @@ class PublicationBaseViewSet(ResourceViewSet):
         if not obj.publication_start_date:
             obj.publication_start_date = timezone.now()
 
-    @link()
+    @action()
     def publish(self, request, *args, **kwargs):
         """Link to publish the publication.
 
@@ -56,7 +56,7 @@ class PublicationBaseViewSet(ResourceViewSet):
         publication = self.get_object()
         return Response({'is_published': publication.publish()})
 
-    @link()
+    @action()
     def unpublish(self, request, *args, **kwargs):
         """Link to unpublish the publication.
 

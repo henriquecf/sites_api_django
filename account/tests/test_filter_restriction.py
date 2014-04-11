@@ -6,10 +6,10 @@ from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
 from test_fixtures import user_accountuser_account_token_fixture
 import test_routines
-from account.models import FilterRestriction
+from account.models import FilterRestriction, AccountGroup
 
 
-class FilterPermissionAPITestCase(APILiveServerTestCase):
+class FilterRestrictionAPITestCase(APILiveServerTestCase):
     model = FilterRestriction
 
     def setUp(self):
@@ -18,13 +18,13 @@ class FilterPermissionAPITestCase(APILiveServerTestCase):
         self.data = {
             'filter_field': 'creator',
             'values': '1',
-            'accountuser': self.owner.accountuser.id,
+            'user': self.owner.id,
             'permission': Permission.objects.first().id,
         }
         self.altered_data = {
             'filter_field': 'owner',
             'values': '1',
-            'accountuser': self.owner.accountuser.id,
+            'user': self.owner.id,
             'permission': Permission.objects.first().id,
         }
         self.set_authorization_bearer()
@@ -35,7 +35,7 @@ class FilterPermissionAPITestCase(APILiveServerTestCase):
             token = self.owner_token
         self.client.credentials(HTTP_AUTHORIZATION='Bearer {0}'.format(token))
 
-    def alter_data(self, accountuser_id, altered_data=False):
+    def alter_data(self, user_id, altered_data=False):
         if not altered_data:
             data = self.data
         else:
@@ -44,7 +44,7 @@ class FilterPermissionAPITestCase(APILiveServerTestCase):
         data.update({
             'filter_field': filter_field,
             'values': '1',
-            'accountuser': accountuser_id,
+            'user': user_id,
             'permission': Permission.objects.first().id,
         })
 
@@ -78,8 +78,8 @@ class FilterPermissionAPITestCase(APILiveServerTestCase):
 
     def test_second_owner_basic_api_methods(self):
         self.set_authorization_bearer(self.second_owner_token)
-        self.alter_data(self.second_owner.accountuser.id)
-        self.alter_data(self.second_owner.accountuser.id, altered_data=True)
+        self.alter_data(self.second_owner.id)
+        self.alter_data(self.second_owner.id, altered_data=True)
         response = self.client.post(self.url, self.data)
         test_routines.test_api_basic_methods_routine(self, token=self.second_owner_token,
                                                      object_url=response.data['url'])
@@ -94,28 +94,22 @@ class FilterPermissionAPITestCase(APILiveServerTestCase):
         self.assertNotIn(permission, self.owner.user_permissions.all())
 
     def test_filter_permission_with_accountgroup(self):
-        self.data.pop('accountuser')
-        accountgroup_url = reverse('accountgroup-list')
-        response = self.client.post(accountgroup_url, data={'role': 'Test group'})
-        self.assertEqual(status.HTTP_201_CREATED, response.status_code, response.data)
-        self.data.update({'accountgroup': response.data['url']})
-        test_routines.test_api_basic_methods_routine(self, count=1)
+        self.data.pop('user')
+        accountgroup = AccountGroup.objects.create(role='Test role', account=self.owner.accountuser.account)
+        self.data.update({'group': accountgroup.group.id})
+        test_routines.test_api_basic_methods_routine(self)
 
     def test_permission_is_assigned_and_unassigned_to_group(self):
-        self.data.pop('accountuser')
-        accountgroup_url = reverse('accountgroup-list')
-        response = self.client.post(accountgroup_url, data={'role': 'Test group'})
-        self.assertEqual(status.HTTP_201_CREATED, response.status_code, response.data)
-        self.data.update({'accountgroup': response.data['url']})
+        self.data.pop('user')
+        accountgroup = AccountGroup.objects.create(role='Test role', account=self.owner.accountuser.account)
+        self.data.update({'group': accountgroup.group.id})
         response3 = self.client.post(self.url, self.data)
         self.assertEqual(status.HTTP_201_CREATED, response3.status_code, response3.data)
 
         permission = Permission.objects.get(id=self.data['permission'])
 
-        group_id = response.data['group'].split('/')[-2]
-        group = Group.objects.get(id=group_id)
-        self.assertIn(permission, group.permissions.all(), group)
+        self.assertIn(permission, accountgroup.group.permissions.all(), accountgroup.group)
 
-        response2 = self.client.delete(response.data['url'])
+        response2 = self.client.delete(response3.data['url'])
         self.assertEqual(status.HTTP_204_NO_CONTENT, response2.status_code, response2.data)
-        self.assertNotIn(permission, group.permissions.all())
+        self.assertNotIn(permission, accountgroup.group.permissions.all())

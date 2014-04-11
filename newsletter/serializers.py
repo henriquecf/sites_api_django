@@ -10,14 +10,17 @@ class SubscriptionSerializer(ResourceSerializer):
         model = Subscription
 
 
-class NewsletterSerializer(ResourceSerializer):
-    send_newsletter = serializers.HyperlinkedIdentityField(view_name='newsletter-send-newsletter')
-
-    class Meta(ResourceSerializer.Meta):
-        model = Newsletter
-
-
 class SubmissionSerializer(ResourceSerializer):
+    newsletter = serializers.RelatedField(read_only=True)
+    subscription = serializers.RelatedField(read_only=True)
 
     class Meta(ResourceSerializer.Meta):
         model = Submission
+
+
+class NewsletterSerializer(ResourceSerializer):
+    send_newsletter = serializers.HyperlinkedIdentityField(view_name='newsletter-send-newsletter')
+    submissions = serializers.RelatedField(many=True, source='submissions')
+
+    class Meta(ResourceSerializer.Meta):
+        model = Newsletter

@@ -1,1 +1,12 @@
--r reqs/prod.txt
+-r reqs/common.txt
+
+gunicorn==18.0
+
+django-storages==1.1.8
+
+django-sslify==0.2.3
+django-heroku-postgresify==0.3
+
+#django-heroku-memcacheify==0.5 For later use
+
+#pylibmc==1.2.3 need for memcacheify
