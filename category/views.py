@@ -17,5 +17,5 @@ class CategoryViewSet(ResourceViewSet):
         """Returns the descendants of a category."""
         category = self.get_object()
         return Response(
-            {'descendants': CategorySerializer(category.get_descendants(), context={'request': request},
+            {'descendants': CategorySerializer(category.get_descendants(), context={'request': request, 'view': self},
                                                many=True).data})

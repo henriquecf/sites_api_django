@@ -1,7 +1,6 @@
-
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import link, action
 from rest_framework.response import Response
+from rest_framework.viewsets import ReadOnlyModelViewSet
 from resource.views import ResourceViewSet
 from .serializers import SubscriptionSerializer, NewsletterSerializer, SubmissionSerializer
 from .models import Subscription, Newsletter, Submission
@@ -14,27 +13,32 @@ class SubscriptionViewSet(ResourceViewSet):
 
     def create(self, request, *args, **kwargs):
         try:
-            subscription = Subscription.objects.get(email=request.DATA['email'])
+            subscription = Subscription.objects.get(email=request.DATA['email'],
+                                                    account=request.user.accountuser.account)
             subscription.active = True
             subscription.save()
-            serialized_data = SubscriptionSerializer(subscription)
+            serialized_data = SubscriptionSerializer(subscription, context={'request': request})
             return Response(data=serialized_data.data, status=201)
-        except ObjectDoesNotExist:
+        except:
             return super(SubscriptionViewSet, self).create(request, *args, **kwargs)
 
-    @link()
+    @action(methods=['post'])
     def unsubscribe(self, request, *args, **kwargs):
         """Verify token and subscriber to deactivate a subscritpion.
 
         If token does not match for the user, a 401 status code is returned.
         """
         subscription = self.get_object()
-        if subscription.token == request.GET['token']:
+        try:
+            token = request.DATA['token']
+        except:
+            return Response(status=400, data={'results': 'You can not unsubscribe without a valid token'})
+        if subscription.token == token:
             subscription.active = False
             subscription.save()
-            return Response(status=202)
+            return Response(status=200)
         else:
-            return Response(status=401)
+            return Response(status=400, data={'results': 'You can not unsubscribe without a valid token'})
 
 
 class NewsletterViewSet(ResourceViewSet):
@@ -42,15 +46,18 @@ class NewsletterViewSet(ResourceViewSet):
     model = Newsletter
     filter_class = NewsletterFilterSet
 
-    @link()
+    @action(methods=['post'])
     def send_newsletter(self, request, *args, **kwargs):
         """Send the newsletter calling the model function."""
         newsletter = self.get_object()
-        status = newsletter.send_newsletter()
+        status = newsletter.send_newsletter(account=request.user.accountuser.account)
         if status:
-            return Response(status=200)
+            data = {
+                'submissions': status,
+            }
+            return Response(status=200, data=data)
 
 
-class SubmissionViewSet(ResourceViewSet):
-    serializer_class = SubmissionSerializer
+class SubmissionDetailAPIViewSet(ReadOnlyModelViewSet):
     model = Submission
+    serializer_class = SubmissionSerializer

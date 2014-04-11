@@ -5,6 +5,17 @@ from django.db import models
 from account.models import Account, Common
 
 
+class AccountSite(Common):
+    account = models.ForeignKey(Account, editable=False)
+    site = models.ForeignKey(Site)
+
+    def __str__(self):
+        return self.site.domain
+
+    class Meta:
+        unique_together = ['account', 'site']
+
+
 class Resource(Common):
     """
     The resource class, together with its serializer and viewset,
@@ -14,7 +25,10 @@ class Resource(Common):
     """
     account = models.ForeignKey(Account, editable=False)
     creator = models.ForeignKey(User, editable=False, related_name='creators')
-    sites = models.ManyToManyField(Site, null=True, blank=True)
+    sites = models.ManyToManyField(AccountSite, blank=True)
+
+    def account_sites(self):
+        return self.sites.filter(account=self.account)
 
     def __str__(self):
         return '{0} - {1}'.format(self.account, self.creator)

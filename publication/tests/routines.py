@@ -28,7 +28,7 @@ def test_is_published_default_true_routine(test_case):
 
 def get_action_response(test_case, action_name, status_code=status.HTTP_200_OK):
     action_url = test_case.first_object_response.data[action_name]
-    response = test_case.client.get(action_url)
+    response = test_case.client.post(action_url)
     test_case.assertEqual(response.status_code, status_code)
     return response
 
@@ -44,7 +44,6 @@ def test_publish_routine(test_case):
 
 
 def test_publication_serializer_hyperlinked_fields_routine(test_case, fields):
-    fields.extend(['publish', 'unpublish'])
     test_resource_serializer_hyperlinked_fields_routine(test_case, fields)
 
 

@@ -1,7 +1,9 @@
+import os
 from django.db import models
 from category.models import Category
 
 from publication.models import Publication
+from settings.common_settings import MEDIA_ROOT
 
 
 class File(Publication):
@@ -12,8 +14,7 @@ class File(Publication):
     file - A path to the location of file.
     categories - A many to many relation with categories. It accepts null values.
     """
-    # TODO Find a way to test post file. This field must not be blank
-    file = models.FileField(upload_to='files', blank=True)
+    file = models.FileField(upload_to=os.path.join(MEDIA_ROOT, 'files'))
     categories = models.ManyToManyField(Category, null=True, blank=True, related_name='files')
 
     def __str__(self):

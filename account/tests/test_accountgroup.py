@@ -57,7 +57,7 @@ class AccountGruopAPITestCase(APILiveServerTestCase):
     def test_list(self):
         response = self.client.get(self.url)
         self.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
-        self.assertEqual(1, response.data['count'])
+        self.assertEqual(2, response.data['count'])
 
     def test_destroy(self):
         response = self.client.delete(self.first_object_response.data['url'])
