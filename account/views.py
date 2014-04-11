@@ -177,16 +177,16 @@ class FilterRestrictionViewSet(ModelViewSet):
             return queryset
         else:
             return queryset.filter(
-                Q(accountuser__account=user.accountuser.account) | Q(accountgroup__account=user.accountuser.account))
+                Q(user__accountuser__account=user.accountuser.account) | Q(group__accountgroup__account=user.accountuser.account))
 
     def pre_save(self, obj):
         try:
-            account = obj.accountuser.account
+            account = obj.user.accountuser.account
         except AttributeError:
             try:
-                account = obj.accountgroup.account
+                account = obj.group.accountgroup.account
             except AttributeError:
-                raise BadRequestValidationError('Accountuser or accountgroup is required.')
+                raise BadRequestValidationError('You must specify either User or Group field.')
 
         if account != self.request.user.accountuser.account:
             raise BadRequestValidationError('You can not alter other account permissions.')
