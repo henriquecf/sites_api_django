@@ -195,7 +195,7 @@ class FilterRestrictionViewSet(ModelViewSet):
             super(FilterRestrictionViewSet, self).pre_save(obj)
 
 
-class PermissionDetailViewSet(ReadOnlyModelViewSet):
+class PermissionViewSet(ReadOnlyModelViewSet):
     model = Permission
     permission_classes = (
         permissions.IsAdminUser,
@@ -203,7 +203,7 @@ class PermissionDetailViewSet(ReadOnlyModelViewSet):
     filter_backends = ()
 
 
-class GroupDetailViewSet(ReadOnlyModelViewSet):
+class GroupViewSet(ReadOnlyModelViewSet):
     model = Group
     permission_classes = (
         permissions.IsAdminUser,
