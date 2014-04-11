@@ -4,7 +4,7 @@ from django.contrib.sites.models import Site
 from django.views.generic import FormView
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import viewsets, permissions
-from rest_framework.generics import RetrieveAPIView
+from rest_framework.viewsets import ReadOnlyModelViewSet
 from resource.models import Resource, AccountSite
 from resource.serializers import ResourceSerializer, AccountSiteSerializer
 
@@ -55,7 +55,7 @@ class ResourceViewSet(viewsets.ModelViewSet):
             obj.sites.add(account_site)
 
 
-class AccountSiteRetrieveAPIView(RetrieveAPIView):
+class AccountSiteRetrieveAPIViewSet(ReadOnlyModelViewSet):
     model = AccountSite
     serializer_class = AccountSiteSerializer
     permission_classes = (
@@ -64,5 +64,5 @@ class AccountSiteRetrieveAPIView(RetrieveAPIView):
     filter_backends = ()
 
     def get_queryset(self):
-        return super(AccountSiteRetrieveAPIView, self).get_queryset().filter(
+        return super(AccountSiteRetrieveAPIViewSet, self).get_queryset().filter(
             account=self.request.user.accountuser.account)
