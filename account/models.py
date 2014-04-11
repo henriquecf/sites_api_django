@@ -55,12 +55,12 @@ class AccountGroup(Common):
 class AccountUser(Common):
     user = models.OneToOneField(User, blank=True)
     account = models.ForeignKey(Account, blank=True)
-    filter_permissions = models.ManyToManyField(Permission, through='FilterRestriction', null=True, blank=True)
+    #filter_permissions = models.ManyToManyField(Permission, through='FilterRestriction', null=True, blank=True)
 
-    def has_filter_permission(self, permission):
-        """Checks if the user has global permission for that given permission."""
-        return permission in set(
-            "%s.%s" % (p.content_type.app_label, p.codename) for p in self.filter_permissions.all())
+    #def has_filter_permission(self, permission):
+    #    """Checks if the user has global permission for that given permission."""
+    #    return permission in set(
+    #        "%s.%s" % (p.content_type.app_label, p.codename) for p in self.filter_permissions.all())
 
     def __str__(self):
         return '{0} - {1}'.format(self.account, self.user)
@@ -70,36 +70,40 @@ class FilterRestriction(models.Model):
     filter_field = models.CharField(max_length=100)
     values = models.TextField()
     permission = models.ForeignKey(Permission)
-    accountuser = models.ForeignKey(AccountUser, null=True, blank=True)
-    accountgroup = models.ForeignKey(AccountGroup, null=True, blank=True)
+    user = models.ForeignKey(User, null=True, blank=True, related_name='filter_restrictions')
+    group = models.ForeignKey(Group, null=True, blank=True, related_name='filter_restrictions')
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        if self.accountuser:
+        if self.user:
             try:
-                self.accountuser.user.user_permissions.add(self.permission)
+                self.user.user_permissions.add(self.permission)
             except IntegrityError:
                 pass
-        elif self.accountgroup:
+        elif self.group:
             try:
-                self.accountgroup.group.permissions.add(self.permission)
+                self.group.permissions.add(self.permission)
             except IntegrityError:
                 pass
         super(FilterRestriction, self).save()
 
     def delete(self, using=None):
-        if self.accountuser:
+        if self.user:
             try:
-                self.accountuser.user.user_permissions.remove(self.permission)
+                self.user.user_permissions.remove(self.permission)
             except IntegrityError:
                 pass
-        elif self.accountgroup:
+        elif self.group:
             try:
-                self.accountgroup.group.permissions.remove(self.permission)
+                self.group.permissions.remove(self.permission)
             except IntegrityError:
                 pass
         super(FilterRestriction, self).delete()
 
     def __str__(self):
-        return '{0} - {1} - {2} - {3}'.format(self.accountuser, self.permission, self.filter_field, self.values)
+        if self.user:
+            user_or_group = self.user
+        else:
+            user_or_group = self.group
+        return '{0} - {1} - {2} - {3}'.format(user_or_group, self.permission, self.filter_field, self.values)
 
