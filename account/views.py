@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.contrib.auth import hashers
 from django.contrib.auth.models import User, Permission, Group
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework import permissions, filters, generics
 from account.exceptions import BadRequestValidationError
 from account.serializers import (
@@ -194,7 +194,7 @@ class FilterRestrictionViewSet(ModelViewSet):
             super(FilterRestrictionViewSet, self).pre_save(obj)
 
 
-class PermissionDetailView(generics.RetrieveAPIView):
+class PermissionDetailViewSet(ReadOnlyModelViewSet):
     model = Permission
     permission_classes = (
         permissions.IsAdminUser,
@@ -202,7 +202,7 @@ class PermissionDetailView(generics.RetrieveAPIView):
     filter_backends = ()
 
 
-class GroupDetailView(generics.RetrieveAPIView):
+class GroupDetailViewSet(ReadOnlyModelViewSet):
     model = Group
     permission_classes = (
         permissions.IsAdminUser,

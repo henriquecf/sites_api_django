@@ -18,6 +18,8 @@ router.register(r'publication', publication_views.PublicationBaseViewSet)
 router.register(r'category', CategoryViewSet)
 router.register(r'news', news_views.NewsViewSet)
 router.register(r'account', account_views.AccountViewSet)
+router.register(r'permission-detail', account_views.PermissionDetailViewSet)
+router.register(r'group-detail', account_views.GroupDetailViewSet)
 router.register(r'file', file_explorer_views.FileViewSet)
 router.register(r'subscription', newsletter_views.SubscriptionViewSet)
 router.register(r'newsletter', newsletter_views.NewsletterViewSet)
@@ -30,9 +32,6 @@ urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
                        url(r'^accounts/', include('account.urls')),
-                       url(r'^permission/(?P<pk>[\d]+)/$', account_views.PermissionDetailView.as_view(),
-                           name='permission-detail'),
-                       url(r'^group/(?P<pk>[\d]+)/$', account_views.GroupDetailView.as_view(), name='group-detail'),
                        url(r'^accountsite/(?P<pk>[\d]+)/$', resource_views.AccountSiteRetrieveAPIView.as_view(),
                            name='accountsite-detail'),
                        url(r'^submission/(?P<pk>[\d]+)/$', newsletter_views.SubmissionDetailAPIView.as_view(),
