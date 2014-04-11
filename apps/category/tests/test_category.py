@@ -80,3 +80,12 @@ class CategoryAPITestCase(APILiveServerTestCase):
         self.client.post(self.url, children_data)
         response2 = self.client.get(response.data['url'])
         self.assertFalse(response2.data['is_leaf_node'])
+
+    def test_filter_model_name(self):
+        data = copy(self.data)
+        data.update({'model_name': 'other category'})
+        response = self.client.post(self.url, data)
+        self.assertEqual(201, response.status_code, response.data)
+        filter = {'model_name': 'other category'}
+        response2 = self.client.get(self.url, filter)
+        self.assertEqual(1, response2.data['count'], response2.data)
