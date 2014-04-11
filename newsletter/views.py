@@ -1,6 +1,6 @@
 from rest_framework.decorators import link, action
 from rest_framework.response import Response
-from rest_framework.generics import RetrieveAPIView
+from rest_framework.viewsets import ReadOnlyModelViewSet
 from resource.views import ResourceViewSet
 from .serializers import SubscriptionSerializer, NewsletterSerializer, SubmissionSerializer
 from .models import Subscription, Newsletter, Submission
@@ -58,6 +58,6 @@ class NewsletterViewSet(ResourceViewSet):
             return Response(status=200, data=data)
 
 
-class SubmissionDetailAPIView(RetrieveAPIView):
+class SubmissionDetailAPIViewSet(ReadOnlyModelViewSet):
     model = Submission
     serializer_class = SubmissionSerializer

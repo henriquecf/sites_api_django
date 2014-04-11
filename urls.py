@@ -23,18 +23,16 @@ router.register(r'group-detail', account_views.GroupDetailViewSet)
 router.register(r'file', file_explorer_views.FileViewSet)
 router.register(r'subscription', newsletter_views.SubscriptionViewSet)
 router.register(r'newsletter', newsletter_views.NewsletterViewSet)
+router.register(r'submission', newsletter_views.SubmissionDetailAPIViewSet)
 router.register(r'accountuser', account_views.AccountUserViewSet)
 router.register(r'user', account_views.UserViewSet)
 router.register(r'accountgroup', account_views.AccountGroupViewSet)
 router.register(r'filterrestriction', account_views.FilterRestrictionViewSet)
+router.register(r'accountsite', resource_views.AccountSiteRetrieveAPIViewSet)
 
 urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
                        url(r'^accounts/', include('account.urls')),
-                       url(r'^accountsite/(?P<pk>[\d]+)/$', resource_views.AccountSiteRetrieveAPIView.as_view(),
-                           name='accountsite-detail'),
-                       url(r'^submission/(?P<pk>[\d]+)/$', newsletter_views.SubmissionDetailAPIView.as_view(),
-                           name='submission-detail'),
                        url(r'^', include(router.urls), name='api'),
 )
