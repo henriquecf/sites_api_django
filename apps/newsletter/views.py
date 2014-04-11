@@ -59,6 +59,6 @@ class NewsletterViewSet(ResourceViewSet):
             return Response(status=200, data=data)
 
 
-class SubmissionDetailAPIViewSet(ReadOnlyModelViewSet):
+class SubmissionViewSet(ReadOnlyModelViewSet):
     model = Submission
     serializer_class = SubmissionSerializer
