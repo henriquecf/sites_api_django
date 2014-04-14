@@ -88,11 +88,11 @@ msgid "permission"
 msgstr "permissão"
 
 #: apps/account/models.py:119
-msgid "creator restriction"
+msgid "author restriction"
 msgstr "restrição por criador"
 
 #: apps/account/models.py:120
-msgid "creator restrictions"
+msgid "author restrictions"
 msgstr "restrições por criador"
 
 #: apps/account/views.py:39
@@ -280,7 +280,7 @@ msgid "account sites"
 msgstr "sites da conta"
 
 #: apps/resource/models.py:30
-msgid "creator"
+msgid "author"
 msgstr "criador"
 
 #: apps/resource/models.py:31

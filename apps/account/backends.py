@@ -46,14 +46,14 @@ class CreatorRestrictionBackend(filters.BaseFilterBackend):
                         Q(permission__content_type__app_label=app_label), Q(permission__codename=codename),
                         Q(user=request.user) | Q(group__in=request.user.groups.all()))[0]
                 except ObjectDoesNotExist:
-                    queryset = queryset.filter(creator=request.user)
+                    queryset = queryset.filter(author=request.user)
                 except IndexError:
-                    queryset = queryset.filter(creator=request.user)
+                    queryset = queryset.filter(author=request.user)
                 else:
-                    queryset = queryset.filter(creator__in=creator_restriction.filter_values.split(','))
+                    queryset = queryset.filter(author__in=creator_restriction.filter_values.split(','))
                 return queryset
             else:
-                return queryset.filter(creator=request.user)
+                return queryset.filter(author=request.user)
         else:
             return queryset
 
