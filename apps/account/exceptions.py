@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import status
 from rest_framework.exceptions import APIException
 
@@ -10,4 +11,4 @@ class BadRequestValidationError(APIException):
     The message can and should be replaced when the Exception is called.
     """
     status_code = status.HTTP_400_BAD_REQUEST
-    default_detail = 'There was an error validating the request.'
+    default_detail = _('There was an error validating the request.')

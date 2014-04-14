@@ -48,9 +48,9 @@ class AccountGroupSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class CreatorRestrictionSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(blank=True)
-    permission = serializers.PrimaryKeyRelatedField()
-    group = serializers.PrimaryKeyRelatedField(blank=True)
+    user = serializers.PrimaryKeyRelatedField(label=_('user'), blank=True)
+    permission = serializers.PrimaryKeyRelatedField(label=_('permission'))
+    group = serializers.PrimaryKeyRelatedField(label=_('group'), blank=True)
 
     class Meta:
         model = CreatorRestriction

@@ -58,6 +58,10 @@ class AccountGroup(Common):
     def __str__(self):
         return '{0} - {1}'.format(self.account, self.role)
 
+    class Meta:
+        verbose_name = _('account group')
+        verbose_name_plural = _('account groups')
+
 
 class AccountUser(Common):
     user = models.OneToOneField(User, verbose_name=_('user'), blank=True)
@@ -66,12 +70,16 @@ class AccountUser(Common):
     def __str__(self):
         return '{0} - {1}'.format(self.account, self.user)
 
+    class Meta:
+        verbose_name = _('account user')
+        verbose_name_plural = _('account users')
+
 
 class CreatorRestriction(models.Model):
-    filter_values = models.TextField()
-    permission = models.ForeignKey(Permission)
-    user = models.ForeignKey(User, null=True, blank=True, related_name='creator_restrictions')
-    group = models.ForeignKey(Group, null=True, blank=True, related_name='creator_restrictions')
+    filter_values = models.TextField(_('filter values'))
+    permission = models.ForeignKey(Permission, verbose_name=_('permission'))
+    user = models.ForeignKey(User, verbose_name=_('user'), null=True, blank=True, related_name='creator_restrictions')
+    group = models.ForeignKey(Group, verbose_name=_('group'), null=True, blank=True, related_name='creator_restrictions')
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -107,3 +115,6 @@ class CreatorRestriction(models.Model):
             user_or_group = self.group
         return '{0} - {1} - {2} - {3}'.format(user_or_group, self.permission, self.filter_field, self.values)
 
+    class Meta:
+        verbose_name = _('creator restriction')
+        verbose_name_plural = _('creator restrictions')

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-14 12:31-0300\n"
+"POT-Creation-Date: 2014-04-14 13:10-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,39 +18,106 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: apps/account/models.py:17
+#: apps/account/exceptions.py:14
+msgid "There was an error validating the request."
+msgstr ""
+
+#: apps/account/models.py:19
 msgid "creation date"
 msgstr "data de criação"
 
-#: apps/account/models.py:18
+#: apps/account/models.py:20
 msgid "last modification date"
 msgstr "data da última modificação"
 
-#: apps/account/models.py:30
+#: apps/account/models.py:32
 msgid "expiration date"
 msgstr "data de expiração"
 
-#: apps/account/models.py:31 apps/account/serializers.py:9
+#: apps/account/models.py:33 apps/account/serializers.py:10
 msgid "owner"
 msgstr "proprietário"
 
-#: apps/account/models.py:37 apps/account/models.py:44
-#: apps/account/models.py:62
+#: apps/account/models.py:39 apps/account/models.py:46
+#: apps/account/models.py:68 apps/account/serializers.py:18
+#: apps/account/serializers.py:43
 msgid "account"
 msgstr "conta"
 
-#: apps/account/models.py:38
+#: apps/account/models.py:40
 msgid "accounts"
 msgstr "contas"
 
-#: apps/account/models.py:42
+#: apps/account/models.py:44 apps/account/models.py:82
+#: apps/account/serializers.py:44 apps/account/serializers.py:53
 msgid "group"
 msgstr "grupo"
 
-#: apps/account/models.py:43
+#: apps/account/models.py:45
 msgid "role"
 msgstr "papel"
 
-#: apps/account/models.py:61
+#: apps/account/models.py:62
+#, fuzzy
+#| msgid "account"
+msgid "account group"
+msgstr "conta"
+
+#: apps/account/models.py:63
+#, fuzzy
+#| msgid "accounts"
+msgid "account groups"
+msgstr "grupos da conta"
+
+#: apps/account/models.py:67 apps/account/models.py:81
+#: apps/account/serializers.py:17 apps/account/serializers.py:51
 msgid "user"
 msgstr "usuário"
+
+#: apps/account/models.py:74
+#, fuzzy
+#| msgid "accounts"
+msgid "account user"
+msgstr "usuário da conta"
+
+#: apps/account/models.py:75
+#, fuzzy
+#| msgid "accounts"
+msgid "account users"
+msgstr "usuários da conta"
+
+#: apps/account/models.py:79
+msgid "filter values"
+msgstr "valores do filtro"
+
+#: apps/account/models.py:80 apps/account/serializers.py:52
+msgid "permission"
+msgstr "permissão"
+
+#: apps/account/models.py:119
+msgid "creator restriction"
+msgstr "restrição por criador"
+
+#: apps/account/models.py:120
+msgid "creator restrictions"
+msgstr "restrições por criador"
+
+#: apps/account/views.py:39
+msgid "You already have an account and can not create another one."
+msgstr "Você ja têm uma conta e não pode criar outra."
+
+#: apps/account/views.py:75
+msgid "You can create just one user account"
+msgstr "Você pode criar apenas uma conta de usuário"
+
+#: apps/account/views.py:149
+msgid "Role field is unique. Please insert another name."
+msgstr "O campo papel é único. Por favor, insira outro nome."
+
+#: apps/account/views.py:178
+msgid "You must specify either User or Group field."
+msgstr "Você deve especificar o campo Usuário ou o campo Grupo."
+
+#: apps/account/views.py:181
+msgid "You can not alter other account permissions."
+msgstr "Você não pode alterar permissões de outra conta."
