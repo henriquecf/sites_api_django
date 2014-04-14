@@ -115,12 +115,6 @@ class CreatorRestriction(Common):
             user_or_group = self.group
         return '{0} - {1} - {2} - {3}'.format(user_or_group, self.permission, self.filter_field, self.values)
 
-<<<<<<< HEAD
-    class Meta:
-        verbose_name = _('author restriction')
-        verbose_name_plural = _('author restrictions')
-=======
     class Meta(Common.Meta):
         verbose_name = _('creator restriction')
         verbose_name_plural = _('creator restrictions')
->>>>>>> remotes/origin/master
