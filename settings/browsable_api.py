@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from settings.dev_settings import *
+from settings.dev import *
 
 REST_FRAMEWORK = {
     'PAGINATE_BY': 10,
