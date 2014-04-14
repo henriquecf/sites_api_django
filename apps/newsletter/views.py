@@ -1,3 +1,4 @@
+from django.utils.translation import ugettext_lazy as _
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
@@ -33,13 +34,13 @@ class SubscriptionViewSet(ResourceViewSet):
         try:
             token = request.DATA['token']
         except:
-            return Response(status=400, data={'results': 'You can not unsubscribe without a valid token'})
+            return Response(status=400, data={'results': _('You can not unsubscribe without a valid token')})
         if subscription.token == token:
             subscription.active = False
             subscription.save()
             return Response(status=200)
         else:
-            return Response(status=400, data={'results': 'You can not unsubscribe without a valid token'})
+            return Response(status=400, data={'results': _('You can not unsubscribe without a valid token')})
 
 
 class NewsletterViewSet(ResourceViewSet):

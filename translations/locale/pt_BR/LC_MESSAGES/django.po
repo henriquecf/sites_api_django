@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-14 13:10-0300\n"
+"POT-Creation-Date: 2014-04-14 14:50-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,7 +40,8 @@ msgstr "proprietário"
 
 #: apps/account/models.py:39 apps/account/models.py:46
 #: apps/account/models.py:68 apps/account/serializers.py:18
-#: apps/account/serializers.py:43
+#: apps/account/serializers.py:43 apps/resource/models.py:10
+#: apps/resource/models.py:29
 msgid "account"
 msgstr "conta"
 
@@ -58,14 +59,10 @@ msgid "role"
 msgstr "papel"
 
 #: apps/account/models.py:62
-#, fuzzy
-#| msgid "account"
 msgid "account group"
 msgstr "conta"
 
 #: apps/account/models.py:63
-#, fuzzy
-#| msgid "accounts"
 msgid "account groups"
 msgstr "grupos da conta"
 
@@ -75,14 +72,10 @@ msgid "user"
 msgstr "usuário"
 
 #: apps/account/models.py:74
-#, fuzzy
-#| msgid "accounts"
 msgid "account user"
 msgstr "usuário da conta"
 
 #: apps/account/models.py:75
-#, fuzzy
-#| msgid "accounts"
 msgid "account users"
 msgstr "usuários da conta"
 
@@ -121,3 +114,183 @@ msgstr "Você deve especificar o campo Usuário ou o campo Grupo."
 #: apps/account/views.py:181
 msgid "You can not alter other account permissions."
 msgstr "Você não pode alterar permissões de outra conta."
+
+#: apps/category/models.py:15 apps/newsletter/models.py:18
+msgid "name"
+msgstr "nome"
+
+#: apps/category/models.py:16
+msgid "parent category"
+msgstr "categoria pai"
+
+#: apps/category/models.py:17
+msgid "model name"
+msgstr "nome do modelo"
+
+#: apps/category/models.py:23
+msgid "category"
+msgstr "categoria"
+
+#: apps/category/models.py:24 apps/file_explorer/models.py:18
+#: apps/news/models.py:20
+msgid "categories"
+msgstr "categorias"
+
+#: apps/category/serializers.py:10
+msgid "get descendants"
+msgstr "ver descendentes"
+
+#: apps/category/serializers.py:11
+msgid "is leaf node"
+msgstr "é nó folha"
+
+#: apps/file_explorer/models.py:17 apps/file_explorer/models.py:27
+#: apps/file_explorer/serializers.py:16
+msgid "file"
+msgstr "arquivo"
+
+#: apps/file_explorer/models.py:28
+msgid "files"
+msgstr "arquivos"
+
+#: apps/news/models.py:18 apps/newsletter/models.py:41
+msgid "content"
+msgstr "conteúdo"
+
+#: apps/news/models.py:19
+msgid "image"
+msgstr "imagem"
+
+#: apps/news/models.py:27
+msgid "news"
+msgstr "notícia"
+
+#: apps/news/models.py:28
+msgid "tidings"
+msgstr "notícias"
+
+#: apps/newsletter/models.py:19
+msgid "email"
+msgstr "email"
+
+#: apps/newsletter/models.py:20
+msgid "token"
+msgstr "chave"
+
+#: apps/newsletter/models.py:21
+msgid "subscription status"
+msgstr "estado da assinatura"
+
+#: apps/newsletter/models.py:32 apps/newsletter/models.py:75
+#: apps/newsletter/serializers.py:17
+msgid "subscription"
+msgstr "assinatura"
+
+#: apps/newsletter/models.py:33
+msgid "subscriptions"
+msgstr "assinaturas"
+
+#: apps/newsletter/models.py:40
+msgid "subject"
+msgstr "assunto"
+
+#: apps/newsletter/models.py:66 apps/newsletter/models.py:76
+#: apps/newsletter/serializers.py:16
+msgid "newsletter"
+msgstr "boletim informativo"
+
+#: apps/newsletter/models.py:67
+msgid "newsletters"
+msgstr "boletins informativos"
+
+#: apps/newsletter/models.py:77
+msgid "status"
+msgstr "estado"
+
+#: apps/newsletter/models.py:106
+msgid "submission"
+msgstr "submissão"
+
+#: apps/newsletter/models.py:107 apps/newsletter/serializers.py:25
+msgid "submissions"
+msgstr "submissões"
+
+#: apps/newsletter/serializers.py:9
+msgid "unsubscribe"
+msgstr "descadastrar"
+
+#: apps/newsletter/serializers.py:24
+msgid "send newsletter"
+msgstr "enviar boletim informativo"
+
+#: apps/newsletter/views.py:37 apps/newsletter/views.py:43
+msgid "You can not unsubscribe without a valid token"
+msgstr "Você não pode descadastrar sem uma chave válida"
+
+#: apps/publication/models.py:15
+msgid "title"
+msgstr "título"
+
+#: apps/publication/models.py:16
+msgid "description"
+msgstr "descrição"
+
+#: apps/publication/models.py:17
+msgid "slug"
+msgstr "apelido"
+
+#: apps/publication/models.py:18
+msgid "publication start date"
+msgstr "data de início da publicação"
+
+#: apps/publication/models.py:19
+msgid "publication end date"
+msgstr "data de fim da publicação"
+
+#: apps/publication/models.py:62
+msgid "publication"
+msgstr "publicação"
+
+#: apps/publication/models.py:63
+msgid "publications"
+msgstr "publicações"
+
+#: apps/publication/serializers.py:9
+msgid "publication status"
+msgstr "status da publicação"
+
+#: apps/publication/serializers.py:10
+msgid "publish"
+msgstr "publicar"
+
+#: apps/publication/serializers.py:11
+msgid "unpublish"
+msgstr "despublicar"
+
+#: apps/resource/models.py:11 apps/resource/serializers.py:23
+msgid "site"
+msgstr "site"
+
+#: apps/resource/models.py:18
+msgid "account site"
+msgstr "site da conta"
+
+#: apps/resource/models.py:19
+msgid "account sites"
+msgstr "sites da conta"
+
+#: apps/resource/models.py:30
+msgid "creator"
+msgstr "criador"
+
+#: apps/resource/models.py:31
+msgid "sites"
+msgstr "sites"
+
+#: apps/resource/models.py:40
+msgid "resource"
+msgstr "recurso"
+
+#: apps/resource/models.py:41
+msgid "resources"
+msgstr "recursos"

@@ -35,7 +35,7 @@ class Account(Common):
     def __str__(self):
         return self.owner.username
 
-    class Meta:
+    class Meta(Common.Meta):
         verbose_name = _('account')
         verbose_name_plural = _('accounts')
 
@@ -58,7 +58,7 @@ class AccountGroup(Common):
     def __str__(self):
         return '{0} - {1}'.format(self.account, self.role)
 
-    class Meta:
+    class Meta(Common.Meta):
         verbose_name = _('account group')
         verbose_name_plural = _('account groups')
 
@@ -70,7 +70,7 @@ class AccountUser(Common):
     def __str__(self):
         return '{0} - {1}'.format(self.account, self.user)
 
-    class Meta:
+    class Meta(Common.Meta):
         verbose_name = _('account user')
         verbose_name_plural = _('account users')
 
