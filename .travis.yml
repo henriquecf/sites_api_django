@@ -13,7 +13,7 @@ install:
   - export PYTHONPATH=.
 
 script:
-  - coverage run --source=apps manage.py test --settings=settings.dev_settings
+  - coverage run --source=apps manage.py test --settings=settings.dev
 
 after_success:
   coveralls
