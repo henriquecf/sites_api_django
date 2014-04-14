@@ -18,13 +18,13 @@ class FilterRestrictionAPITestCase(APILiveServerTestCase):
         user_accountuser_account_token_fixture(self)
         self.data = {
             'filter_field': 'creator',
-            'values': '1',
+            'filter_values': '1',
             'user': self.owner.id,
             'permission': Permission.objects.first().id,
         }
         self.altered_data = {
             'filter_field': 'owner',
-            'values': '1',
+            'filter_values': '1',
             'user': self.owner.id,
             'permission': Permission.objects.first().id,
         }
@@ -44,7 +44,7 @@ class FilterRestrictionAPITestCase(APILiveServerTestCase):
         filter_field = 'filter-field-{0}'.format(random.randint(1, 99999))
         data.update({
             'filter_field': filter_field,
-            'values': '1',
+            'filter_values': '1',
             'user': user_id,
             'permission': Permission.objects.first().id,
         })

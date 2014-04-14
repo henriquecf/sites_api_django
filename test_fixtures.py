@@ -82,8 +82,8 @@ def user_accountuser_account_permissions_token_fixture(test_case):
         FilterRestriction.objects.create(permission=permission,
                                          user=test_case.account_user2,
                                          filter_field='creator',
-                                         values='{0},{1}'.format(test_case.account_user2.id,
-                                                                 test_case.owner.id))
+                                         filter_values='{0},{1}'.format(test_case.account_user2.id,
+                                                                        test_case.owner.id))
     test_accountgroup = AccountGroup.objects.create(role='Test Group', account=fixture.owner_account)
     test_case.owner.groups.add(test_accountgroup.group)
 

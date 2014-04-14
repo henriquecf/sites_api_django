@@ -68,7 +68,7 @@ class AccountUser(Common):
 
 class FilterRestriction(models.Model):
     filter_field = models.CharField(max_length=100)
-    values = models.TextField()
+    filter_values = models.TextField()
     permission = models.ForeignKey(Permission)
     user = models.ForeignKey(User, null=True, blank=True, related_name='filter_restrictions')
     group = models.ForeignKey(Group, null=True, blank=True, related_name='filter_restrictions')
