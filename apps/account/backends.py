@@ -47,7 +47,9 @@ class FilterRestrictionBackend(filters.BaseFilterBackend):
                 else:
                     for filter_restriction in restriction_filters:
                         queryset = queryset.filter(
-                            **{'{0}__in'.format(filter_restriction.filter_field): filter_restriction.values.split(',')})
+                            **{
+                                '{0}__in'.format(filter_restriction.filter_field): filter_restriction.filter_values.split(
+                                    ',')})
                     else:
                         queryset = queryset.filter(account=request.user.accountuser.account)
                 return queryset
@@ -58,6 +60,5 @@ class FilterRestrictionBackend(filters.BaseFilterBackend):
 
 
 class AccountFilterBackend(filters.BaseFilterBackend):
-
     def filter_queryset(self, request, queryset, view):
         return queryset.filter(account=request.user.accountuser.account)
