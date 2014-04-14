@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+from django.db.models import Q, ObjectDoesNotExist
 from rest_framework import filters
 
-from apps.account.models import FilterRestriction
+from apps.account.models import CreatorRestriction
 
 
 custom_permissions_map = {
@@ -15,7 +16,7 @@ custom_permissions_map = {
 }
 
 
-class FilterRestrictionBackend(filters.BaseFilterBackend):
+class CreatorRestrictionBackend(filters.BaseFilterBackend):
     """This filter analise the user and its permissions.
 
     If the user is a superuser, he has access to the whole model.
@@ -27,11 +28,7 @@ class FilterRestrictionBackend(filters.BaseFilterBackend):
     """
 
     def filter_queryset(self, request, queryset, view):
-        if request.user.is_superuser:
-            return queryset
-        elif request.user.is_staff:
-            return queryset.filter(account=request.user.accountuser.account)
-        else:
+        if not request.user.is_staff:
             model_cls = getattr(view, 'model', None)
 
             kwargs = {
@@ -44,13 +41,23 @@ class FilterRestrictionBackend(filters.BaseFilterBackend):
                 permission = None
             if permission and request.user.has_perm(permission):
                 app_label, codename = permission.split('.')
-                restriction_filters = FilterRestriction.objects.filter(permission__content_type__app_label=app_label,
-                                                                       permission__codename=codename)
-                for filter_restriction in restriction_filters:
-                    queryset = queryset.filter(
-                        **{'{0}__in'.format(filter_restriction.filter_field): filter_restriction.values.split(',')})
+                try:
+                    creator_restriction = CreatorRestriction.objects.filter(
+                        Q(permission__content_type__app_label=app_label), Q(permission__codename=codename),
+                        Q(user=request.user) | Q(group__in=request.user.groups.all()))[0]
+                except ObjectDoesNotExist:
+                    queryset = queryset.filter(creator=request.user)
+                except IndexError:
+                    queryset = queryset.filter(creator=request.user)
                 else:
-                    queryset = queryset.filter(account=request.user.accountuser.account)
+                    queryset = queryset.filter(creator__in=creator_restriction.filter_values.split(','))
                 return queryset
             else:
                 return queryset.filter(creator=request.user)
+        else:
+            return queryset
+
+
+class AccountFilterBackend(filters.BaseFilterBackend):
+    def filter_queryset(self, request, queryset, view):
+        return queryset.filter(account=request.user.accountuser.account)
