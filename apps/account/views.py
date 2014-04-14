@@ -72,7 +72,7 @@ class AccountUserViewSet(ModelViewSet):
         obj.account = self.request.user.account
         try:
             AccountUser.objects.get(user=self.request.user)
-            raise BadRequestValidationError(_('You can create just one user account'))
+            raise BadRequestValidationError(_('You can create just one user account.'))
         except ObjectDoesNotExist:
             obj.user = self.request.user
 

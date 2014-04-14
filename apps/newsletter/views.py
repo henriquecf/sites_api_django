@@ -34,13 +34,13 @@ class SubscriptionViewSet(ResourceViewSet):
         try:
             token = request.DATA['token']
         except:
-            return Response(status=400, data={'detail': _('You can not unsubscribe without a valid token')})
+            return Response(status=400, data={'detail': _('You can not unsubscribe without a valid token.')})
         if subscription.token == token:
             subscription.is_active = False
             subscription.save()
             return Response(status=200)
         else:
-            return Response(status=400, data={'detail': _('You can not unsubscribe without a valid token')})
+            return Response(status=400, data={'detail': _('You can not unsubscribe without a valid token.')})
 
 
 class NewsletterViewSet(ResourceViewSet):
