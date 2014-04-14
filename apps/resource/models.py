@@ -27,14 +27,14 @@ class Resource(Common):
     serializer and viewset
     """
     account = models.ForeignKey(Account, verbose_name=_('account'), editable=False)
-    creator = models.ForeignKey(User, verbose_name=_('creator'), editable=False, related_name='creators')
+    author = models.ForeignKey(User, verbose_name=_('author'), editable=False, related_name='authors')
     sites = models.ManyToManyField(AccountSite, verbose_name=_('sites'), blank=True)
 
     def account_sites(self):
         return self.sites.filter(account=self.account)
 
     def __str__(self):
-        return '{0} - {1}'.format(self.account, self.creator)
+        return '{0} - {1}'.format(self.account, self.author)
 
     class Meta(Common.Meta):
         verbose_name = _('resource')

@@ -2,7 +2,7 @@
 from django.db.models import Q, ObjectDoesNotExist
 from rest_framework import filters
 
-from apps.account.models import CreatorRestriction
+from apps.account.models import AuthorRestriction
 
 
 custom_permissions_map = {
@@ -16,7 +16,7 @@ custom_permissions_map = {
 }
 
 
-class CreatorRestrictionBackend(filters.BaseFilterBackend):
+class AuthorRestrictionBackend(filters.BaseFilterBackend):
     """This filter analise the user and its permissions.
 
     If the user is a superuser, he has access to the whole model.
@@ -42,18 +42,18 @@ class CreatorRestrictionBackend(filters.BaseFilterBackend):
             if permission and request.user.has_perm(permission):
                 app_label, codename = permission.split('.')
                 try:
-                    creator_restriction = CreatorRestriction.objects.filter(
+                    creator_restriction = AuthorRestriction.objects.filter(
                         Q(permission__content_type__app_label=app_label), Q(permission__codename=codename),
                         Q(user=request.user) | Q(group__in=request.user.groups.all()))[0]
                 except ObjectDoesNotExist:
-                    queryset = queryset.filter(creator=request.user)
+                    queryset = queryset.filter(author=request.user)
                 except IndexError:
-                    queryset = queryset.filter(creator=request.user)
+                    queryset = queryset.filter(author=request.user)
                 else:
-                    queryset = queryset.filter(creator__in=creator_restriction.filter_values.split(','))
+                    queryset = queryset.filter(author__in=creator_restriction.filter_values.split(','))
                 return queryset
             else:
-                return queryset.filter(creator=request.user)
+                return queryset.filter(author=request.user)
         else:
             return queryset
 

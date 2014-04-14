@@ -49,7 +49,7 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
         test_routines.test_custom_object_permission_routine(self, count=2)
 
     def test_serializer_read_only_fields(self):
-        fields = ['token', 'active']
+        fields = ['token', 'is_active']
         resource_routines.test_serializer_read_only_fields_routine(self, fields)
 
     def test_hyperlinked_fields(self):
@@ -81,19 +81,19 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
         self.assertEqual(status.HTTP_201_CREATED, self.first_object_response.status_code)
         response = self.client.post(self.url, self.altered_data)
         subscription = Subscription.objects.get(email='ivan_morais@yahoo.com.br')
-        self.assertTrue(subscription.active)
+        self.assertTrue(subscription.is_active)
         unsubscribe_response = self.client.post(response.data['unsubscribe'], data={'token': '928374869287348972'})
         self.assertEqual(unsubscribe_response.status_code, status.HTTP_400_BAD_REQUEST)
         subscription = Subscription.objects.get(email='ivan_morais@yahoo.com.br')
-        self.assertTrue(subscription.active)
+        self.assertTrue(subscription.is_active)
         unsubscribe_response = self.client.post(response.data['unsubscribe'], data={'token': subscription.token})
         self.assertEqual(unsubscribe_response.status_code, status.HTTP_200_OK)
         subscription = Subscription.objects.get(email='ivan_morais@yahoo.com.br')
-        self.assertFalse(subscription.active)
+        self.assertFalse(subscription.is_active)
         response = self.client.post(self.url, self.altered_data)
         subscription = Subscription.objects.get(email='ivan_morais@yahoo.com.br')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-        self.assertTrue(subscription.active)
+        self.assertTrue(subscription.is_active)
         unsubscribe_response = self.client.post(response.data['unsubscribe'], data={'token': None})
         self.assertEqual(unsubscribe_response.status_code, status.HTTP_400_BAD_REQUEST)
 

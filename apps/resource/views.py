@@ -35,15 +35,15 @@ class ResourceViewSet(viewsets.ModelViewSet):
     serializer_class = ResourceSerializer
 
     def pre_save(self, obj):
-        """Checks if there is a creator and account for the resource.
+        """Checks if there is a author and account for the resource.
 
         Does nothing if it has, assigns the request user and its account to the object otherwise.
         """
         try:
-            obj.creator
+            obj.author
             obj.account
         except ObjectDoesNotExist:
-            obj.creator = self.request.user
+            obj.author = self.request.user
             obj.account = self.request.user.accountuser.account
 
     def post_save(self, obj, created=False):

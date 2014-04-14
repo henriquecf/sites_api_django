@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-14 14:50-0300\n"
+"POT-Creation-Date: 2014-04-14 16:00-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,11 +16,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: apps/account/exceptions.py:14
 msgid "There was an error validating the request."
-msgstr ""
+msgstr "Houve um erro ao validar a requisição."
 
 #: apps/account/models.py:19
 msgid "creation date"
@@ -56,11 +55,11 @@ msgstr "grupo"
 
 #: apps/account/models.py:45
 msgid "role"
-msgstr "papel"
+msgstr "função"
 
 #: apps/account/models.py:62
 msgid "account group"
-msgstr "conta"
+msgstr "grupo da conta"
 
 #: apps/account/models.py:63
 msgid "account groups"
@@ -88,24 +87,24 @@ msgid "permission"
 msgstr "permissão"
 
 #: apps/account/models.py:119
-msgid "creator restriction"
-msgstr "restrição por criador"
+msgid "author restriction"
+msgstr "restrição por autor"
 
 #: apps/account/models.py:120
-msgid "creator restrictions"
-msgstr "restrições por criador"
+msgid "author restrictions"
+msgstr "restrições por autor"
 
 #: apps/account/views.py:39
 msgid "You already have an account and can not create another one."
-msgstr "Você ja têm uma conta e não pode criar outra."
+msgstr "Você já tem uma conta e não pode criar outra."
 
 #: apps/account/views.py:75
-msgid "You can create just one user account"
-msgstr "Você pode criar apenas uma conta de usuário"
+msgid "You can create just one user account."
+msgstr "Você pode criar apenas uma conta de usuário."
 
 #: apps/account/views.py:149
 msgid "Role field is unique. Please insert another name."
-msgstr "O campo papel é único. Por favor, insira outro nome."
+msgstr "Campo função é único. Por favor insira outro nome."
 
 #: apps/account/views.py:178
 msgid "You must specify either User or Group field."
@@ -138,7 +137,7 @@ msgstr "categorias"
 
 #: apps/category/serializers.py:10
 msgid "get descendants"
-msgstr "ver descendentes"
+msgstr "obter descendentes"
 
 #: apps/category/serializers.py:11
 msgid "is leaf node"
@@ -224,8 +223,8 @@ msgid "send newsletter"
 msgstr "enviar boletim informativo"
 
 #: apps/newsletter/views.py:37 apps/newsletter/views.py:43
-msgid "You can not unsubscribe without a valid token"
-msgstr "Você não pode descadastrar sem uma chave válida"
+msgid "You can not unsubscribe without a valid token."
+msgstr "Você não pode descadastrar sem uma chave válida."
 
 #: apps/publication/models.py:15
 msgid "title"
@@ -245,7 +244,7 @@ msgstr "data de início da publicação"
 
 #: apps/publication/models.py:19
 msgid "publication end date"
-msgstr "data de fim da publicação"
+msgstr "data final da publicação"
 
 #: apps/publication/models.py:62
 msgid "publication"
@@ -257,7 +256,7 @@ msgstr "publicações"
 
 #: apps/publication/serializers.py:9
 msgid "publication status"
-msgstr "status da publicação"
+msgstr "estado da publicação"
 
 #: apps/publication/serializers.py:10
 msgid "publish"
@@ -280,8 +279,8 @@ msgid "account sites"
 msgstr "sites da conta"
 
 #: apps/resource/models.py:30
-msgid "creator"
-msgstr "criador"
+msgid "author"
+msgstr "autor"
 
 #: apps/resource/models.py:31
 msgid "sites"

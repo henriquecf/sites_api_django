@@ -16,7 +16,7 @@ class ResourceSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Account
-        read_only_fields = ('creator', 'account')
+        read_only_fields = ('author', 'account')
 
 
 class AccountSiteSerializer(serializers.HyperlinkedModelSerializer):

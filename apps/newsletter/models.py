@@ -18,7 +18,7 @@ class Subscription(Resource):
     name = models.CharField(_('name'), max_length=50)
     email = models.EmailField(_('email'), max_length=200)
     token = models.CharField(_('token'), max_length=30, editable=False)
-    active = models.BooleanField(_('subscription status'), default=True, editable=False)
+    is_active = models.BooleanField(_('subscription status'), default=True, editable=False)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -46,7 +46,7 @@ class Newsletter(Resource):
         for subscription in subscriptions:
             try:
                 Submission.objects.create(account=self.account,
-                                          creator=self.account.owner,
+                                          author=self.account.owner,
                                           newsletter=self,
                                           subscription=subscription,)
             except IntegrityError:

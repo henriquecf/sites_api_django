@@ -18,7 +18,7 @@ def test_slug_is_unique_routine(test_case):
 
 
 def test_has_author_routine(test_case):
-    test_case.assertIn('creator', test_case.first_object_response.data, 'Response has no field "creator"')
+    test_case.assertIn('author', test_case.first_object_response.data, 'Response has no field "author"')
 
 
 def test_is_published_default_true_routine(test_case):

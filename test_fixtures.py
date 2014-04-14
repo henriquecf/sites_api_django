@@ -4,7 +4,7 @@ from datetime import timedelta
 from django.contrib.auth.models import User, Permission
 from django.utils import timezone
 from oauth2_provider.models import Application, AccessToken
-from apps.account.models import AccountUser, Account, CreatorRestriction, AccountGroup
+from apps.account.models import AccountUser, Account, AuthorRestriction, AccountGroup
 
 
 class Fixtures:
@@ -79,7 +79,7 @@ def user_accountuser_account_permissions_token_fixture(test_case):
         test_case.owner.user_permissions.add(permission)
         test_case.second_owner.user_permissions.add(permission)
         test_case.account_user2.user_permissions.add(permission)
-        CreatorRestriction.objects.create(permission=permission,
+        AuthorRestriction.objects.create(permission=permission,
                                          user=test_case.account_user2,
                                          filter_values='{0},{1}'.format(test_case.account_user2.id,
                                                                         test_case.owner.id))
