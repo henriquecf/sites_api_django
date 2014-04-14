@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from settings.common_settings import *
+from settings.common import *
 from postgresify import postgresify
 from S3 import CallingFormat
 

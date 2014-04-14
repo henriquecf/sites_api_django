@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from apps.category.models import Category
 from apps.publication.models import Publication
-from settings.common_settings import MEDIA_ROOT
+from settings.common import MEDIA_ROOT
 
 
 class File(Publication):

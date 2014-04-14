@@ -112,3 +112,6 @@ class FilterRestrictionAPITestCase(APILiveServerTestCase):
         response2 = self.client.delete(response3.data['url'])
         self.assertEqual(status.HTTP_204_NO_CONTENT, response2.status_code, response2.data)
         self.assertNotIn(permission, accountgroup.group.permissions.all())
+
+    def test_model_has_custom_permission(self):
+        test_routines.test_model_has_custom_permission_routine(self)
