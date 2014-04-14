@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
+
 from datetime import date, timedelta
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 from django.db.utils import IntegrityError
 from django.contrib.auth.models import User, Permission, Group
 
@@ -13,8 +16,8 @@ class Common(models.Model):
     creation_date - automatically defined when object is created;
     last_modification_date - automatically actualized when object is saved.
     """
-    creation_date = models.DateTimeField(auto_now_add=True)
-    last_modification_date = models.DateTimeField(auto_now=True)
+    creation_date = models.DateTimeField(_('creation date'), auto_now_add=True)
+    last_modification_date = models.DateTimeField(_('last modification date'), auto_now=True)
 
     class Meta:
         abstract = True
@@ -26,17 +29,21 @@ class Account(Common):
 
     This model saves data related to the account of a person.
     """
-    expiration_date = models.DateField(editable=False, default=date.today()+timedelta(30))
-    owner = models.OneToOneField(User, blank=True, related_name='account')
+    expiration_date = models.DateField(_('expiration date'), editable=False, default=date.today()+timedelta(30))
+    owner = models.OneToOneField(User, verbose_name=_('owner'), blank=True, related_name='account')
 
     def __str__(self):
         return self.owner.username
 
+    class Meta:
+        verbose_name = _('account')
+        verbose_name_plural = _('accounts')
+
 
 class AccountGroup(Common):
-    group = models.OneToOneField(Group, blank=True)
-    role = models.CharField(max_length=100)
-    account = models.ForeignKey(Account, blank=True)
+    group = models.OneToOneField(Group, verbose_name=_('group'), blank=True)
+    role = models.CharField(_('role'), max_length=100)
+    account = models.ForeignKey(Account, verbose_name=_('account'), blank=True)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -53,8 +60,8 @@ class AccountGroup(Common):
 
 
 class AccountUser(Common):
-    user = models.OneToOneField(User, blank=True)
-    account = models.ForeignKey(Account, blank=True)
+    user = models.OneToOneField(User, verbose_name=_('user'), blank=True)
+    account = models.ForeignKey(Account, verbose_name=_('account'), blank=True)
     #filter_permissions = models.ManyToManyField(Permission, through='FilterRestriction', null=True, blank=True)
 
     #def has_filter_permission(self, permission):

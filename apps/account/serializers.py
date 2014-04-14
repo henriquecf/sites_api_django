@@ -1,19 +1,21 @@
+# -*- coding: utf-8 -*-
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 
 from apps.account.models import AccountUser, Account, AccountGroup, FilterRestriction
 
 
 class AccountSerializer(serializers.HyperlinkedModelSerializer):
-    owner = serializers.HyperlinkedRelatedField(view_name='user-detail', read_only=True)
+    owner = serializers.HyperlinkedRelatedField(label=_('owner'), view_name='user-detail', read_only=True)
 
     class Meta:
         model = Account
 
 
 class AccountUserSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.HyperlinkedRelatedField(view_name='user-detail', read_only=True)
-    account = serializers.HyperlinkedRelatedField(view_name='account-detail', read_only=True)
+    user = serializers.HyperlinkedRelatedField(label=_('user'), view_name='user-detail', read_only=True)
+    account = serializers.HyperlinkedRelatedField(label=_('account'), view_name='account-detail', read_only=True)
 
     class Meta:
         model = AccountUser
@@ -38,8 +40,8 @@ class RestrictedOwnerUserSerializer(UserSerializer):
 
 
 class AccountGroupSerializer(serializers.HyperlinkedModelSerializer):
-    account = serializers.HyperlinkedRelatedField(view_name='account-detail', read_only=True)
-    group = serializers.HyperlinkedRelatedField(view_name='group-detail', read_only=True)
+    account = serializers.HyperlinkedRelatedField(label=_('account'), view_name='account-detail', read_only=True)
+    group = serializers.HyperlinkedRelatedField(label=_('group'), view_name='group-detail', read_only=True)
 
     class Meta:
         model = AccountGroup
