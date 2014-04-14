@@ -27,11 +27,7 @@ class FilterRestrictionBackend(filters.BaseFilterBackend):
     """
 
     def filter_queryset(self, request, queryset, view):
-        if request.user.is_superuser:
-            return queryset
-        elif request.user.is_staff:
-            return queryset.filter(account=request.user.accountuser.account)
-        else:
+        if not request.user.is_staff:
             model_cls = getattr(view, 'model', None)
 
             kwargs = {
@@ -46,11 +42,22 @@ class FilterRestrictionBackend(filters.BaseFilterBackend):
                 app_label, codename = permission.split('.')
                 restriction_filters = FilterRestriction.objects.filter(permission__content_type__app_label=app_label,
                                                                        permission__codename=codename)
-                for filter_restriction in restriction_filters:
-                    queryset = queryset.filter(
-                        **{'{0}__in'.format(filter_restriction.filter_field): filter_restriction.values.split(',')})
+                if not restriction_filters:
+                    queryset = queryset.filter(creator=request.user)
                 else:
-                    queryset = queryset.filter(account=request.user.accountuser.account)
+                    for filter_restriction in restriction_filters:
+                        queryset = queryset.filter(
+                            **{'{0}__in'.format(filter_restriction.filter_field): filter_restriction.values.split(',')})
+                    else:
+                        queryset = queryset.filter(account=request.user.accountuser.account)
                 return queryset
             else:
                 return queryset.filter(creator=request.user)
+        else:
+            return queryset
+
+
+class AccountFilterBackend(filters.BaseFilterBackend):
+
+    def filter_queryset(self, request, queryset, view):
+        return queryset.filter(account=request.user.accountuser.account)
