@@ -105,7 +105,7 @@ def test_custom_object_permission_routine(test_case, count=3):
     test_api_basic_methods_routine(test_case, token=test_case.account_user_token2)
 
     # Now the global permissions are removed from the user that had them
-    test_case.account_user2.filter_restrictions.clear()
+    test_case.account_user2.creator_restrictions.clear()
 
     # He should get restrictions to owner resources now
     test_resource_permission_routine(test_case, token=test_case.account_user_token2, count=count)
