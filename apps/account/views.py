@@ -12,10 +12,10 @@ from apps.account.serializers import (
     UserSerializer,
     AccountSerializer,
     AccountGroupSerializer,
-    FilterRestrictionSerializer,
+    CreatorRestrictionSerializer,
     RestrictedOwnerUserSerializer,
 )
-from apps.account.models import Account, AccountUser, AccountGroup, FilterRestriction
+from apps.account.models import Account, AccountUser, AccountGroup, CreatorRestriction
 
 
 class AccountViewSet(ModelViewSet):
@@ -163,16 +163,16 @@ class AccountGroupViewSet(ModelViewSet):
             obj.account = self.request.user.accountuser.account
 
 
-class FilterRestrictionViewSet(ModelViewSet):
-    model = FilterRestriction
-    serializer_class = FilterRestrictionSerializer
+class CreatorRestrictionViewSet(ModelViewSet):
+    model = CreatorRestriction
+    serializer_class = CreatorRestrictionSerializer
     permission_classes = (
         permissions.IsAdminUser,
     )
     filter_backends = ()
 
     def get_queryset(self):
-        queryset = super(FilterRestrictionViewSet, self).get_queryset()
+        queryset = super(CreatorRestrictionViewSet, self).get_queryset()
         user = self.request.user
         if user.is_superuser:
             return queryset
@@ -192,7 +192,7 @@ class FilterRestrictionViewSet(ModelViewSet):
         if account != self.request.user.accountuser.account:
             raise BadRequestValidationError('You can not alter other account permissions.')
         else:
-            super(FilterRestrictionViewSet, self).pre_save(obj)
+            super(CreatorRestrictionViewSet, self).pre_save(obj)
 
 
 class PermissionViewSet(ReadOnlyModelViewSet):

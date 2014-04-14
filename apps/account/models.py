@@ -55,23 +55,16 @@ class AccountGroup(Common):
 class AccountUser(Common):
     user = models.OneToOneField(User, blank=True)
     account = models.ForeignKey(Account, blank=True)
-    #filter_permissions = models.ManyToManyField(Permission, through='FilterRestriction', null=True, blank=True)
-
-    #def has_filter_permission(self, permission):
-    #    """Checks if the user has global permission for that given permission."""
-    #    return permission in set(
-    #        "%s.%s" % (p.content_type.app_label, p.codename) for p in self.filter_permissions.all())
 
     def __str__(self):
         return '{0} - {1}'.format(self.account, self.user)
 
 
-class FilterRestriction(models.Model):
-    filter_field = models.CharField(max_length=100)
+class CreatorRestriction(models.Model):
     filter_values = models.TextField()
     permission = models.ForeignKey(Permission)
-    user = models.ForeignKey(User, null=True, blank=True, related_name='filter_restrictions')
-    group = models.ForeignKey(Group, null=True, blank=True, related_name='filter_restrictions')
+    user = models.ForeignKey(User, null=True, blank=True, related_name='creator_restrictions')
+    group = models.ForeignKey(Group, null=True, blank=True, related_name='creator_restrictions')
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -85,7 +78,7 @@ class FilterRestriction(models.Model):
                 self.group.permissions.add(self.permission)
             except IntegrityError:
                 pass
-        super(FilterRestriction, self).save()
+        super(CreatorRestriction, self).save()
 
     def delete(self, using=None):
         if self.user:
@@ -98,7 +91,7 @@ class FilterRestriction(models.Model):
                 self.group.permissions.remove(self.permission)
             except IntegrityError:
                 pass
-        super(FilterRestriction, self).delete()
+        super(CreatorRestriction, self).delete()
 
     def __str__(self):
         if self.user:
