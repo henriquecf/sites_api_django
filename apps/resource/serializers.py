@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 
 from apps.account.models import Account
@@ -19,7 +20,7 @@ class ResourceSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class AccountSiteSerializer(serializers.HyperlinkedModelSerializer):
-    site = serializers.PrimaryKeyRelatedField(read_only=True)
+    site = serializers.PrimaryKeyRelatedField(label=_('site'), read_only=True)
 
     class Meta:
         model = AccountSite

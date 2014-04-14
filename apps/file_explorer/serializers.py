@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 
 from apps.publication.serializers import PublicationSerializer
@@ -12,4 +13,4 @@ class FileSerializer(PublicationSerializer):
 
 
 class FileSerializerTest(FileSerializer):
-    file = serializers.FileField(blank=True)
+    file = serializers.FileField(label=_('file'), blank=True)

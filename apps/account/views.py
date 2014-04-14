@@ -1,5 +1,6 @@
 import datetime
 from django.db.models import Q
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import hashers
 from django.contrib.auth.models import User, Permission, Group
 from django.core.exceptions import ObjectDoesNotExist
@@ -35,7 +36,7 @@ class AccountViewSet(ModelViewSet):
         obj.expiration_date = datetime.date.today() + datetime.timedelta(30)
         try:
             Account.objects.get(owner=self.request.user)
-            raise BadRequestValidationError('You already have an account and can not create another one.')
+            raise BadRequestValidationError(_('You already have an account and can not create another one.'))
         except ObjectDoesNotExist:
             obj.owner = self.request.user
 
@@ -71,7 +72,7 @@ class AccountUserViewSet(ModelViewSet):
         obj.account = self.request.user.account
         try:
             AccountUser.objects.get(user=self.request.user)
-            raise BadRequestValidationError('You can create just one user account')
+            raise BadRequestValidationError(_('You can create just one user account'))
         except ObjectDoesNotExist:
             obj.user = self.request.user
 
@@ -145,7 +146,7 @@ class AccountGroupViewSet(ModelViewSet):
     def pre_save(self, obj):
         try:
             AccountGroup.objects.get(account=self.request.user.accountuser.account, role=obj.role)
-            raise BadRequestValidationError('Role field is unique. Please insert another name.')
+            raise BadRequestValidationError(_('Role field is unique. Please insert another name.'))
         except ObjectDoesNotExist:
             obj.account = self.request.user.accountuser.account
 
@@ -174,10 +175,10 @@ class CreatorRestrictionViewSet(ModelViewSet):
             try:
                 account = obj.group.accountgroup.account
             except AttributeError:
-                raise BadRequestValidationError('You must specify either User or Group field.')
+                raise BadRequestValidationError(_('You must specify either User or Group field.'))
 
         if account != self.request.user.accountuser.account:
-            raise BadRequestValidationError('You can not alter other account permissions.')
+            raise BadRequestValidationError(_('You can not alter other account permissions.'))
         else:
             super(CreatorRestrictionViewSet, self).pre_save(obj)
 

@@ -1,3 +1,4 @@
+from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.utils.text import slugify
 from django.utils import timezone
@@ -11,11 +12,11 @@ class Publication(Resource):
     This model is the base for any other model that will be used as a publication in a site.
     It has basic publications functionality and can be used by its own, or inherited by other models.
     """
-    title = models.CharField(max_length=150)
-    description = models.TextField(blank=True)
-    slug = models.SlugField(max_length=150, editable=False)
-    publication_start_date = models.DateTimeField(blank=True, default=timezone.now())
-    publication_end_date = models.DateTimeField(blank=True, null=True)
+    title = models.CharField(_('title'), max_length=150)
+    description = models.TextField(_('description'), blank=True)
+    slug = models.SlugField(_('slug'), max_length=150, editable=False)
+    publication_start_date = models.DateTimeField(_('publication start date'), blank=True, default=timezone.now())
+    publication_end_date = models.DateTimeField(_('publication end date'), blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -56,6 +57,10 @@ class Publication(Resource):
             return False
         else:
             return True
+
+    class Meta(Resource.Meta):
+        verbose_name = _('publication')
+        verbose_name_plural = _('publications')
 
 
 def find_available_slug(model, instance, slug, original_slug, slug_number=2):

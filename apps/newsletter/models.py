@@ -1,5 +1,6 @@
 import random
 import string
+from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.db.utils import IntegrityError
 from django.core.mail import EmailMultiAlternatives
@@ -14,10 +15,10 @@ class Subscription(Resource):
     Besides these fields, it automatically generates a token to deactivate
     and put subscription status in a boolean field.
     """
-    name = models.CharField(max_length=50)
-    email = models.EmailField(max_length=200)
-    token = models.CharField(max_length=30, editable=False)
-    active = models.BooleanField(default=True, editable=False)
+    name = models.CharField(_('name'), max_length=50)
+    email = models.EmailField(_('email'), max_length=200)
+    token = models.CharField(_('token'), max_length=30, editable=False)
+    active = models.BooleanField(_('subscription status'), default=True, editable=False)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -27,13 +28,17 @@ class Subscription(Resource):
     def __str__(self):
         return self.email
 
+    class Meta(Resource.Meta):
+        verbose_name = _('subscription')
+        verbose_name_plural = _('subscriptions')
+
 
 class Newsletter(Resource):
     """
     This model implements newsletter as a publication.
     """
-    subject = models.CharField(max_length=200)
-    content = models.TextField()
+    subject = models.CharField(_('subject'), max_length=200)
+    content = models.TextField(_('content'))
 
     def send_newsletter(self, account):
         subscriptions = Subscription.objects.filter(account=account)
@@ -57,15 +62,19 @@ class Newsletter(Resource):
                       resubmissions=resent.count())
         return status
 
+    class Meta(Resource.Meta):
+        verbose_name = _('newsletter')
+        verbose_name_plural = _('newsletters')
+
 
 class Submission(Resource):
     """Holds the submission information.
 
     This model is related with a newsletter object and a subscription object.
     """
-    subscription = models.ForeignKey(Subscription, related_name='submissions')
-    newsletter = models.ForeignKey(Newsletter, related_name='submissions')
-    status = models.CharField(max_length='10', default='new')
+    subscription = models.ForeignKey(Subscription, verbose_name=_('subscription'), related_name='submissions')
+    newsletter = models.ForeignKey(Newsletter, verbose_name=_('newsletter'), related_name='submissions')
+    status = models.CharField(_('status'), max_length='10', default='new')
 
     def send_newsletter(self):
         """Sends a newsletter to the subscription in the subscription field.
@@ -91,6 +100,8 @@ class Submission(Resource):
     def __str__(self):
         return '{0} - {1}'.format(self.status, self.subscription)
 
-    class Meta:
+    class Meta(Resource.Meta):
         unique_together = ('subscription', 'newsletter')
         ordering = ['status']
+        verbose_name = _('submission')
+        verbose_name_plural = _('submissions')

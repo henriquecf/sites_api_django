@@ -83,7 +83,7 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'America/Sao_Paulo'
 
@@ -180,3 +180,7 @@ LOGGING = {
     }
 }
 ########## END LOGGING CONFIGURATION
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'translations/locale'),
+)
