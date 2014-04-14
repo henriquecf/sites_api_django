@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 
-from apps.account.models import AccountUser, Account, AccountGroup, CreatorRestriction
+from apps.account.models import AccountUser, Account, AccountGroup, AuthorRestriction
 
 
 class AccountSerializer(serializers.HyperlinkedModelSerializer):
@@ -47,10 +47,10 @@ class AccountGroupSerializer(serializers.HyperlinkedModelSerializer):
         model = AccountGroup
 
 
-class CreatorRestrictionSerializer(serializers.HyperlinkedModelSerializer):
+class AuthorRestrictionSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.PrimaryKeyRelatedField(label=_('user'), blank=True)
     permission = serializers.PrimaryKeyRelatedField(label=_('permission'))
     group = serializers.PrimaryKeyRelatedField(label=_('group'), blank=True)
 
     class Meta:
-        model = CreatorRestriction
+        model = AuthorRestriction

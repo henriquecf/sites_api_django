@@ -75,7 +75,7 @@ class AccountUser(Common):
         verbose_name_plural = _('account users')
 
 
-class CreatorRestriction(Common):
+class AuthorRestriction(Common):
     filter_values = models.TextField(_('filter values'))
     permission = models.ForeignKey(Permission, verbose_name=_('permission'))
     user = models.ForeignKey(User, verbose_name=_('user'), null=True, blank=True, related_name='creator_restrictions')
@@ -93,7 +93,7 @@ class CreatorRestriction(Common):
                 self.group.permissions.add(self.permission)
             except IntegrityError:
                 pass
-        super(CreatorRestriction, self).save()
+        super(AuthorRestriction, self).save()
 
     def delete(self, using=None):
         if self.user:
@@ -106,7 +106,7 @@ class CreatorRestriction(Common):
                 self.group.permissions.remove(self.permission)
             except IntegrityError:
                 pass
-        super(CreatorRestriction, self).delete()
+        super(AuthorRestriction, self).delete()
 
     def __str__(self):
         if self.user:

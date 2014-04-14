@@ -7,14 +7,14 @@ from rest_framework.test import APILiveServerTestCase
 
 from test_fixtures import user_accountuser_account_token_fixture
 import test_routines
-from apps.account.models import CreatorRestriction, AccountGroup
+from apps.account.models import AuthorRestriction, AccountGroup
 
 
-class FilterRestrictionAPITestCase(APILiveServerTestCase):
-    model = CreatorRestriction
+class AuthorRestrictionAPITestCase(APILiveServerTestCase):
+    model = AuthorRestriction
 
     def setUp(self):
-        self.url = reverse('creatorrestriction-list')
+        self.url = reverse('authorrestriction-list')
         user_accountuser_account_token_fixture(self)
         self.data = {
             'filter_values': '1',
