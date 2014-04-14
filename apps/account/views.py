@@ -28,10 +28,7 @@ class AccountViewSet(ModelViewSet):
 
     def get_queryset(self):
         """Filter only user resources or get all if user is superuser."""
-        if self.request.user.is_superuser:
-            return super(AccountViewSet, self).get_queryset()
-        else:
-            return super(AccountViewSet, self).get_queryset().filter(owner=self.request.user)
+        return super(AccountViewSet, self).get_queryset().filter(owner=self.request.user)
 
     def pre_save(self, obj):
         """Create an account to a user only if he does not have one yet."""
@@ -57,14 +54,11 @@ class AccountUserViewSet(ModelViewSet):
         Users must access only objects related to his account, unless they are superusers.
         """
         queryset = super(AccountUserViewSet, self).get_queryset()
-        if self.request.user.is_superuser:
-            return queryset
-        else:
-            try:
-                account = self.request.user.accountuser.account
-            except ObjectDoesNotExist:
-                account = self.request.user.account
-            return queryset.filter(account=account)
+        try:
+            account = self.request.user.accountuser.account
+        except ObjectDoesNotExist:
+            account = self.request.user.account
+        return queryset.filter(account=account)
 
     def pre_save(self, obj):
         """
@@ -104,10 +98,7 @@ class UserViewSet(ModelViewSet):
         Otherwise a filter is applied to return just the users related to same account as the request user.
         """
         queryset = super(UserViewSet, self).get_queryset()
-        if self.request.user.is_superuser:
-            return queryset
-        else:
-            return queryset.filter(accountuser__account=self.request.user.accountuser.account)
+        return queryset.filter(accountuser__account=self.request.user.accountuser.account)
 
     def get_serializer_class(self):
         """In the case the user is the owner of the account, he must not be able to change his user_permissions, groups
@@ -149,11 +140,7 @@ class AccountGroupViewSet(ModelViewSet):
 
     def get_queryset(self):
         queryset = super(AccountGroupViewSet, self).get_queryset()
-        user = self.request.user
-        if user.is_superuser:
-            return queryset
-        else:
-            return queryset.filter(account=user.accountuser.account)
+        return queryset.filter(account=self.request.user.accountuser.account)
 
     def pre_save(self, obj):
         try:
