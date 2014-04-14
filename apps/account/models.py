@@ -75,7 +75,7 @@ class AccountUser(Common):
         verbose_name_plural = _('account users')
 
 
-class CreatorRestriction(models.Model):
+class CreatorRestriction(Common):
     filter_values = models.TextField(_('filter values'))
     permission = models.ForeignKey(Permission, verbose_name=_('permission'))
     user = models.ForeignKey(User, verbose_name=_('user'), null=True, blank=True, related_name='creator_restrictions')
@@ -115,6 +115,6 @@ class CreatorRestriction(models.Model):
             user_or_group = self.group
         return '{0} - {1} - {2} - {3}'.format(user_or_group, self.permission, self.filter_field, self.values)
 
-    class Meta:
+    class Meta(Common.Meta):
         verbose_name = _('creator restriction')
         verbose_name_plural = _('creator restrictions')
