@@ -22,7 +22,12 @@ class AccountUserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    """Must be called when a non safe method is being requested."""
+    def get_fields(self):
+        fields = super(UserSerializer, self).get_fields()
+        fields['groups'].queryset = fields['groups'].queryset.filter(
+            accountgroup__account=self.context['request'].user.accountuser.account)
+        return fields
+
     email = serializers.EmailField(required=True)
     accountuser = serializers.HyperlinkedRelatedField(view_name='accountuser-detail', read_only=True)
 
