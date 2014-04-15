@@ -197,3 +197,7 @@ class GroupViewSet(ReadOnlyModelViewSet):
         permissions.IsAdminUser,
     )
     filter_backends = ()
+
+    def get_queryset(self):
+        return super(GroupViewSet, self).get_queryset().filter(
+            accountgroup__account=self.request.user.accountuser.account)
