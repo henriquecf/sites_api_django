@@ -7,11 +7,11 @@ INSTALLED_APPS += (
     'storages',
 )
 
-SECRET_KEY = os.environ['SECRET_KEY']
+#SECRET_KEY = os.environ['SECRET_KEY']
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['sites-api.herokuapp.com']
+ALLOWED_HOSTS = ['sites-api.herokuapp.com', 'staged-sites-api.herokuapp.com']
 
 MIDDLEWARE_CLASSES = ('sslify.middleware.SSLifyMiddleware',) + MIDDLEWARE_CLASSES
 
