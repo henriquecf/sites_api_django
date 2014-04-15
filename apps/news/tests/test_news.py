@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
+from django.http.request import HttpRequest
 from rest_framework.test import APILiveServerTestCase
 
 from apps.category.tests.routines import test_add_category_routine, test_filter_categories
+from apps.category.models import Category
 from apps.publication.tests import routines as publication_routines
 from apps.resource import routines as resource_routines
 import test_routines
 import test_fixtures
 from apps.news.models import News
+from apps.news.serializers import NewsSerializer
 
 
 class NewsAPITestCase(APILiveServerTestCase):
@@ -86,3 +89,39 @@ class NewsAPITestCase(APILiveServerTestCase):
 
     def test_resource_sites_field(self):
         resource_routines.test_resource_sites_field_routine(self)
+
+    def test_categories_filter_get_fields_serializer(self):
+        request = HttpRequest()
+        request.user = self.owner
+        category = Category.objects.create(author=self.owner, account=self.owner.account, name='Category 1',
+                                           model_name='news')
+        possible_categories = NewsSerializer(context={'request': request}).get_fields()['categories'].queryset
+        self.assertIn(category, possible_categories)
+
+        other_user_category = Category.objects.create(author=self.second_owner, account=self.second_owner.account,
+                                                      name='Other category', model_name='news')
+
+        possible_categories = NewsSerializer(context={'request': request}).get_fields()['categories'].queryset
+        self.assertIn(category, possible_categories)
+        self.assertNotIn(other_user_category, possible_categories)
+
+        request.user = self.second_owner
+
+        possible_categories = NewsSerializer(context={'request': request}).get_fields()['categories'].queryset
+        self.assertNotIn(category, possible_categories)
+        self.assertIn(other_user_category, possible_categories)
+
+        other_user_category.model_name = 'file'
+        other_user_category.save()
+
+        possible_categories = NewsSerializer(context={'request': request}).get_fields()['categories'].queryset
+        self.assertNotIn(category, possible_categories)
+        self.assertNotIn(other_user_category, possible_categories)
+
+        category.model_name = 'file'
+        category.save()
+        request.user = self.owner
+
+        possible_categories = NewsSerializer(context={'request': request}).get_fields()['categories'].queryset
+        self.assertNotIn(category, possible_categories)
+        self.assertNotIn(other_user_category, possible_categories)
