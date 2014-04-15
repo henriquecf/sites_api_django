@@ -1,4 +1,4 @@
-# Django==1.6.2 Need to wait for 1.7
+https://www.djangoproject.com/download/1.7b1/tarball/
 Pygments==1.6
 djangorestframework==2.3.13
 shortuuid==0.4
