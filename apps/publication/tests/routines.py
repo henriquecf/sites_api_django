@@ -2,7 +2,7 @@
 from django.utils.text import slugify
 from rest_framework import status
 
-from apps.resource.routines import test_resource_serializer_hyperlinked_fields_routine
+from apps.resource.tests.routines import test_resource_serializer_hyperlinked_fields_routine
 
 
 def test_slug_is_slugified_title_routine(test_case, slug_repeat_number='-2'):

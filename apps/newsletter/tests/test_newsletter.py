@@ -4,8 +4,7 @@ from django.contrib.auth.models import Permission
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 
-from apps.resource import routines as resource_routines
-
+from apps.resource.tests import routines as resource_routines
 import test_routines
 import test_fixtures
 from apps.newsletter.models import Newsletter

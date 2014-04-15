@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from rest_framework.test import APILiveServerTestCase
 
 from apps.publication.tests import routines as publication_routines
-from apps.resource import routines as resource_routines
+from apps.resource.tests import routines as resource_routines
 import test_routines
 import test_fixtures
 from apps.publication.models import Publication

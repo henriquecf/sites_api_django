@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from copy import copy
 from django.core.urlresolvers import reverse
+from django.http.request import HttpRequest
 from rest_framework.test import APILiveServerTestCase
 
 from apps.category.models import Category
-from apps.resource import routines as resource_routines
+from apps.category.serializers import CategorySerializer
+from apps.resource.tests import routines as resource_routines
 import test_routines
 import test_fixtures
 
@@ -86,6 +88,23 @@ class CategoryAPITestCase(APILiveServerTestCase):
         data.update({'model_name': 'other category'})
         response = self.client.post(self.url, data)
         self.assertEqual(201, response.status_code, response.data)
-        filter = {'model_name': 'other category'}
-        response2 = self.client.get(self.url, filter)
+        model_filter = {'model_name': 'other category'}
+        response2 = self.client.get(self.url, model_filter)
         self.assertEqual(1, response2.data['count'], response2.data)
+
+    def test_parent_filter_get_fields_serializer(self):
+        request = HttpRequest()
+        request.user = self.owner
+        possible_parents = CategorySerializer(context={'request': request}).get_fields()['parent'].queryset
+        self.assertIn(('Category 1', ), possible_parents.values_list('name'))
+
+        other_user_category = Category.objects.create(author=self.second_owner, account=self.second_owner.account,
+                                                      name='Other category', model_name='uncategorized')
+        possible_parents = CategorySerializer(context={'request': request}).get_fields()['parent'].queryset
+        self.assertIn(('Category 1', ), possible_parents.values_list('name'))
+        self.assertNotIn(other_user_category, possible_parents)
+
+        request.user = self.second_owner
+        possible_parents = CategorySerializer(context={'request': request}).get_fields()['parent'].queryset
+        self.assertNotIn(('Category 1', ), possible_parents.values_list('name'))
+        self.assertIn(other_user_category, possible_parents)
