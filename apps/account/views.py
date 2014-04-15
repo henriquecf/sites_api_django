@@ -5,7 +5,9 @@ from django.contrib.auth import hashers
 from django.contrib.auth.models import User, Permission, Group
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-from rest_framework import permissions, filters
+from rest_framework import permissions, filters, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from apps.account.exceptions import BadRequestValidationError
 from apps.account.serializers import (
@@ -150,6 +152,32 @@ class AccountGroupViewSet(ModelViewSet):
         except ObjectDoesNotExist:
             obj.account = self.request.user.accountuser.account
 
+    @action()
+    def assign_permissions(self, request, *args, **kwargs):
+        accountgroup = self.get_object()
+        try:
+            permissions_to_assign = request.DATA['permissions']
+        except KeyError:
+            return Response(
+                data={'detail': 'You must define the permissions to assign through dict key "permissions".'},
+                status=status.HTTP_400_BAD_REQUEST)
+        for permission in permissions_to_assign:
+            accountgroup.group.permissions.add(permission)
+        return Response(data={'assigned_permissions': permissions_to_assign})
+
+    @action()
+    def unassign_permissions(self, request, *args, **kwargs):
+        accountgroup = self.get_object()
+        try:
+            permissions_to_unassign = request.DATA['permissions']
+        except KeyError:
+            return Response(
+                data={'detail': 'You must define the permissions to assign through dict key "permissions".'},
+                status=status.HTTP_400_BAD_REQUEST)
+        for permission in permissions_to_unassign:
+            accountgroup.group.permissions.remove(permission)
+        return Response(data={'assigned_permissions': permissions_to_unassign})
+
 
 class AuthorRestrictionViewSet(ModelViewSet):
     model = AuthorRestriction
@@ -166,7 +194,8 @@ class AuthorRestrictionViewSet(ModelViewSet):
             return queryset
         else:
             return queryset.filter(
-                Q(user__accountuser__account=user.accountuser.account) | Q(group__accountgroup__account=user.accountuser.account))
+                Q(user__accountuser__account=user.accountuser.account) | Q(
+                    group__accountgroup__account=user.accountuser.account))
 
     def pre_save(self, obj):
         try:
