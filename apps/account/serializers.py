@@ -34,7 +34,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class RestrictedOwnerUserSerializer(UserSerializer):
-
     class Meta(UserSerializer.Meta):
         read_only_fields = ('date_joined', 'last_login', 'is_active', 'is_staff', 'user_permissions', 'groups')
 
@@ -48,6 +47,14 @@ class AccountGroupSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class AuthorRestrictionSerializer(serializers.HyperlinkedModelSerializer):
+    def get_fields(self):
+        fields = super(AuthorRestrictionSerializer, self).get_fields()
+        fields['user'].queryset = fields['user'].queryset.filter(
+            accountuser__account=self.context['request'].user.accountuser.account)
+        fields['group'].queryset = fields['group'].queryset.filter(
+            accountgroup__account=self.context['request'].user.accountuser.account)
+        return fields
+
     user = serializers.PrimaryKeyRelatedField(label=_('user'), blank=True)
     permission = serializers.PrimaryKeyRelatedField(label=_('permission'))
     group = serializers.PrimaryKeyRelatedField(label=_('group'), blank=True)
