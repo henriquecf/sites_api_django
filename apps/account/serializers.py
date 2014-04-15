@@ -46,6 +46,10 @@ class RestrictedOwnerUserSerializer(UserSerializer):
 class AccountGroupSerializer(serializers.HyperlinkedModelSerializer):
     account = serializers.HyperlinkedRelatedField(label=_('account'), view_name='account-detail', read_only=True)
     group = serializers.HyperlinkedRelatedField(label=_('group'), view_name='group-detail', read_only=True)
+    assign_permissions = serializers.HyperlinkedIdentityField(label=_('assign permissions'),
+                                                              view_name='accountgroup-assign-permissions')
+    unassign_permissions = serializers.HyperlinkedIdentityField(label=_('unassign permissions'),
+                                                                view_name='accountgroup-unassign-permissions')
 
     class Meta:
         model = AccountGroup
