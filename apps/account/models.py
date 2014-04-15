@@ -114,7 +114,7 @@ class AuthorRestriction(Common):
             user_or_group = self.user
         else:
             user_or_group = self.group
-        return '{0} - {1} - {2} - {3}'.format(user_or_group, self.permission, self.filter_field, self.values)
+        return '{0} - {1} - {2}'.format(user_or_group, self.permission, self.filter_values)
 
     class Meta(Common.Meta):
         verbose_name = _('author restriction')
