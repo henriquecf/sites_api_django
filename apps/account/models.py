@@ -29,7 +29,7 @@ class Account(Common):
 
     This model saves data related to the account of a person.
     """
-    expiration_date = models.DateField(_('expiration date'), editable=False, default=date.today()+timedelta(30))
+    expiration_date = models.DateField(_('expiration date'), editable=False, default=date.today() + timedelta(30))
     owner = models.OneToOneField(User, verbose_name=_('owner'), blank=True, related_name='account')
 
     def __str__(self):
@@ -66,7 +66,7 @@ class AccountGroup(Common):
 class AccountUser(Common):
     user = models.OneToOneField(User, verbose_name=_('user'), blank=True)
     account = models.ForeignKey(Account, verbose_name=_('account'), blank=True)
-    
+
     def __str__(self):
         return '{0} - {1}'.format(self.account, self.user)
 
@@ -79,7 +79,8 @@ class AuthorRestriction(Common):
     filter_values = models.TextField(_('filter values'))
     permission = models.ForeignKey(Permission, verbose_name=_('permission'))
     user = models.ForeignKey(User, verbose_name=_('user'), null=True, blank=True, related_name='creator_restrictions')
-    group = models.ForeignKey(Group, verbose_name=_('group'), null=True, blank=True, related_name='creator_restrictions')
+    group = models.ForeignKey(Group, verbose_name=_('group'), null=True, blank=True,
+                              related_name='creator_restrictions')
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
