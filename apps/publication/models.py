@@ -15,7 +15,7 @@ class Publication(Resource):
     title = models.CharField(_('title'), max_length=150)
     description = models.TextField(_('description'), blank=True)
     slug = models.SlugField(_('slug'), max_length=150, editable=False)
-    publication_start_date = models.DateTimeField(_('publication start date'), blank=True, default=timezone.now())
+    publication_start_date = models.DateTimeField(_('publication start date'), blank=True, default=timezone.datetime.now())
     publication_end_date = models.DateTimeField(_('publication end date'), blank=True, null=True)
 
     def __str__(self):
@@ -27,8 +27,8 @@ class Publication(Resource):
         Sets the publication start date to now, if it is bigger than now, and sets the publication end date to None.
         Returns the state of the publication.
         """
-        if self.publication_start_date > timezone.now():
-            self.publication_start_date = timezone.now()
+        if timezone.make_aware(self.publication_start_date, timezone.get_default_timezone()) > timezone.now():
+            self.publication_start_date = timezone.datetime.now()
         if self.publication_end_date:
             self.publication_end_date = None
         self.save()
@@ -40,8 +40,8 @@ class Publication(Resource):
         Sets the publication start date to now, if it is bigger than now, and sets the publication end date also to now.
         Returns the state of the publication.
         """
-        if self.publication_start_date > timezone.now():
-            self.publication_start_date = timezone.now()
+        if timezone.make_aware(self.publication_start_date, timezone.get_default_timezone()) > timezone.now():
+            self.publication_start_date = timezone.datetime.now()
         self.publication_end_date = timezone.now()
         self.save()
         return self.is_published()
@@ -49,11 +49,11 @@ class Publication(Resource):
     def is_published(self):
         """Returns True if the publication is published or False otherwise."""
         if self.publication_end_date:
-            if self.publication_start_date > timezone.now() or self.publication_end_date < timezone.now():
+            if timezone.make_aware(self.publication_start_date, timezone.get_default_timezone()) > timezone.now() or self.publication_end_date < timezone.now():
                 return False
             else:
                 return True
-        elif self.publication_start_date > timezone.now():
+        elif timezone.make_aware(self.publication_start_date, timezone.get_default_timezone()) > timezone.now():
             return False
         else:
             return True
