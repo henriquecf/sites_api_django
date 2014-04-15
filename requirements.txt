@@ -1,6 +1,5 @@
 -r reqs/common.txt
 
-dj-database-url==0.3.0
 
 gunicorn==18.0
 
@@ -16,3 +15,5 @@ boto==2.27.0
 #django-heroku-memcacheify==0.5 For later use
 
 #pylibmc==1.2.3 need for memcacheify
+
+dj-database-url==0.3.0
