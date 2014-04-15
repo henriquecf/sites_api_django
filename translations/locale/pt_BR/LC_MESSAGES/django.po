@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-14 16:00-0300\n"
+"POT-Creation-Date: 2014-04-15 14:51-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,7 +39,7 @@ msgstr "proprietário"
 
 #: apps/account/models.py:39 apps/account/models.py:46
 #: apps/account/models.py:68 apps/account/serializers.py:18
-#: apps/account/serializers.py:43 apps/resource/models.py:10
+#: apps/account/serializers.py:47 apps/resource/models.py:10
 #: apps/resource/models.py:29
 msgid "account"
 msgstr "conta"
@@ -49,7 +49,7 @@ msgid "accounts"
 msgstr "contas"
 
 #: apps/account/models.py:44 apps/account/models.py:82
-#: apps/account/serializers.py:44 apps/account/serializers.py:53
+#: apps/account/serializers.py:48 apps/account/serializers.py:69
 msgid "group"
 msgstr "grupo"
 
@@ -66,7 +66,7 @@ msgid "account groups"
 msgstr "grupos da conta"
 
 #: apps/account/models.py:67 apps/account/models.py:81
-#: apps/account/serializers.py:17 apps/account/serializers.py:51
+#: apps/account/serializers.py:17 apps/account/serializers.py:67
 msgid "user"
 msgstr "usuário"
 
@@ -82,35 +82,47 @@ msgstr "usuários da conta"
 msgid "filter values"
 msgstr "valores do filtro"
 
-#: apps/account/models.py:80 apps/account/serializers.py:52
+#: apps/account/models.py:80 apps/account/serializers.py:68
 msgid "permission"
 msgstr "permissão"
 
-#: apps/account/models.py:119
+#: apps/account/models.py:120
 msgid "author restriction"
 msgstr "restrição por autor"
 
-#: apps/account/models.py:120
+#: apps/account/models.py:121
 msgid "author restrictions"
 msgstr "restrições por autor"
 
-#: apps/account/views.py:39
+#: apps/account/serializers.py:49
+msgid "assign permissions"
+msgstr "atribuir permissões"
+
+#: apps/account/serializers.py:51
+msgid "unassign permissions"
+msgstr "retirar permissões"
+
+#: apps/account/views.py:41
 msgid "You already have an account and can not create another one."
 msgstr "Você já tem uma conta e não pode criar outra."
 
-#: apps/account/views.py:75
+#: apps/account/views.py:77
 msgid "You can create just one user account."
 msgstr "Você pode criar apenas uma conta de usuário."
 
-#: apps/account/views.py:149
+#: apps/account/views.py:151
 msgid "Role field is unique. Please insert another name."
 msgstr "Campo função é único. Por favor insira outro nome."
 
-#: apps/account/views.py:178
+#: apps/account/views.py:162 apps/account/views.py:175
+msgid "You must define the permissions through dict key \"permissions\"."
+msgstr "Você deve definir as permissões pela chave \"permissions\"."
+
+#: apps/account/views.py:207
 msgid "You must specify either User or Group field."
 msgstr "Você deve especificar o campo Usuário ou o campo Grupo."
 
-#: apps/account/views.py:181
+#: apps/account/views.py:210
 msgid "You can not alter other account permissions."
 msgstr "Você não pode alterar permissões de outra conta."
 
@@ -122,15 +134,15 @@ msgstr "nome"
 msgid "parent category"
 msgstr "categoria pai"
 
-#: apps/category/models.py:17
+#: apps/category/models.py:18
 msgid "model name"
 msgstr "nome do modelo"
 
-#: apps/category/models.py:23
+#: apps/category/models.py:24
 msgid "category"
 msgstr "categoria"
 
-#: apps/category/models.py:24 apps/file_explorer/models.py:18
+#: apps/category/models.py:25 apps/file_explorer/models.py:18
 #: apps/news/models.py:20
 msgid "categories"
 msgstr "categorias"
@@ -139,12 +151,12 @@ msgstr "categorias"
 msgid "get descendants"
 msgstr "obter descendentes"
 
-#: apps/category/serializers.py:11
+#: apps/category/serializers.py:12
 msgid "is leaf node"
 msgstr "é nó folha"
 
 #: apps/file_explorer/models.py:17 apps/file_explorer/models.py:27
-#: apps/file_explorer/serializers.py:16
+#: apps/file_explorer/serializers.py:21
 msgid "file"
 msgstr "arquivo"
 
@@ -266,7 +278,7 @@ msgstr "publicar"
 msgid "unpublish"
 msgstr "despublicar"
 
-#: apps/resource/models.py:11 apps/resource/serializers.py:23
+#: apps/resource/models.py:11 apps/resource/serializers.py:21
 msgid "site"
 msgstr "site"
 

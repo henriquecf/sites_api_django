@@ -159,7 +159,7 @@ class AccountGroupViewSet(ModelViewSet):
             permissions_to_assign = request.DATA['permissions']
         except KeyError:
             return Response(
-                data={'detail': 'You must define the permissions to assign through dict key "permissions".'},
+                data={'detail': _('You must define the permissions through dict key "permissions".')},
                 status=status.HTTP_400_BAD_REQUEST)
         for permission in permissions_to_assign:
             accountgroup.group.permissions.add(permission)
@@ -172,7 +172,7 @@ class AccountGroupViewSet(ModelViewSet):
             permissions_to_unassign = request.DATA['permissions']
         except KeyError:
             return Response(
-                data={'detail': 'You must define the permissions to assign through dict key "permissions".'},
+                data={'detail': _('You must define the permissions to assign through dict key "permissions".')},
                 status=status.HTTP_400_BAD_REQUEST)
         for permission in permissions_to_unassign:
             accountgroup.group.permissions.remove(permission)
