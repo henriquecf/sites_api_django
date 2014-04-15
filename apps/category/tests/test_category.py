@@ -6,7 +6,7 @@ from rest_framework.test import APILiveServerTestCase
 
 from apps.category.models import Category
 from apps.category.serializers import CategorySerializer
-from apps.resource import routines as resource_routines
+from apps.resource.tests import routines as resource_routines
 import test_routines
 import test_fixtures
 

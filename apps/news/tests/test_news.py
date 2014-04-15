@@ -6,7 +6,7 @@ from rest_framework.test import APILiveServerTestCase
 from apps.category.tests.routines import test_add_category_routine, test_filter_categories
 from apps.category.models import Category
 from apps.publication.tests import routines as publication_routines
-from apps.resource import routines as resource_routines
+from apps.resource.tests import routines as resource_routines
 import test_routines
 import test_fixtures
 from apps.news.models import News
