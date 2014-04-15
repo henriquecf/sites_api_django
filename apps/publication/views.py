@@ -45,7 +45,7 @@ class PublicationBaseViewSet(ResourceViewSet):
                 pass
         # Creates a publication_start_date for the publication in case it does not exists
         if not obj.publication_start_date:
-            obj.publication_start_date = timezone.now()
+            obj.publication_start_date = timezone.datetime.now()
 
     @action()
     def publish(self, request, *args, **kwargs):
