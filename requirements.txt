@@ -7,7 +7,7 @@ django-storages==1.1.8
 django-sslify==0.2.3
 django-heroku-postgresify==0.3
 
-psycopg==2.5.2
+psycopg>=2.5
 
 boto==2.27.0
 
