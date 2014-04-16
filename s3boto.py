@@ -16,7 +16,15 @@ except ImportError:
 from django.core.files.base import File
 from django.core.files.storage import Storage
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation
-from django.utils.encoding import force_unicode, smart_str, filepath_to_uri
+from django.utils.encoding import filepath_to_uri
+try:
+    from django.utils.encoding import force_unicode
+except ImportError:
+    from django.utils.encoding import force_text as force_unicode
+try:
+    from django.utils.encoding import smart_str
+except ImportError:
+    from django.utils.encoding import smart_bytes as smart_str
 
 try:
     from boto import __version__ as boto_version
