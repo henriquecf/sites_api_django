@@ -3,7 +3,7 @@
 
 gunicorn==18.0
 
-#django-storages==1.1.8
+django-storages==1.1.8
 
 django-sslify==0.2.3
 
