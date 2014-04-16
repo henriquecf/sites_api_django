@@ -39,6 +39,7 @@ class Newsletter(Resource):
     """
     subject = models.CharField(_('subject'), max_length=200)
     content = models.TextField(_('content'))
+    sender_email = models.EmailField(_('sender email'), max_length=200, null=True, blank=True)
 
     def send_newsletter(self, account):
         subscriptions = Subscription.objects.filter(account=account)
@@ -83,10 +84,14 @@ class Submission(Resource):
 
         user -- Not used in this context. Held for compatibility.
         """
+        if self.newsletter.sender_email != '':
+            sender_email = self.newsletter.sender_email
+        else:
+            sender_email = self.account.owner.email
         if not self.status == 'sent':
             message = EmailMultiAlternatives(self.newsletter.subject,
                                              self.newsletter.content,
-                                             'localhost',
+                                             sender_email,
                                              [self.subscription.email])
             try:
                 message.send(fail_silently=False)

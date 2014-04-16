@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-15 14:51-0300\n"
+"POT-Creation-Date: 2014-04-16 17:54-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -114,8 +114,15 @@ msgstr "Você pode criar apenas uma conta de usuário."
 msgid "Role field is unique. Please insert another name."
 msgstr "Campo função é único. Por favor insira outro nome."
 
-#: apps/account/views.py:162 apps/account/views.py:175
+#: apps/account/views.py:162
 msgid "You must define the permissions through dict key \"permissions\"."
+msgstr "Você deve definir as permissões pela chave \"permissions\"."
+
+#: apps/account/views.py:175
+#, fuzzy
+#| msgid "You must define the permissions through dict key \"permissions\"."
+msgid ""
+"You must define the permissions to assign through dict key \"permissions\"."
 msgstr "Você deve definir as permissões pela chave \"permissions\"."
 
 #: apps/account/views.py:207
@@ -192,7 +199,7 @@ msgstr "chave"
 msgid "subscription status"
 msgstr "estado da assinatura"
 
-#: apps/newsletter/models.py:32 apps/newsletter/models.py:75
+#: apps/newsletter/models.py:32 apps/newsletter/models.py:76
 #: apps/newsletter/serializers.py:17
 msgid "subscription"
 msgstr "assinatura"
@@ -205,24 +212,28 @@ msgstr "assinaturas"
 msgid "subject"
 msgstr "assunto"
 
-#: apps/newsletter/models.py:66 apps/newsletter/models.py:76
+#: apps/newsletter/models.py:42
+msgid "sender email"
+msgstr "email do remetente"
+
+#: apps/newsletter/models.py:67 apps/newsletter/models.py:77
 #: apps/newsletter/serializers.py:16
 msgid "newsletter"
 msgstr "boletim informativo"
 
-#: apps/newsletter/models.py:67
+#: apps/newsletter/models.py:68
 msgid "newsletters"
 msgstr "boletins informativos"
 
-#: apps/newsletter/models.py:77
+#: apps/newsletter/models.py:78
 msgid "status"
 msgstr "estado"
 
-#: apps/newsletter/models.py:106
+#: apps/newsletter/models.py:111
 msgid "submission"
 msgstr "submissão"
 
-#: apps/newsletter/models.py:107 apps/newsletter/serializers.py:25
+#: apps/newsletter/models.py:112 apps/newsletter/serializers.py:25
 msgid "submissions"
 msgstr "submissões"
 
