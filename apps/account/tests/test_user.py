@@ -84,7 +84,7 @@ class UserAPITestCase(APILiveServerTestCase):
         self.assertNotIn('password', response.data)
 
     def test_serializer_hyperlinked_fields(self):
-        fields = ['accountuser', 'user_permissions', 'groups']
+        fields = ['accountuser']
         test_routines.test_serializer_hyperlinked_fields_routine(self, fields=fields)
 
     def test_accountuser_created_has_same_account_as_request_user(self):

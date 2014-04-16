@@ -19,3 +19,5 @@ https://pypi.python.org/packages/2.7/b/boto/boto-2.27.0-py2.py3-none-any.whl#md5
 #pylibmc==1.2.3 need for memcacheify
 
 dj-database-url==0.3.0
+
+https://www.djangoproject.com/download/1.7b1/tarball/
