@@ -70,3 +70,21 @@ SERVER_EMAIL = EMAIL_HOST_USER
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
+
+REST_FRAMEWORK = {
+    'PAGINATE_BY': 10,
+    'PAGINATE_BY_PARAM': 'page_size',
+    'MAX_PAGINATE_BY': 100,
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.UnicodeJSONRenderer',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+        'apps.resource.backends.CustomDjangoModelPermissions',
+    ),
+    'DEFAULT_FILTER_BACKENDS': OTHER_FILTERS + DJANGO_FILTERS
+}

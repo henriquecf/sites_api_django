@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-from settings.dev import *
+from settings.prod import *
+from settings.common import MIDDLEWARE_CLASSES
+
+MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES
 
 REST_FRAMEWORK = {
     'PAGINATE_BY': 10,
