@@ -6,13 +6,10 @@ gunicorn==18.0
 django-storages==1.1.8
 
 django-sslify==0.2.3
-django-heroku-postgresify==0.3
 
 psycopg2>=2.5
 
 boto==2.27.0
-#Instead boto, we are using the link below
-#https://pypi.python.org/packages/2.7/b/boto/boto-2.27.0-py2.py3-none-any.whl#md5=853768464ec45c30d42c448dd1464939
 
 #django-heroku-memcacheify==0.5 For later use
 
