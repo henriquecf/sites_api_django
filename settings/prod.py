@@ -3,10 +3,6 @@ from settings.common import *
 from postgresify import postgresify
 from S3 import CallingFormat
 
-INSTALLED_APPS += (
-    'storages',
-)
-
 SECRET_KEY = os.environ['SECRET_KEY']
 
 DEBUG = False
