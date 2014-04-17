@@ -5,7 +5,7 @@ from django.contrib.auth.models import User, Permission
 from django.utils import timezone
 from oauth2_provider.models import Application, AccessToken
 from apps.account.models import Account, AuthorRestriction
-from apps.resource.models import Group, AccountUser
+from apps.resource.models import Group, User as CustomUser
 
 
 class Fixtures:
@@ -29,14 +29,14 @@ class Fixtures:
         self.second_owner_account = Account.objects.create(owner=self.second_owner)
 
     def create_owner_accountusers(self):
-        AccountUser.objects.create(account=self.owner_account, user=self.owner)
-        AccountUser.objects.create(account=self.second_owner_account, user=self.second_owner)
+        CustomUser.objects.create(account=self.owner_account, user=self.owner)
+        CustomUser.objects.create(account=self.second_owner_account, user=self.second_owner)
 
     def create_account_users(self):
         self.owner_user = User.objects.create_user('owner_user', 'owner_user@owner.com', '123')
         self.owner_user2 = User.objects.create_user('owner_user2', 'owner_user2@owner.com', '123')
-        AccountUser.objects.create(account=self.owner_account, user=self.owner_user)
-        AccountUser.objects.create(account=self.owner_account, user=self.owner_user2)
+        CustomUser.objects.create(account=self.owner_account, user=self.owner_user)
+        CustomUser.objects.create(account=self.owner_account, user=self.owner_user2)
         self.test_case.account_user = self.owner_user
         self.test_case.account_user2 = self.owner_user2
 

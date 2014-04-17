@@ -10,7 +10,7 @@ class FileSerializer(PublicationSerializer):
     def get_fields(self):
         fields = super(FileSerializer, self).get_fields()
         fields['categories'].queryset = fields['categories'].queryset.filter(
-            account=self.context['request'].user.accountuser.account, model_name='file')
+            account=self.context['request'].user.user.account, model_name='file')
         return fields
 
     class Meta(PublicationSerializer.Meta):

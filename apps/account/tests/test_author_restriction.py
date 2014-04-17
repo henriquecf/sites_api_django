@@ -5,7 +5,7 @@ from django.contrib.auth.models import Permission
 from django.http.request import HttpRequest
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
-from apps.resource.models import Group as CustomGroup, AccountUser
+from apps.resource.models import Group as CustomGroup, User as CustomUser
 
 from test_fixtures import user_accountuser_account_token_fixture
 import test_routines
@@ -97,14 +97,14 @@ class AuthorRestrictionAPITestCase(APILiveServerTestCase):
 
     def test_filter_permission_with_accountgroup(self):
         self.data.pop('user')
-        accountgroup = CustomGroup.objects.create(role='Test role', account=self.owner.accountuser.account,
+        accountgroup = CustomGroup.objects.create(role='Test role', account=self.owner.user.account,
                                                   author=self.owner)
         self.data.update({'group': accountgroup.group.id})
         test_routines.test_api_basic_methods_routine(self)
 
     def test_permission_is_assigned_and_unassigned_to_group(self):
         self.data.pop('user')
-        accountgroup = CustomGroup.objects.create(role='Test role', account=self.owner.accountuser.account,
+        accountgroup = CustomGroup.objects.create(role='Test role', account=self.owner.user.account,
                                                   author=self.owner)
         self.data.update({'group': accountgroup.group.id})
         response3 = self.client.post(self.url, self.data)
@@ -129,7 +129,7 @@ class AuthorRestrictionAPITestCase(APILiveServerTestCase):
         self.assertIn(user, possible_users)
 
         other_account_user = User.objects.create_user(username='other_user', password='123')
-        AccountUser.objects.create(user=other_account_user, account=self.second_owner.account)
+        CustomUser.objects.create(user=other_account_user, account=self.second_owner.account)
 
         possible_users = AuthorRestrictionSerializer(context={'request': request}).get_fields()['user'].queryset
         self.assertIn(user, possible_users)

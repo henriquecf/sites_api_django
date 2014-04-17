@@ -21,21 +21,21 @@ def test_resource_owner_is_request_user_routine(test_case):
 
 
 def test_resource_serializer_hyperlinked_fields_routine(test_case, fields):
-    fields.extend(['author', 'account'])
+    fields.extend(['account'])
     test_serializer_hyperlinked_fields_routine(test_case, fields)
 
 
 def test_resource_user_and_account_coincide_with_request_user_routine(test_case):
     data = test_case.first_object_response.data
     account_id = data['account'].split('/')[-2]
-    creator_id = data['author'].split('/')[-2]
+    creator_id = data['author']['url'].split('/')[-2]
     request_user = User.objects.get(username=test_case.owner_token)
-    test_case.assertEqual(account_id, str(request_user.accountuser.account.id))
+    test_case.assertEqual(account_id, str(request_user.user.account.id))
     test_case.assertEqual(creator_id, str(request_user.id))
 
 
 def test_resource_serializer_read_only_fields_routine(test_case, fields):
-    fields.extend(['author', 'account'])
+    fields.extend(['account'])
     test_serializer_read_only_fields_routine(test_case, fields)
 
 

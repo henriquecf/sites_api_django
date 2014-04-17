@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 from apps.account.exceptions import BadRequestValidationError
 
-from apps.resource.models import Resource, AccountSite, AccountUser, Group
+from apps.resource.models import Resource, AccountSite, User, Group
 from apps.resource.serializers import ResourceSerializer, AccountSiteSerializer, AccountUserSerializer, \
     GroupSerializer, SiteSerializer
 
@@ -49,7 +49,7 @@ class ResourceViewSet(viewsets.ModelViewSet):
             obj.account
         except ObjectDoesNotExist:
             obj.author = self.request.user
-            obj.account = self.request.user.accountuser.account
+            obj.account = self.request.user.user.account
 
     def post_save(self, obj, created=False):
         if not obj.sites.all():
@@ -71,11 +71,11 @@ class AccountSiteRetrieveAPIViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return super(AccountSiteRetrieveAPIViewSet, self).get_queryset().filter(
-            account=self.request.user.accountuser.account)
+            account=self.request.user.user.account)
 
 
 class AccountUserViewSet(ModelViewSet):
-    model = AccountUser
+    model = User
     permission_classes = (
         permissions.IsAdminUser,
     )
@@ -89,7 +89,7 @@ class AccountUserViewSet(ModelViewSet):
         """
         queryset = super(AccountUserViewSet, self).get_queryset()
         try:
-            account = self.request.user.accountuser.account
+            account = self.request.user.user.account
         except ObjectDoesNotExist:
             account = self.request.user.account
         return queryset.filter(account=account)
@@ -98,11 +98,11 @@ class AccountUserViewSet(ModelViewSet):
         """
 
         Relates the account of the request user to the object.
-        Checks if the request user already has an accountuser. Returns an exception in true case, or relates the user to
+        Checks if the request user already has an user. Returns an exception in true case, or relates the user to
         the object otherwise.
         Warning: this method will work only for the owner of the account, the way it is implemented here.
         """
-        obj.account = self.request.user.accountuser.account
+        obj.account = self.request.user.user.account
 
 
 class GroupViewSet(ResourceViewSet):
@@ -112,11 +112,11 @@ class GroupViewSet(ResourceViewSet):
 
     def get_queryset(self):
         queryset = super(GroupViewSet, self).get_queryset()
-        return queryset.filter(account=self.request.user.accountuser.account)
+        return queryset.filter(account=self.request.user.user.account)
 
     def pre_save(self, obj):
         try:
-            Group.objects.get(account=self.request.user.accountuser.account, role=obj.role)
+            Group.objects.get(account=self.request.user.user.account, role=obj.role)
             raise BadRequestValidationError(_('Role field is unique. Please insert another name.'))
         except ObjectDoesNotExist:
             super(GroupViewSet, self).pre_save(obj)
@@ -158,4 +158,4 @@ class SiteViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return super(SiteViewSet, self).get_queryset().filter(
-            accountsite__account=self.request.user.accountuser.account)
+            accountsite__account=self.request.user.user.account)

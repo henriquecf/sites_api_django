@@ -46,7 +46,7 @@ class Group(Resource):
         verbose_name_plural = _('groups')
 
 
-class AccountUser(Common):
+class User(Common):
     user = models.OneToOneField(AuthUser, verbose_name=_('user'), blank=True)
     account = models.ForeignKey(Account, verbose_name=_('account'), blank=True)
 
