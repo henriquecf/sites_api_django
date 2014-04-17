@@ -11,7 +11,7 @@ from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 from apps.account.exceptions import BadRequestValidationError
 
 from apps.resource.models import Resource, AccountSite, User, Group
-from apps.resource.serializers import ResourceSerializer, AccountSiteSerializer, AccountUserSerializer, \
+from apps.resource.serializers import ResourceSerializer, AccountSiteSerializer, UserSerializer, \
     GroupSerializer, SiteSerializer
 
 
@@ -74,20 +74,20 @@ class AccountSiteRetrieveAPIViewSet(ReadOnlyModelViewSet):
             account=self.request.user.user.account)
 
 
-class AccountUserViewSet(ModelViewSet):
+class UserViewSet(ModelViewSet):
     model = User
     permission_classes = (
         permissions.IsAdminUser,
     )
     filter_backends = ()
-    serializer_class = AccountUserSerializer
+    serializer_class = UserSerializer
 
     def get_queryset(self):
         """Returns a filtered queryset when the request user is not a superuser.
 
         Users must access only objects related to his account, unless they are superusers.
         """
-        queryset = super(AccountUserViewSet, self).get_queryset()
+        queryset = super(UserViewSet, self).get_queryset()
         try:
             account = self.request.user.user.account
         except ObjectDoesNotExist:

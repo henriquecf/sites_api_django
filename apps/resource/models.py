@@ -54,8 +54,8 @@ class User(Common):
         return '{0} - {1}'.format(self.account, self.user)
 
     class Meta(Common.Meta):
-        verbose_name = _('account user')
-        verbose_name_plural = _('account users')
+        verbose_name = _('user')
+        verbose_name_plural = _('users')
 
 
 class AccountSite(Common):
@@ -76,3 +76,4 @@ class AccountSite(Common):
 # TODO move AuthorRestriction to Resource app
 # TODO move backends, login and exceptions and urls to resource
 # TODO Remove account app
+# TODO redo translation

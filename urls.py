@@ -9,7 +9,7 @@ from apps.publication import views as publication_views
 from apps.file_explorer import views as file_explorer_views
 from apps.newsletter import views as newsletter_views
 from apps.resource import views as resource_views
-from apps.resource.views import AccountUserViewSet, GroupViewSet
+from apps.resource.views import UserViewSet, GroupViewSet
 
 
 admin.autodiscover()
@@ -24,7 +24,7 @@ router.register(r'file', file_explorer_views.FileViewSet)
 router.register(r'subscription', newsletter_views.SubscriptionViewSet)
 router.register(r'newsletter', newsletter_views.NewsletterViewSet)
 router.register(r'submission', newsletter_views.SubmissionViewSet)
-router.register(r'user', AccountUserViewSet)
+router.register(r'user', UserViewSet)
 router.register(r'group', GroupViewSet)
 router.register(r'authorrestriction', account_views.AuthorRestrictionViewSet)
 router.register(r'accountsite', resource_views.AccountSiteRetrieveAPIViewSet)
