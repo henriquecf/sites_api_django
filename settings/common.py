@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'mptt',
     'django_filters',
+    'pytz',
 
     'apps.account',
     'apps.publication',
@@ -63,6 +64,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'middleware.TimezoneMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
