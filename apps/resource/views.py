@@ -110,15 +110,9 @@ class AccountUserViewSet(ModelViewSet):
             obj.user = self.request.user
 
 
-class GroupViewSet(ModelViewSet):
+class GroupViewSet(ResourceViewSet):
     model = Group
     serializer_class = GroupSerializer
-    permission_classes = (
-        permissions.IsAdminUser,
-    )
-    filter_backends = (
-        filters.SearchFilter,
-    )
     search_fields = ['role']
 
     def get_queryset(self):
@@ -130,7 +124,7 @@ class GroupViewSet(ModelViewSet):
             Group.objects.get(account=self.request.user.accountuser.account, role=obj.role)
             raise BadRequestValidationError(_('Role field is unique. Please insert another name.'))
         except ObjectDoesNotExist:
-            obj.account = self.request.user.accountuser.account
+            super(GroupViewSet, self).pre_save(obj)
 
     @action()
     def assign_permissions(self, request, *args, **kwargs):

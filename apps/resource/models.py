@@ -28,20 +28,15 @@ class Resource(Common):
         verbose_name_plural = _('resources')
 
 
-class Group(Common):
+class Group(Resource):
     group = models.OneToOneField(AuthGroup, verbose_name=_('group'), blank=True)
     role = models.CharField(_('role'), max_length=100)
-    account = models.ForeignKey(Account, verbose_name=_('account'), blank=True)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         name = '{0} - {1}'.format(self.account, self.role)
         self.group = AuthGroup.objects.get_or_create(name=name)[0]
         super(Group, self).save()
-
-    def delete(self, using=None):
-        self.group.delete()
-        super(Group, self).delete()
 
     def __str__(self):
         return '{0} - {1}'.format(self.account, self.role)

@@ -33,15 +33,14 @@ class AccountSiteSerializer(serializers.HyperlinkedModelSerializer):
         model = AccountSite
 
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
-    account = serializers.HyperlinkedRelatedField(label=_('account'), view_name='account-detail', read_only=True)
+class GroupSerializer(ResourceSerializer):
     group = AuthGroupSerializer(read_only=True)
     assign_permissions = serializers.HyperlinkedIdentityField(label=_('assign permissions'),
                                                               view_name='group-assign-permissions')
     unassign_permissions = serializers.HyperlinkedIdentityField(label=_('unassign permissions'),
                                                                 view_name='group-unassign-permissions')
 
-    class Meta:
+    class Meta(ResourceSerializer.Meta):
         model = Group
 
 

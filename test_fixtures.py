@@ -84,7 +84,7 @@ def user_accountuser_account_permissions_token_fixture(test_case):
                                          user=test_case.account_user2,
                                          filter_values='{0},{1}'.format(test_case.account_user2.id,
                                                                         test_case.owner.id))
-    test_accountgroup = Group.objects.create(role='Test Group', account=fixture.owner_account)
+    test_accountgroup = Group.objects.create(role='Test Group', account=fixture.owner_account, author=test_case.owner)
     test_case.owner.groups.add(test_accountgroup.group)
 
 
