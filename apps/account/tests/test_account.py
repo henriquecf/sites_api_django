@@ -54,13 +54,6 @@ class AccountAPITestCase(APILiveServerTestCase):
     def test_admin_permission(self):
         test_routines.test_admin_permission_routine(self)
 
-    def test_serializer_hyperlinked_fields(self):
-        accountuser_url = reverse('accountuser-list')
-        response = self.client.post(accountuser_url, {})
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-        fields = ['owner']
-        test_routines.test_serializer_hyperlinked_fields_routine(self, fields)
-
     def test_default_expiration_date(self):
         self.assertEqual(self.first_object_response.data['expiration_date'],
                          datetime.date.today() + datetime.timedelta(30))

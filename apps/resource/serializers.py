@@ -4,6 +4,7 @@ from django.contrib.sites.models import Site
 from django.contrib.auth.models import Group as AuthGroup
 from rest_framework import serializers
 from apps.resource.models import AccountSite, Resource, Group, AccountUser
+from apps.account.serializers import UserSerializer
 
 
 class AuthGroupSerializer(serializers.ModelSerializer):
@@ -45,7 +46,7 @@ class GroupSerializer(ResourceSerializer):
 
 
 class AccountUserSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.HyperlinkedRelatedField(label=_('user'), view_name='user-detail', read_only=True)
+    user = UserSerializer()
     account = serializers.HyperlinkedRelatedField(label=_('account'), view_name='account-detail', read_only=True)
 
     class Meta:

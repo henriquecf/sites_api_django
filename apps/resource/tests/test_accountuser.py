@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
+import random
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
 from apps.resource.models import AccountUser
 
-from test_fixtures import user_account_token_fixture
+from test_fixtures import user_accountuser_account_permissions_token_fixture
 import test_routines
 
 
@@ -14,42 +14,40 @@ class AccountUserAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
         self.url = reverse('accountuser-list')
-        self.data = {}
-        self.altered_data = {}
-        user_account_token_fixture(self)
+        self.data = {
+            'user': {
+                'username': 'other_user',
+                'password': '123',
+                'email': 'otheruser@otheruser.com',
+            }
+        }
+        self.altered_data = {
+            'user': {
+                'username': 'other_user_altered',
+                'password': '123',
+                'email': 'otheruseraltered@teste.com',
+            }
+        }
+        user_accountuser_account_permissions_token_fixture(self)
         self.set_authorization_bearer()
         self.first_object_response = self.client.post(self.url, self.data)
+
+    def alter_data(self, altered_data=False):
+        username = 'user-{0}'.format(random.randint(1, 999999))
+        email = '{0}@teste.com'.format(username)
+        if not altered_data:
+            data = self.data
+        else:
+            data = self.altered_data
+        data.update({'user': {'username': username, 'email': email, 'password': '123'}})
 
     def set_authorization_bearer(self, token=None):
         if not token:
             token = self.owner_token
         self.client.credentials(HTTP_AUTHORIZATION='Bearer {0}'.format(token))
 
-    def test_create(self):
-        response = self.client.post(self.url, self.data)
-        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code, response.data)
-
-    def test_update(self):
-        response = self.client.put(self.first_object_response.data['url'], self.altered_data)
-        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code, response.data)
-
-    def test_partial_update(self):
-        response = self.client.patch(self.first_object_response.data['url'], self.altered_data)
-        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code, response.data)
-
-    def test_retrieve(self):
-        response = self.client.get(self.first_object_response.data['url'])
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(response.data, self.first_object_response.data)
-
-    def test_list(self):
-        response = self.client.get(self.url)
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(1, response.data['count'])
-
-    def test_destroy(self):
-        response = self.client.delete(self.first_object_response.data['url'])
-        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+    def test_api_basic_methods(self):
+        test_routines.test_api_basic_methods_routine(self, alter_data=True, count=5)
 
     def test_admin_permission(self):
         test_routines.test_admin_permission_routine(self)
@@ -61,12 +59,12 @@ class AccountUserAPITestCase(APILiveServerTestCase):
         self.assertEqual(account_id, str(owner_user.accountuser.account.id))
 
     def test_serializer_hyperlinked_fields(self):
-        fields = ['user', 'account']
+        fields = ['account']
         test_routines.test_serializer_hyperlinked_fields_routine(self, fields=fields)
 
     def test_model_has_custom_permission(self):
         test_routines.test_model_has_custom_permission_routine(self)
 
     def test_serializer_read_only_fields(self):
-        fields = ['user', 'account']
+        fields = ['account']
         test_routines.test_serializer_read_only_fields_routine(self, fields=fields)

@@ -14,11 +14,11 @@ class AccountSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    def get_fields(self):
-        fields = super(UserSerializer, self).get_fields()
-        fields['groups'].queryset = fields['groups'].queryset.filter(
-            group__account=self.context['request'].user.accountuser.account)
-        return fields
+    #def get_fields(self):
+    #    fields = super(UserSerializer, self).get_fields()
+    #    fields['groups'].queryset = fields['groups'].queryset.filter(
+    #        group__account=self.context['request'].user.accountuser.account)
+    #    return fields
 
     email = serializers.EmailField(required=True)
     accountuser = serializers.HyperlinkedRelatedField(view_name='accountuser-detail', read_only=True)

@@ -4,7 +4,7 @@ from django.contrib.auth.models import Permission
 from rest_framework import status
 
 
-def test_api_basic_methods_routine(test_case, token=None, count=2, object_url=None):
+def test_api_basic_methods_routine(test_case, token=None, count=2, object_url=None, alter_data=False):
     if not token:
         token = test_case.owner_token
     test_case.set_authorization_bearer(token)
@@ -13,14 +13,20 @@ def test_api_basic_methods_routine(test_case, token=None, count=2, object_url=No
         object_url = test_case.first_object_response.data['url']
 
     # Test POST
+    if alter_data:
+        test_case.alter_data()
     response = test_case.client.post(test_case.url, test_case.data)
     test_case.assertEqual(status.HTTP_201_CREATED, response.status_code, response.data)
 
     # Test PUT
+    if alter_data:
+        test_case.alter_data(altered_data=True)
     response = test_case.client.put(object_url, test_case.altered_data)
     test_case.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
 
     # Test PATCH
+    if alter_data:
+        test_case.alter_data(altered_data=True)
     response = test_case.client.patch(object_url, test_case.altered_data)
     test_case.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
 

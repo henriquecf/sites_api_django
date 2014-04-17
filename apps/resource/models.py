@@ -69,3 +69,10 @@ class AccountSite(Common):
         unique_together = ['account', 'site']
         verbose_name = _('account site')
         verbose_name_plural = _('account sites')
+
+# TODO rename accountuser to user and inherit from resource
+# TODO Remove User API
+# TODO rename AccountSite to Site and inherit from Resource
+# TODO move AuthorRestriction to Resource app
+# TODO move backends, login and exceptions and urls to resource
+# TODO Remove account app

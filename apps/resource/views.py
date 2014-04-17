@@ -102,12 +102,7 @@ class AccountUserViewSet(ModelViewSet):
         the object otherwise.
         Warning: this method will work only for the owner of the account, the way it is implemented here.
         """
-        obj.account = self.request.user.account
-        try:
-            AccountUser.objects.get(user=self.request.user)
-            raise BadRequestValidationError(_('You can create just one user account.'))
-        except ObjectDoesNotExist:
-            obj.user = self.request.user
+        obj.account = self.request.user.accountuser.account
 
 
 class GroupViewSet(ResourceViewSet):
