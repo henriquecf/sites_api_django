@@ -18,15 +18,16 @@ class ResourceTestCase(TestCase):
         site = Site.objects.first()
         accountsite = AccountSite.objects.create(account=self.owner.account, site=site)
         possible_sites = ResourceSerializer(context={'request': request}).get_fields()['sites'].queryset
-        self.assertIn(accountsite, possible_sites)
+        self.assertIn(site, possible_sites)
 
+        other_site = Site.objects.create()
         other_user_accountsite = AccountSite.objects.create(account=self.second_owner.account,
-                                                            site=site)
+                                                            site=other_site)
         possible_sites = ResourceSerializer(context={'request': request}).get_fields()['sites'].queryset
-        self.assertIn(accountsite, possible_sites)
-        self.assertNotIn(other_user_accountsite, possible_sites)
+        self.assertIn(site, possible_sites)
+        self.assertNotIn(other_site, possible_sites)
 
         request.user = self.second_owner
         possible_sites = ResourceSerializer(context={'request': request}).get_fields()['sites'].queryset
-        self.assertNotIn(accountsite, possible_sites)
-        self.assertIn(other_user_accountsite, possible_sites)
+        self.assertNotIn(site, possible_sites)
+        self.assertIn(other_site, possible_sites)

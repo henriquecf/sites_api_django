@@ -15,4 +15,4 @@ class SiteDomainFilterBackend(filters.BaseFilterBackend):
         domain = request.META.get('HTTP_HOST')
         if not domain:
             domain = request.META.get('SERVER_NAME')
-        return queryset.filter(sites__site__domain=domain)
+        return queryset.filter(sites__domain=domain)

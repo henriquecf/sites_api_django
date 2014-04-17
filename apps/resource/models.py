@@ -28,7 +28,7 @@ class Resource(Common):
     """
     account = models.ForeignKey(Account, verbose_name=_('account'), editable=False)
     author = models.ForeignKey(User, verbose_name=_('author'), editable=False, related_name='authors')
-    sites = models.ManyToManyField(AccountSite, verbose_name=_('sites'), blank=True)
+    sites = models.ManyToManyField(Site, verbose_name=_('sites'), blank=True)
 
     def account_sites(self):
         return self.sites.filter(account=self.account)

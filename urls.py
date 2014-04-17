@@ -30,6 +30,7 @@ router.register(r'user', account_views.UserViewSet)
 router.register(r'accountgroup', AccountGroupViewSet)
 router.register(r'authorrestriction', account_views.AuthorRestrictionViewSet)
 router.register(r'accountsite', resource_views.AccountSiteRetrieveAPIViewSet)
+router.register(r'site', resource_views.SiteViewSet)
 
 urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),

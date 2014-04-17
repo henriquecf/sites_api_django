@@ -12,7 +12,7 @@ from apps.account.exceptions import BadRequestValidationError
 
 from apps.resource.models import Resource, AccountSite, AccountUser, AccountGroup
 from apps.resource.serializers import ResourceSerializer, AccountSiteSerializer, AccountUserSerializer, \
-    AccountGroupSerializer
+    AccountGroupSerializer, SiteSerializer
 
 
 class UserLoginView(FormView):
@@ -58,7 +58,7 @@ class ResourceViewSet(viewsets.ModelViewSet):
                 domain = self.request.META.get('SERVER_NAME')
             site, created = Site.objects.get_or_create(domain=domain)
             account_site, created2 = AccountSite.objects.get_or_create(site=site, account=obj.account)
-            obj.sites.add(account_site)
+            obj.sites.add(site)
 
 
 class AccountSiteRetrieveAPIViewSet(ReadOnlyModelViewSet):
@@ -157,3 +157,16 @@ class AccountGroupViewSet(ModelViewSet):
         for permission in permissions_to_unassign:
             accountgroup.group.permissions.remove(permission)
         return Response(data={'assigned_permissions': permissions_to_unassign})
+
+
+class SiteViewSet(ReadOnlyModelViewSet):
+    model = Site
+    serializer_class = SiteSerializer
+    permission_classes = (
+        permissions.IsAuthenticated,
+    )
+    filter_backends = ()
+
+    def get_queryset(self):
+        return super(SiteViewSet, self).get_queryset().filter(
+            accountsite__account=self.request.user.accountuser.account)
