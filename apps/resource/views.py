@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.sites.models import Site
+from django.contrib.sites.models import Site as ContribSite
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 from django.views.generic import FormView
 from django.core.exceptions import ObjectDoesNotExist
@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 from apps.account.exceptions import BadRequestValidationError
 
-from apps.resource.models import Resource, AccountSite, User, Group
+from apps.resource.models import Resource, Site, User, Group
 from apps.resource.serializers import ResourceSerializer, AccountSiteSerializer, UserSerializer, \
     GroupSerializer, SiteSerializer
 
@@ -56,13 +56,13 @@ class ResourceViewSet(viewsets.ModelViewSet):
             domain = self.request.META.get('HTTP_HOST')
             if not domain:
                 domain = self.request.META.get('SERVER_NAME')
-            site, created = Site.objects.get_or_create(domain=domain)
-            account_site, created2 = AccountSite.objects.get_or_create(site=site, account=obj.account)
+            site, created = ContribSite.objects.get_or_create(domain=domain)
+            account_site, created2 = Site.objects.get_or_create(site=site, account=obj.account)
             obj.sites.add(site)
 
 
 class AccountSiteRetrieveAPIViewSet(ReadOnlyModelViewSet):
-    model = AccountSite
+    model = Site
     serializer_class = AccountSiteSerializer
     permission_classes = (
         permissions.IsAuthenticated,
@@ -135,7 +135,7 @@ class GroupViewSet(ResourceViewSet):
 
 
 class SiteViewSet(ReadOnlyModelViewSet):
-    model = Site
+    model = ContribSite
     serializer_class = SiteSerializer
     permission_classes = (
         permissions.IsAuthenticated,
@@ -143,5 +143,4 @@ class SiteViewSet(ReadOnlyModelViewSet):
     filter_backends = ()
 
     def get_queryset(self):
-        return super(SiteViewSet, self).get_queryset().filter(
-            accountsite__account=self.request.user.user.account)
+        return super(SiteViewSet, self).get_queryset().filter(site__account=self.request.user.user.account)

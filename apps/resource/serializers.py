@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.sites.models import Site
+from django.contrib.sites.models import Site as ContribSite
 from django.contrib.auth.models import Group as AuthGroup
 from rest_framework import serializers
-from apps.resource.models import AccountSite, Resource, Group, User
+from apps.resource.models import Site, Resource, Group, User
 from apps.account.serializers import UserSerializer as AuthUserSerializer
 
 
@@ -20,7 +20,7 @@ class ResourceSerializer(serializers.HyperlinkedModelSerializer):
     def get_fields(self):
         fields = super(ResourceSerializer, self).get_fields()
         fields['sites'].queryset = fields['sites'].queryset.filter(
-            accountsite__account=self.context['request'].user.user.account)
+            site__account=self.context['request'].user.user.account)
         return fields
 
     class Meta:
@@ -32,7 +32,7 @@ class AccountSiteSerializer(serializers.HyperlinkedModelSerializer):
     site = serializers.PrimaryKeyRelatedField(label=_('site'), read_only=True)
 
     class Meta:
-        model = AccountSite
+        model = Site
 
 
 class GroupSerializer(ResourceSerializer):
@@ -56,4 +56,4 @@ class UserSerializer(ResourceSerializer):
 class SiteSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
-        model = Site
+        model = ContribSite

@@ -1,6 +1,6 @@
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 from django.contrib.auth.models import User as AuthUser, Group as AuthGroup
-from django.contrib.sites.models import Site
+from django.contrib.sites.models import Site as ContribSite
 from django.db import models
 
 from apps.account.models import Account, Common
@@ -15,7 +15,7 @@ class Resource(Common):
     """
     account = models.ForeignKey(Account, verbose_name=_('account'), editable=False)
     author = models.ForeignKey(AuthUser, verbose_name=_('author'), editable=False, related_name='authors')
-    sites = models.ManyToManyField(Site, verbose_name=_('sites'), blank=True)
+    sites = models.ManyToManyField(ContribSite, verbose_name=_('sites'), blank=True)
 
     def account_sites(self):
         return self.sites.filter(account=self.account)
@@ -57,9 +57,9 @@ class User(Resource):
         verbose_name_plural = _('users')
 
 
-class AccountSite(Common):
+class Site(Common):
     account = models.ForeignKey(Account, verbose_name=_('account'), editable=False)
-    site = models.ForeignKey(Site, verbose_name=_('site'))
+    site = models.ForeignKey(ContribSite, verbose_name=_('site'))
 
     def __str__(self):
         return self.site.domain
@@ -69,7 +69,7 @@ class AccountSite(Common):
         verbose_name = _('account site')
         verbose_name_plural = _('account sites')
 
-# TODO rename AccountSite to Site and inherit from Resource
+# TODO rename Site to Site and inherit from Resource
 # TODO move AuthorRestriction to Resource app
 # TODO move backends, login and exceptions and urls to resource
 # TODO Remove account app

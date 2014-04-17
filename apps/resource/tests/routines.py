@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
+from django.contrib.sites.models import Site as ContribSite
 from django.core.urlresolvers import reverse
 from rest_framework import status
 
-from apps.resource.models import Resource, AccountSite
+from apps.resource.models import Resource, Site
 from test_routines import (
     test_serializer_hyperlinked_fields_routine,
     test_serializer_read_only_fields_routine,
@@ -40,8 +40,8 @@ def test_resource_serializer_read_only_fields_routine(test_case, fields):
 
 
 def test_resource_sites_field_routine(test_case):
-    main_site, created = Site.objects.get_or_create(domain='testserver')
-    accountsite = AccountSite.objects.get_or_create(site=main_site, account=test_case.owner.account)
+    main_site, created = ContribSite.objects.get_or_create(domain='testserver')
+    accountsite = Site.objects.get_or_create(site=main_site, account=test_case.owner.account)
     site_url = reverse('site-detail', args=(main_site.id,))
     response0 = test_case.client.get(site_url)
     test_case.assertIn('url', response0.data, response0.data)
@@ -52,8 +52,8 @@ def test_resource_sites_field_routine(test_case):
     test_case.assertIn(site_obj_url, response.data['sites'])
     response2 = test_case.client.get(test_case.url)
     test_case.assertEqual(2, response2.data['count'], 'Looks like there is no filter for domain')
-    my_site = Site.objects.create(domain='otherserver.com')
-    my_accountsite = AccountSite.objects.create(site=my_site, account=test_case.owner.account)
+    my_site = ContribSite.objects.create(domain='otherserver.com')
+    my_accountsite = Site.objects.create(site=my_site, account=test_case.owner.account)
     site_url2 = reverse('site-detail', args=(my_site.id,))
     my_site_url = test_case.client.get(site_url2).data['url']
     test_case.data.update({'sites': [my_site_url]})
