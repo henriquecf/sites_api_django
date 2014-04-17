@@ -6,7 +6,7 @@ from rest_framework import serializers
 from apps.resource.models import AccountSite, Resource, Group, AccountUser
 
 
-class GroupSerializer(serializers.ModelSerializer):
+class AuthGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AuthGroup
@@ -33,9 +33,9 @@ class AccountSiteSerializer(serializers.HyperlinkedModelSerializer):
         model = AccountSite
 
 
-class AccountGroupSerializer(serializers.HyperlinkedModelSerializer):
+class GroupSerializer(serializers.HyperlinkedModelSerializer):
     account = serializers.HyperlinkedRelatedField(label=_('account'), view_name='account-detail', read_only=True)
-    group = GroupSerializer(read_only=True)
+    group = AuthGroupSerializer(read_only=True)
     assign_permissions = serializers.HyperlinkedIdentityField(label=_('assign permissions'),
                                                               view_name='group-assign-permissions')
     unassign_permissions = serializers.HyperlinkedIdentityField(label=_('unassign permissions'),

@@ -12,7 +12,7 @@ from apps.account.exceptions import BadRequestValidationError
 
 from apps.resource.models import Resource, AccountSite, AccountUser, Group
 from apps.resource.serializers import ResourceSerializer, AccountSiteSerializer, AccountUserSerializer, \
-    AccountGroupSerializer, SiteSerializer
+    GroupSerializer, SiteSerializer
 
 
 class UserLoginView(FormView):
@@ -110,9 +110,9 @@ class AccountUserViewSet(ModelViewSet):
             obj.user = self.request.user
 
 
-class AccountGroupViewSet(ModelViewSet):
+class GroupViewSet(ModelViewSet):
     model = Group
-    serializer_class = AccountGroupSerializer
+    serializer_class = GroupSerializer
     permission_classes = (
         permissions.IsAdminUser,
     )
@@ -122,7 +122,7 @@ class AccountGroupViewSet(ModelViewSet):
     search_fields = ['role']
 
     def get_queryset(self):
-        queryset = super(AccountGroupViewSet, self).get_queryset()
+        queryset = super(GroupViewSet, self).get_queryset()
         return queryset.filter(account=self.request.user.accountuser.account)
 
     def pre_save(self, obj):
@@ -134,7 +134,7 @@ class AccountGroupViewSet(ModelViewSet):
 
     @action()
     def assign_permissions(self, request, *args, **kwargs):
-        accountgroup = self.get_object()
+        group = self.get_object()
         try:
             permissions_to_assign = request.DATA['permissions']
         except KeyError:
@@ -142,12 +142,12 @@ class AccountGroupViewSet(ModelViewSet):
                 data={'detail': _('You must define the permissions through dict key "permissions".')},
                 status=status.HTTP_400_BAD_REQUEST)
         for permission in permissions_to_assign:
-            accountgroup.group.permissions.add(permission)
+            group.group.permissions.add(permission)
         return Response(data={'assigned_permissions': permissions_to_assign})
 
     @action()
     def unassign_permissions(self, request, *args, **kwargs):
-        accountgroup = self.get_object()
+        group = self.get_object()
         try:
             permissions_to_unassign = request.DATA['permissions']
         except KeyError:
@@ -155,7 +155,7 @@ class AccountGroupViewSet(ModelViewSet):
                 data={'detail': _('You must define the permissions to assign through dict key "permissions".')},
                 status=status.HTTP_400_BAD_REQUEST)
         for permission in permissions_to_unassign:
-            accountgroup.group.permissions.remove(permission)
+            group.group.permissions.remove(permission)
         return Response(data={'assigned_permissions': permissions_to_unassign})
 
 

@@ -47,8 +47,8 @@ class Group(Common):
         return '{0} - {1}'.format(self.account, self.role)
 
     class Meta(Common.Meta):
-        verbose_name = _('account group')
-        verbose_name_plural = _('account groups')
+        verbose_name = _('group')
+        verbose_name_plural = _('groups')
 
 
 class AccountUser(Common):
