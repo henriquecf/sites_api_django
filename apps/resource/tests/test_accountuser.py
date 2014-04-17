@@ -3,10 +3,10 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
+from apps.resource.models import AccountUser
 
 from test_fixtures import user_account_token_fixture
 import test_routines
-from apps.account.models import AccountUser
 
 
 class AccountUserAPITestCase(APILiveServerTestCase):

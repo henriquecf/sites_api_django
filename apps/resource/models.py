@@ -1,5 +1,5 @@
-from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _, ugettext_lazy
+from django.contrib.auth.models import User, Group
 from django.contrib.sites.models import Site
 from django.db import models
 
@@ -39,3 +39,38 @@ class Resource(Common):
     class Meta(Common.Meta):
         verbose_name = _('resource')
         verbose_name_plural = _('resources')
+
+
+class AccountGroup(Common):
+    group = models.OneToOneField(Group, verbose_name=_('group'), blank=True)
+    role = models.CharField(_('role'), max_length=100)
+    account = models.ForeignKey(Account, verbose_name=_('account'), blank=True)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        name = '{0} - {1}'.format(self.account, self.role)
+        self.group = Group.objects.get_or_create(name=name)[0]
+        super(AccountGroup, self).save()
+
+    def delete(self, using=None):
+        self.group.delete()
+        super(AccountGroup, self).delete()
+
+    def __str__(self):
+        return '{0} - {1}'.format(self.account, self.role)
+
+    class Meta(Common.Meta):
+        verbose_name = _('account group')
+        verbose_name_plural = _('account groups')
+
+
+class AccountUser(Common):
+    user = models.OneToOneField(User, verbose_name=_('user'), blank=True)
+    account = models.ForeignKey(Account, verbose_name=_('account'), blank=True)
+
+    def __str__(self):
+        return '{0} - {1}'.format(self.account, self.user)
+
+    class Meta(Common.Meta):
+        verbose_name = _('account user')
+        verbose_name_plural = _('account users')

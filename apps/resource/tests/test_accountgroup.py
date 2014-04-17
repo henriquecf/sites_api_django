@@ -4,10 +4,10 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import Permission
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
+from apps.resource.models import AccountGroup
 
 from test_fixtures import user_accountuser_account_permissions_token_fixture
 import test_routines
-from apps.account.models import AccountGroup
 
 
 class AccountGroupAPITestCase(APILiveServerTestCase):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 from rest_framework import serializers
-from apps.resource.models import AccountSite, Resource
+from apps.resource.models import AccountSite, Resource, AccountGroup, AccountUser
 
 
 class ResourceSerializer(serializers.HyperlinkedModelSerializer):
@@ -22,3 +22,23 @@ class AccountSiteSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = AccountSite
+
+
+class AccountGroupSerializer(serializers.HyperlinkedModelSerializer):
+    account = serializers.HyperlinkedRelatedField(label=_('account'), view_name='account-detail', read_only=True)
+    group = serializers.HyperlinkedRelatedField(label=_('group'), view_name='group-detail', read_only=True)
+    assign_permissions = serializers.HyperlinkedIdentityField(label=_('assign permissions'),
+                                                              view_name='accountgroup-assign-permissions')
+    unassign_permissions = serializers.HyperlinkedIdentityField(label=_('unassign permissions'),
+                                                                view_name='accountgroup-unassign-permissions')
+
+    class Meta:
+        model = AccountGroup
+
+
+class AccountUserSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.HyperlinkedRelatedField(label=_('user'), view_name='user-detail', read_only=True)
+    account = serializers.HyperlinkedRelatedField(label=_('account'), view_name='account-detail', read_only=True)
+
+    class Meta:
+        model = AccountUser
