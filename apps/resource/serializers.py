@@ -46,11 +46,10 @@ class GroupSerializer(ResourceSerializer):
         model = Group
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(ResourceSerializer):
     user = AuthUserSerializer()
-    account = serializers.HyperlinkedRelatedField(label=_('account'), view_name='account-detail', read_only=True)
 
-    class Meta:
+    class Meta(ResourceSerializer.Meta):
         model = User
 
 

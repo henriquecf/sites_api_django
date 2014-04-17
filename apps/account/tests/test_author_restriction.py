@@ -129,7 +129,7 @@ class AuthorRestrictionAPITestCase(APILiveServerTestCase):
         self.assertIn(user, possible_users)
 
         other_account_user = User.objects.create_user(username='other_user', password='123')
-        CustomUser.objects.create(user=other_account_user, account=self.second_owner.account)
+        CustomUser.objects.create(user=other_account_user, account=self.second_owner.account, author=self.second_owner)
 
         possible_users = AuthorRestrictionSerializer(context={'request': request}).get_fields()['user'].queryset
         self.assertIn(user, possible_users)

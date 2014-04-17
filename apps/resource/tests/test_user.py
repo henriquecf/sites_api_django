@@ -46,10 +46,16 @@ class UserAPITestCase(APILiveServerTestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Bearer {0}'.format(token))
 
     def test_api_basic_methods(self):
-        test_routines.test_api_basic_methods_routine(self, alter_data=True, count=5)
+        test_routines.test_api_basic_methods_routine(self, alter_data=True, count=2)
 
     def test_admin_permission(self):
         test_routines.test_admin_permission_routine(self)
+
+    def test_resource_permission(self):
+        test_routines.test_resource_permission_routine(self, alter_data=True)
+
+    def test_custom_object_permission(self):
+        test_routines.test_custom_object_permission_routine(self, alter_data=True)
 
     def test_accountuser_created_has_same_account_as_request_user(self):
         owner_user = User.objects.get(username=self.owner_token)
@@ -58,12 +64,12 @@ class UserAPITestCase(APILiveServerTestCase):
         self.assertEqual(account_id, str(owner_user.user.account.id))
 
     def test_serializer_hyperlinked_fields(self):
-        fields = ['account']
+        fields = []
         test_routines.test_serializer_hyperlinked_fields_routine(self, fields=fields)
 
     def test_model_has_custom_permission(self):
         test_routines.test_model_has_custom_permission_routine(self)
 
     def test_serializer_read_only_fields(self):
-        fields = ['account']
+        fields = []
         test_routines.test_serializer_read_only_fields_routine(self, fields=fields)

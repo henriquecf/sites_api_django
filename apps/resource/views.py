@@ -74,12 +74,8 @@ class AccountSiteRetrieveAPIViewSet(ReadOnlyModelViewSet):
             account=self.request.user.user.account)
 
 
-class UserViewSet(ModelViewSet):
+class UserViewSet(ResourceViewSet):
     model = User
-    permission_classes = (
-        permissions.IsAdminUser,
-    )
-    filter_backends = ()
     serializer_class = UserSerializer
 
     def get_queryset(self):
@@ -93,16 +89,6 @@ class UserViewSet(ModelViewSet):
         except ObjectDoesNotExist:
             account = self.request.user.account
         return queryset.filter(account=account)
-
-    def pre_save(self, obj):
-        """
-
-        Relates the account of the request user to the object.
-        Checks if the request user already has an user. Returns an exception in true case, or relates the user to
-        the object otherwise.
-        Warning: this method will work only for the owner of the account, the way it is implemented here.
-        """
-        obj.account = self.request.user.user.account
 
 
 class GroupViewSet(ResourceViewSet):
