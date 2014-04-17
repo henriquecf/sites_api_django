@@ -107,14 +107,14 @@ class AuthorRestrictionViewSet(ModelViewSet):
         else:
             return queryset.filter(
                 Q(user__accountuser__account=user.accountuser.account) | Q(
-                    group__accountgroup__account=user.accountuser.account))
+                    group__group__account=user.accountuser.account))
 
     def pre_save(self, obj):
         try:
             account = obj.user.accountuser.account
         except AttributeError:
             try:
-                account = obj.group.accountgroup.account
+                account = obj.group.group.account
             except AttributeError:
                 raise BadRequestValidationError(_('You must specify either User or Group field.'))
 

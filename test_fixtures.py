@@ -5,7 +5,7 @@ from django.contrib.auth.models import User, Permission
 from django.utils import timezone
 from oauth2_provider.models import Application, AccessToken
 from apps.account.models import Account, AuthorRestriction
-from apps.resource.models import AccountGroup, AccountUser
+from apps.resource.models import Group, AccountUser
 
 
 class Fixtures:
@@ -84,7 +84,7 @@ def user_accountuser_account_permissions_token_fixture(test_case):
                                          user=test_case.account_user2,
                                          filter_values='{0},{1}'.format(test_case.account_user2.id,
                                                                         test_case.owner.id))
-    test_accountgroup = AccountGroup.objects.create(role='Test Group', account=fixture.owner_account)
+    test_accountgroup = Group.objects.create(role='Test Group', account=fixture.owner_account)
     test_case.owner.groups.add(test_accountgroup.group)
 
 

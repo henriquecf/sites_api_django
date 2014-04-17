@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 from apps.account.exceptions import BadRequestValidationError
 
-from apps.resource.models import Resource, AccountSite, AccountUser, AccountGroup
+from apps.resource.models import Resource, AccountSite, AccountUser, Group
 from apps.resource.serializers import ResourceSerializer, AccountSiteSerializer, AccountUserSerializer, \
     AccountGroupSerializer, SiteSerializer
 
@@ -111,7 +111,7 @@ class AccountUserViewSet(ModelViewSet):
 
 
 class AccountGroupViewSet(ModelViewSet):
-    model = AccountGroup
+    model = Group
     serializer_class = AccountGroupSerializer
     permission_classes = (
         permissions.IsAdminUser,
@@ -127,7 +127,7 @@ class AccountGroupViewSet(ModelViewSet):
 
     def pre_save(self, obj):
         try:
-            AccountGroup.objects.get(account=self.request.user.accountuser.account, role=obj.role)
+            Group.objects.get(account=self.request.user.accountuser.account, role=obj.role)
             raise BadRequestValidationError(_('Role field is unique. Please insert another name.'))
         except ObjectDoesNotExist:
             obj.account = self.request.user.accountuser.account

@@ -17,7 +17,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     def get_fields(self):
         fields = super(UserSerializer, self).get_fields()
         fields['groups'].queryset = fields['groups'].queryset.filter(
-            accountgroup__account=self.context['request'].user.accountuser.account)
+            group__account=self.context['request'].user.accountuser.account)
         return fields
 
     email = serializers.EmailField(required=True)
@@ -41,7 +41,7 @@ class AuthorRestrictionSerializer(serializers.HyperlinkedModelSerializer):
         fields['user'].queryset = fields['user'].queryset.filter(
             accountuser__account=self.context['request'].user.accountuser.account)
         fields['group'].queryset = fields['group'].queryset.filter(
-            accountgroup__account=self.context['request'].user.accountuser.account)
+            group__account=self.context['request'].user.accountuser.account)
         return fields
 
     user = serializers.PrimaryKeyRelatedField(label=_('user'), blank=True)

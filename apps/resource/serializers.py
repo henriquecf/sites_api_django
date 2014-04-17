@@ -1,8 +1,16 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.models import Site
+from django.contrib.auth.models import Group as AuthGroup
 from rest_framework import serializers
-from apps.resource.models import AccountSite, Resource, AccountGroup, AccountUser
+from apps.resource.models import AccountSite, Resource, Group, AccountUser
+
+
+class GroupSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AuthGroup
+        fields = ('permissions',)
 
 
 class ResourceSerializer(serializers.HyperlinkedModelSerializer):
@@ -27,14 +35,14 @@ class AccountSiteSerializer(serializers.HyperlinkedModelSerializer):
 
 class AccountGroupSerializer(serializers.HyperlinkedModelSerializer):
     account = serializers.HyperlinkedRelatedField(label=_('account'), view_name='account-detail', read_only=True)
-    group = serializers.HyperlinkedRelatedField(label=_('group'), view_name='group-detail', read_only=True)
+    group = GroupSerializer(read_only=True)
     assign_permissions = serializers.HyperlinkedIdentityField(label=_('assign permissions'),
-                                                              view_name='accountgroup-assign-permissions')
+                                                              view_name='group-assign-permissions')
     unassign_permissions = serializers.HyperlinkedIdentityField(label=_('unassign permissions'),
-                                                                view_name='accountgroup-unassign-permissions')
+                                                                view_name='group-unassign-permissions')
 
     class Meta:
-        model = AccountGroup
+        model = Group
 
 
 class AccountUserSerializer(serializers.HyperlinkedModelSerializer):

@@ -5,7 +5,7 @@ from django.contrib.auth.models import Permission
 from django.http.request import HttpRequest
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
-from apps.resource.models import AccountGroup, AccountUser
+from apps.resource.models import Group as CustomGroup, AccountUser
 
 from test_fixtures import user_accountuser_account_token_fixture
 import test_routines
@@ -97,13 +97,13 @@ class AuthorRestrictionAPITestCase(APILiveServerTestCase):
 
     def test_filter_permission_with_accountgroup(self):
         self.data.pop('user')
-        accountgroup = AccountGroup.objects.create(role='Test role', account=self.owner.accountuser.account)
+        accountgroup = CustomGroup.objects.create(role='Test role', account=self.owner.accountuser.account)
         self.data.update({'group': accountgroup.group.id})
         test_routines.test_api_basic_methods_routine(self)
 
     def test_permission_is_assigned_and_unassigned_to_group(self):
         self.data.pop('user')
-        accountgroup = AccountGroup.objects.create(role='Test role', account=self.owner.accountuser.account)
+        accountgroup = CustomGroup.objects.create(role='Test role', account=self.owner.accountuser.account)
         self.data.update({'group': accountgroup.group.id})
         response3 = self.client.post(self.url, self.data)
         self.assertEqual(status.HTTP_201_CREATED, response3.status_code, response3.data)
@@ -141,12 +141,12 @@ class AuthorRestrictionAPITestCase(APILiveServerTestCase):
     def test_group_filter_get_fields_serializer(self):
         request = HttpRequest()
         request.user = self.owner
-        accountgroup = AccountGroup.objects.create(role='group', account=self.owner.account)
+        accountgroup = CustomGroup.objects.create(role='group', account=self.owner.account)
 
         possible_groups = AuthorRestrictionSerializer(context={'request': request}).get_fields()['group'].queryset
         self.assertIn(accountgroup.group, possible_groups)
 
-        other_account_group = AccountGroup.objects.create(role='other_group', account=self.second_owner.account)
+        other_account_group = CustomGroup.objects.create(role='other_group', account=self.second_owner.account)
 
         possible_groups = AuthorRestrictionSerializer(context={'request': request}).get_fields()['group'].queryset
         self.assertIn(accountgroup.group, possible_groups)

@@ -4,17 +4,17 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import Permission
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
-from apps.resource.models import AccountGroup
+from apps.resource.models import Group
 
 from test_fixtures import user_accountuser_account_permissions_token_fixture
 import test_routines
 
 
 class AccountGroupAPITestCase(APILiveServerTestCase):
-    model = AccountGroup
+    model = Group
 
     def setUp(self):
-        self.url = reverse('accountgroup-list')
+        self.url = reverse('group-list')
         self.data = {
             'role': 'Group'
         }
@@ -75,11 +75,11 @@ class AccountGroupAPITestCase(APILiveServerTestCase):
         test_routines.test_search_fields_routine(self, search_fields=fields)
 
     def test_hyperlinked_fields(self):
-        fields = ['account', 'group']
+        fields = ['account']
         test_routines.test_serializer_hyperlinked_fields_routine(self, fields=fields)
 
     def test_read_only_fields(self):
-        fields = ['account', 'group']
+        fields = ['account']
         test_routines.test_serializer_read_only_fields_routine(self, fields=fields)
 
     def test_role_and_account_are_unique_together(self):
@@ -110,7 +110,7 @@ class AccountGroupAPITestCase(APILiveServerTestCase):
         self.assertEqual(permission_list, response.data['assigned_permissions'], response.data)
 
         accountgroup_id = self.first_object_response.data['url'].split('/')[-2]
-        accountgroup = AccountGroup.objects.get(id=accountgroup_id)
+        accountgroup = Group.objects.get(id=accountgroup_id)
         self.assertEqual(list(permission_queryset), list(accountgroup.group.permissions.all()))
 
         try:
