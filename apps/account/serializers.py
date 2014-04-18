@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 
-from apps.account.models import Account, AuthorRestriction
+from apps.account.models import Account
 
 
 class AccountSerializer(serializers.HyperlinkedModelSerializer):
@@ -34,18 +34,3 @@ class RestrictedOwnerUserSerializer(UserSerializer):
         read_only_fields = ('date_joined', 'last_login', 'is_active', 'is_staff', 'user_permissions', 'groups')
 
 
-class AuthorRestrictionSerializer(serializers.HyperlinkedModelSerializer):
-    def get_fields(self):
-        fields = super(AuthorRestrictionSerializer, self).get_fields()
-        fields['user'].queryset = fields['user'].queryset.filter(
-            user__account=self.context['request'].user.user.account)
-        fields['group'].queryset = fields['group'].queryset.filter(
-            group__account=self.context['request'].user.user.account)
-        return fields
-
-    user = serializers.PrimaryKeyRelatedField(label=_('user'), blank=True)
-    permission = serializers.PrimaryKeyRelatedField(label=_('permission'))
-    group = serializers.PrimaryKeyRelatedField(label=_('group'), blank=True)
-
-    class Meta:
-        model = AuthorRestriction

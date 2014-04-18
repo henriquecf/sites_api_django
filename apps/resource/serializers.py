@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 from django.contrib.sites.models import Site as ContribSite
 from django.contrib.auth.models import Group as AuthGroup
 from rest_framework import serializers
-from apps.resource.models import Site, Resource, Group, User
+from apps.resource.models import Site, Resource, Group, User, AuthorRestriction
 from apps.account.serializers import UserSerializer as AuthUserSerializer
 
 
@@ -57,3 +57,20 @@ class SiteSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = ContribSite
+
+
+class AuthorRestrictionSerializer(serializers.HyperlinkedModelSerializer):
+    def get_fields(self):
+        fields = super(AuthorRestrictionSerializer, self).get_fields()
+        fields['user'].queryset = fields['user'].queryset.filter(
+            user__account=self.context['request'].user.user.account)
+        fields['group'].queryset = fields['group'].queryset.filter(
+            group__account=self.context['request'].user.user.account)
+        return fields
+
+    user = serializers.PrimaryKeyRelatedField(label=_('user'), blank=True)
+    permission = serializers.PrimaryKeyRelatedField(label=_('permission'))
+    group = serializers.PrimaryKeyRelatedField(label=_('group'), blank=True)
+
+    class Meta:
+        model = AuthorRestriction

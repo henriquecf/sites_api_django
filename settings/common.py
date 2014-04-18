@@ -116,7 +116,7 @@ DJANGO_FILTERS = (
 
 OTHER_FILTERS = (
     'apps.account.backends.AccountFilterBackend',
-    'apps.account.backends.AuthorRestrictionBackend',
+    'apps.resource.backends.AuthorRestrictionBackend',
     'apps.resource.backends.SiteDomainFilterBackend',
 )
 

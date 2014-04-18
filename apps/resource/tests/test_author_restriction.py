@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 import random
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, User
 from django.http.request import HttpRequest
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
-from apps.resource.models import Group as CustomGroup, User as CustomUser
+from apps.resource.models import Group as CustomGroup, User as CustomUser, AuthorRestriction
+from apps.resource.serializers import AuthorRestrictionSerializer
 
 from test_fixtures import user_accountuser_account_token_fixture
 import test_routines
-from apps.account.models import AuthorRestriction, User, Group
-from apps.account.serializers import AuthorRestrictionSerializer
 
 
 class AuthorRestrictionAPITestCase(APILiveServerTestCase):

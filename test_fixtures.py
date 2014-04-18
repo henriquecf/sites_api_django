@@ -4,8 +4,8 @@ from datetime import timedelta
 from django.contrib.auth.models import User, Permission
 from django.utils import timezone
 from oauth2_provider.models import Application, AccessToken
-from apps.account.models import Account, AuthorRestriction
-from apps.resource.models import Group, User as CustomUser
+from apps.account.models import Account
+from apps.resource.models import Group, User as CustomUser, AuthorRestriction
 
 
 class Fixtures:
@@ -47,6 +47,7 @@ class Fixtures:
         self.test_case.second_owner_token = create_user_access_token(self.second_owner, self.second_owner_application)
         self.test_case.account_user_token = create_user_access_token(self.owner_user, self.owner_application)
         self.test_case.account_user_token2 = create_user_access_token(self.owner_user2, self.owner_application)
+
 
 def create_user_access_token(user, application):
     return AccessToken.objects.create(user=user, token=user.username,

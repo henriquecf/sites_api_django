@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy
-from django.contrib.auth.models import User as AuthUser, Group as AuthGroup
+from django.contrib.auth.models import User as AuthUser, Group as AuthGroup, Permission, User, Group
 from django.contrib.sites.models import Site as ContribSite
-from django.db import models
+from django.db import models, IntegrityError
 
 from apps.account.models import Account, Common
 
@@ -66,6 +66,54 @@ class Site(Resource):
     class Meta(Common.Meta):
         verbose_name = _('site')
         verbose_name_plural = _('sites')
+
+
+class AuthorRestriction(Common):
+    filter_values = models.TextField(_('filter values'))
+    permission = models.ForeignKey(Permission, verbose_name=_('permission'))
+    user = models.ForeignKey(AuthUser, verbose_name=_('user'), null=True, blank=True,
+                             related_name='creator_restrictions')
+    group = models.ForeignKey(AuthGroup, verbose_name=_('group'), null=True, blank=True,
+                              related_name='creator_restrictions')
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.user:
+            try:
+                self.user.user_permissions.add(self.permission)
+            except IntegrityError:
+                pass
+        elif self.group:
+            try:
+                self.group.permissions.add(self.permission)
+            except IntegrityError:
+                pass
+        super(AuthorRestriction, self).save()
+
+    def delete(self, using=None):
+        if self.user:
+            try:
+                self.user.user_permissions.remove(self.permission)
+            except IntegrityError:
+                pass
+        elif self.group:
+            try:
+                self.group.permissions.remove(self.permission)
+            except IntegrityError:
+                pass
+        super(AuthorRestriction, self).delete()
+
+    def __str__(self):
+        if self.user:
+            user_or_group = self.user
+        else:
+            user_or_group = self.group
+        return '{0} - {1} - {2}'.format(user_or_group, self.permission, self.filter_values)
+
+    class Meta(Common.Meta):
+        verbose_name = _('author restriction')
+        verbose_name_plural = _('author restrictions')
+
 
 # TODO move AuthorRestriction to Resource app
 # TODO move backends, login and exceptions and urls to resource

@@ -1,18 +1,20 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import Permission
 from django.contrib.sites.models import Site as ContribSite
-from django.utils.translation import ugettext_lazy as _, ugettext_lazy
+from django.db.models import Q
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import viewsets, permissions, filters, status
+from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
-from apps.account.exceptions import BadRequestValidationError
 
-from apps.resource.models import Resource, Site, User, Group
+from apps.resource.exceptions import BadRequestValidationError
+from apps.resource.models import Resource, Site, User, Group, AuthorRestriction
 from apps.resource.serializers import ResourceSerializer, AccountSiteSerializer, UserSerializer, \
-    GroupSerializer, SiteSerializer
+    GroupSerializer, SiteSerializer, AuthorRestrictionSerializer
 
 
 class UserLoginView(FormView):
@@ -147,3 +149,44 @@ class SiteViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return super(SiteViewSet, self).get_queryset().filter(site__account=self.request.user.user.account)
+
+
+class AuthorRestrictionViewSet(ModelViewSet):
+    model = AuthorRestriction
+    serializer_class = AuthorRestrictionSerializer
+    permission_classes = (
+        permissions.IsAdminUser,
+    )
+    filter_backends = ()
+
+    def get_queryset(self):
+        queryset = super(AuthorRestrictionViewSet, self).get_queryset()
+        user = self.request.user
+        if user.is_superuser:
+            return queryset
+        else:
+            return queryset.filter(
+                Q(user__user__account=user.user.account) | Q(
+                    group__group__account=user.user.account))
+
+    def pre_save(self, obj):
+        try:
+            account = obj.user.user.account
+        except AttributeError:
+            try:
+                account = obj.group.group.account
+            except AttributeError:
+                raise BadRequestValidationError(_('You must specify either User or Group field.'))
+
+        if account != self.request.user.user.account:
+            raise BadRequestValidationError(_('You can not alter other account permissions.'))
+        else:
+            super(AuthorRestrictionViewSet, self).pre_save(obj)
+
+
+class PermissionViewSet(ReadOnlyModelViewSet):
+    model = Permission
+    permission_classes = (
+        permissions.IsAdminUser,
+    )
+    filter_backends = ()

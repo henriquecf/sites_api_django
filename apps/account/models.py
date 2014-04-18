@@ -3,8 +3,7 @@
 from datetime import date, timedelta
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.db.utils import IntegrityError
-from django.contrib.auth.models import User, Permission, Group
+from django.contrib.auth.models import User
 
 
 class Common(models.Model):
@@ -40,47 +39,3 @@ class Account(Common):
         verbose_name_plural = _('accounts')
 
 
-class AuthorRestriction(Common):
-    filter_values = models.TextField(_('filter values'))
-    permission = models.ForeignKey(Permission, verbose_name=_('permission'))
-    user = models.ForeignKey(User, verbose_name=_('user'), null=True, blank=True, related_name='creator_restrictions')
-    group = models.ForeignKey(Group, verbose_name=_('group'), null=True, blank=True,
-                              related_name='creator_restrictions')
-
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        if self.user:
-            try:
-                self.user.user_permissions.add(self.permission)
-            except IntegrityError:
-                pass
-        elif self.group:
-            try:
-                self.group.permissions.add(self.permission)
-            except IntegrityError:
-                pass
-        super(AuthorRestriction, self).save()
-
-    def delete(self, using=None):
-        if self.user:
-            try:
-                self.user.user_permissions.remove(self.permission)
-            except IntegrityError:
-                pass
-        elif self.group:
-            try:
-                self.group.permissions.remove(self.permission)
-            except IntegrityError:
-                pass
-        super(AuthorRestriction, self).delete()
-
-    def __str__(self):
-        if self.user:
-            user_or_group = self.user
-        else:
-            user_or_group = self.group
-        return '{0} - {1} - {2}'.format(user_or_group, self.permission, self.filter_values)
-
-    class Meta(Common.Meta):
-        verbose_name = _('author restriction')
-        verbose_name_plural = _('author restrictions')
