@@ -16,13 +16,13 @@ class ResourceTestCase(TestCase):
         request = HttpRequest()
         request.user = self.owner
         site = ContribSite.objects.first()
-        accountsite = Site.objects.create(account=self.owner.account, site=site)
+        accountsite = Site.objects.create(account=self.owner.account, site=site, author=self.owner)
         possible_sites = ResourceSerializer(context={'request': request}).get_fields()['sites'].queryset
         self.assertIn(site, possible_sites)
 
         other_site = ContribSite.objects.create()
-        other_user_accountsite = Site.objects.create(account=self.second_owner.account,
-                                                            site=other_site)
+        other_user_accountsite = Site.objects.create(account=self.second_owner.account, site=other_site,
+                                                     author=self.second_owner)
         possible_sites = ResourceSerializer(context={'request': request}).get_fields()['sites'].queryset
         self.assertIn(site, possible_sites)
         self.assertNotIn(other_site, possible_sites)

@@ -41,7 +41,7 @@ def test_resource_serializer_read_only_fields_routine(test_case, fields):
 
 def test_resource_sites_field_routine(test_case):
     main_site, created = ContribSite.objects.get_or_create(domain='testserver')
-    accountsite = Site.objects.get_or_create(site=main_site, account=test_case.owner.account)
+    accountsite = Site.objects.get_or_create(site=main_site, account=test_case.owner.account, author=test_case.owner)
     site_url = reverse('site-detail', args=(main_site.id,))
     response0 = test_case.client.get(site_url)
     test_case.assertIn('url', response0.data, response0.data)
@@ -53,7 +53,7 @@ def test_resource_sites_field_routine(test_case):
     response2 = test_case.client.get(test_case.url)
     test_case.assertEqual(2, response2.data['count'], 'Looks like there is no filter for domain')
     my_site = ContribSite.objects.create(domain='otherserver.com')
-    my_accountsite = Site.objects.create(site=my_site, account=test_case.owner.account)
+    my_accountsite = Site.objects.create(site=my_site, account=test_case.owner.account, author=test_case.owner)
     site_url2 = reverse('site-detail', args=(my_site.id,))
     my_site_url = test_case.client.get(site_url2).data['url']
     test_case.data.update({'sites': [my_site_url]})

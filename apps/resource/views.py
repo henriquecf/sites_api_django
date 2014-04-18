@@ -57,7 +57,10 @@ class ResourceViewSet(viewsets.ModelViewSet):
             if not domain:
                 domain = self.request.META.get('SERVER_NAME')
             site, created = ContribSite.objects.get_or_create(domain=domain)
-            account_site, created2 = Site.objects.get_or_create(site=site, account=obj.account)
+            try:
+                Site.objects.get(site=site, account=obj.account)
+            except ObjectDoesNotExist:
+                Site.objects.create(site=site, account=obj.account, author=obj.author)
             obj.sites.add(site)
 
 

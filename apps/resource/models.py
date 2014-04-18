@@ -57,20 +57,18 @@ class User(Resource):
         verbose_name_plural = _('users')
 
 
-class Site(Common):
-    account = models.ForeignKey(Account, verbose_name=_('account'), editable=False)
+class Site(Resource):
     site = models.ForeignKey(ContribSite, verbose_name=_('site'))
 
     def __str__(self):
         return self.site.domain
 
     class Meta(Common.Meta):
-        unique_together = ['account', 'site']
-        verbose_name = _('account site')
-        verbose_name_plural = _('account sites')
+        verbose_name = _('site')
+        verbose_name_plural = _('sites')
 
-# TODO rename Site to Site and inherit from Resource
 # TODO move AuthorRestriction to Resource app
 # TODO move backends, login and exceptions and urls to resource
 # TODO Remove account app
+# TODO Revise serializers, viewsets and models. Remove unecessary stuff. Nest serializers.
 # TODO redo translation
