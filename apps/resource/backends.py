@@ -70,3 +70,8 @@ class AuthorRestrictionBackend(filters.BaseFilterBackend):
                 return queryset.filter(author=request.user)
         else:
             return queryset
+
+
+class ResourceFilterBackend(filters.BaseFilterBackend):
+    def filter_queryset(self, request, queryset, view):
+        return queryset.filter(owner=request.user.user.owner)

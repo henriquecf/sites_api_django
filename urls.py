@@ -1,8 +1,6 @@
 from django.conf.urls import patterns, url, include
 from django.contrib import admin
 from rest_framework.routers import DefaultRouter
-
-from apps.account import views as account_views
 from apps.category.views import CategoryViewSet
 from apps.news import views as news_views
 from apps.publication import views as publication_views
@@ -18,7 +16,6 @@ router = DefaultRouter()
 router.register(r'publication', publication_views.PublicationBaseViewSet)
 router.register(r'category', CategoryViewSet)
 router.register(r'news', news_views.NewsViewSet)
-router.register(r'account', account_views.AccountViewSet)
 router.register(r'permission', PermissionViewSet)
 router.register(r'file', file_explorer_views.FileViewSet)
 router.register(r'subscription', newsletter_views.SubscriptionViewSet)

@@ -48,10 +48,10 @@ class ResourceViewSet(viewsets.ModelViewSet):
         """
         try:
             obj.author
-            obj.account
+            obj.owner
         except ObjectDoesNotExist:
             obj.author = self.request.user
-            obj.account = self.request.user.user.account
+            obj.owner = self.request.user.user.owner
 
     def post_save(self, obj, created=False):
         if not obj.sites.all():
@@ -60,9 +60,9 @@ class ResourceViewSet(viewsets.ModelViewSet):
                 domain = self.request.META.get('SERVER_NAME')
             site, created = ContribSite.objects.get_or_create(domain=domain)
             try:
-                Site.objects.get(site=site, account=obj.account)
+                Site.objects.get(site=site, owner=obj.owner)
             except ObjectDoesNotExist:
-                Site.objects.create(site=site, account=obj.account, author=obj.author)
+                Site.objects.create(site=site, owner=obj.owner, author=obj.author)
             obj.sites.add(site)
 
 
@@ -76,7 +76,7 @@ class AccountSiteRetrieveAPIViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return super(AccountSiteRetrieveAPIViewSet, self).get_queryset().filter(
-            account=self.request.user.user.account)
+            owner=self.request.user.user.owner)
 
 
 class UserViewSet(ResourceViewSet):
@@ -90,10 +90,10 @@ class UserViewSet(ResourceViewSet):
         """
         queryset = super(UserViewSet, self).get_queryset()
         try:
-            account = self.request.user.user.account
+            owner = self.request.user.user.owner
         except ObjectDoesNotExist:
-            account = self.request.user.account
-        return queryset.filter(account=account)
+            owner = self.request.user.owner
+        return queryset.filter(owner=owner)
 
 
 class GroupViewSet(ResourceViewSet):
@@ -103,11 +103,11 @@ class GroupViewSet(ResourceViewSet):
 
     def get_queryset(self):
         queryset = super(GroupViewSet, self).get_queryset()
-        return queryset.filter(account=self.request.user.user.account)
+        return queryset.filter(owner=self.request.user.user.owner)
 
     def pre_save(self, obj):
         try:
-            Group.objects.get(account=self.request.user.user.account, role=obj.role)
+            Group.objects.get(owner=self.request.user.user.owner, role=obj.role)
             raise BadRequestValidationError(_('Role field is unique. Please insert another name.'))
         except ObjectDoesNotExist:
             super(GroupViewSet, self).pre_save(obj)
@@ -148,7 +148,7 @@ class SiteViewSet(ReadOnlyModelViewSet):
     filter_backends = ()
 
     def get_queryset(self):
-        return super(SiteViewSet, self).get_queryset().filter(site__account=self.request.user.user.account)
+        return super(SiteViewSet, self).get_queryset().filter(site__owner=self.request.user.user.owner)
 
 
 class AuthorRestrictionViewSet(ModelViewSet):
@@ -166,19 +166,18 @@ class AuthorRestrictionViewSet(ModelViewSet):
             return queryset
         else:
             return queryset.filter(
-                Q(user__user__account=user.user.account) | Q(
-                    group__group__account=user.user.account))
+                Q(user__user__owner=user.user.owner) | Q(group__group__owner=user.user.owner))
 
     def pre_save(self, obj):
         try:
-            account = obj.user.user.account
+            owner = obj.user.user.owner
         except AttributeError:
             try:
-                account = obj.group.group.account
+                owner = obj.group.group.owner
             except AttributeError:
                 raise BadRequestValidationError(_('You must specify either User or Group field.'))
 
-        if account != self.request.user.user.account:
+        if owner != self.request.user.user.owner:
             raise BadRequestValidationError(_('You can not alter other account permissions.'))
         else:
             super(AuthorRestrictionViewSet, self).pre_save(obj)

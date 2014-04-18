@@ -98,7 +98,7 @@ class CategoryAPITestCase(APILiveServerTestCase):
         possible_parents = CategorySerializer(context={'request': request}).get_fields()['parent'].queryset
         self.assertIn(('Category 1', ), possible_parents.values_list('name'))
 
-        other_user_category = Category.objects.create(author=self.second_owner, account=self.second_owner.account,
+        other_user_category = Category.objects.create(author=self.second_owner, owner=self.second_owner,
                                                       name='Other category', model_name='uncategorized')
         possible_parents = CategorySerializer(context={'request': request}).get_fields()['parent'].queryset
         self.assertIn(('Category 1', ), possible_parents.values_list('name'))

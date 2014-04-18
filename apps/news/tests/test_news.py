@@ -93,12 +93,12 @@ class NewsAPITestCase(APILiveServerTestCase):
     def test_categories_filter_get_fields_serializer(self):
         request = HttpRequest()
         request.user = self.owner
-        category = Category.objects.create(author=self.owner, account=self.owner.account, name='Category 1',
+        category = Category.objects.create(author=self.owner, owner=self.owner, name='Category 1',
                                            model_name='news')
         possible_categories = NewsSerializer(context={'request': request}).get_fields()['categories'].queryset
         self.assertIn(category, possible_categories)
 
-        other_user_category = Category.objects.create(author=self.second_owner, account=self.second_owner.account,
+        other_user_category = Category.objects.create(author=self.second_owner, owner=self.second_owner,
                                                       name='Other category', model_name='news')
 
         possible_categories = NewsSerializer(context={'request': request}).get_fields()['categories'].queryset

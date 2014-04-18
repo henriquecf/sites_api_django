@@ -16,7 +16,7 @@ class SubscriptionViewSet(ResourceViewSet):
     def create(self, request, *args, **kwargs):
         try:
             subscription = Subscription.objects.get(email=request.DATA['email'],
-                                                    account=request.user.user.account)
+                                                    owner=request.user.user.owner)
             subscription.is_active = True
             subscription.save()
             serialized_data = SubscriptionSerializer(subscription, context={'request': request})
@@ -52,7 +52,7 @@ class NewsletterViewSet(ResourceViewSet):
     def send_newsletter(self, request, *args, **kwargs):
         """Send the newsletter calling the model function."""
         newsletter = self.get_object()
-        status = newsletter.send_newsletter(account=request.user.user.account)
+        status = newsletter.send_newsletter(owner=request.user.user.owner)
         if status:
             data = {
                 'submissions': status,

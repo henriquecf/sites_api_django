@@ -1,10 +1,30 @@
 # -*- coding: utf-8 -*-
-from django.utils.translation import ugettext_lazy as _, ugettext_lazy
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.models import Site as ContribSite
-from django.contrib.auth.models import Group as AuthGroup
+from django.contrib.auth.models import Group as AuthGroup, User as AuthUser
 from rest_framework import serializers
 from apps.resource.models import Site, Resource, Group, User, AuthorRestriction
-from apps.account.serializers import UserSerializer as AuthUserSerializer
+
+
+class AuthUserSerializer(serializers.HyperlinkedModelSerializer):
+    #def get_fields(self):
+    #    fields = super(AuthUserSerializer, self).get_fields()
+    #    fields['groups'].queryset = fields['groups'].queryset.filter(
+    #        group__account=self.context['request'].user.accountuser.account)
+    #    return fields
+
+    email = serializers.EmailField(required=True)
+
+    class Meta:
+        model = AuthUser
+        exclude = ['is_superuser']
+        read_only_fields = ('date_joined', 'last_login', 'is_active')
+        write_only_fields = ('password',)
+
+
+class RestrictedOwnerAuthUserSerializer(AuthUserSerializer):
+    class Meta(AuthUserSerializer.Meta):
+        read_only_fields = ('date_joined', 'last_login', 'is_active', 'is_staff', 'user_permissions', 'groups')
 
 
 class AuthGroupSerializer(serializers.ModelSerializer):
@@ -20,12 +40,12 @@ class ResourceSerializer(serializers.HyperlinkedModelSerializer):
     def get_fields(self):
         fields = super(ResourceSerializer, self).get_fields()
         fields['sites'].queryset = fields['sites'].queryset.filter(
-            site__account=self.context['request'].user.user.account)
+            site__owner=self.context['request'].user.user.owner)
         return fields
 
     class Meta:
         model = Resource
-        read_only_fields = ('account',)
+        read_only_fields = ('owner',)
 
 
 class AccountSiteSerializer(serializers.HyperlinkedModelSerializer):
@@ -63,9 +83,9 @@ class AuthorRestrictionSerializer(serializers.HyperlinkedModelSerializer):
     def get_fields(self):
         fields = super(AuthorRestrictionSerializer, self).get_fields()
         fields['user'].queryset = fields['user'].queryset.filter(
-            user__account=self.context['request'].user.user.account)
+            user__owner=self.context['request'].user.user.owner)
         fields['group'].queryset = fields['group'].queryset.filter(
-            group__account=self.context['request'].user.user.account)
+            group__owner=self.context['request'].user.user.owner)
         return fields
 
     user = serializers.PrimaryKeyRelatedField(label=_('user'), blank=True)
