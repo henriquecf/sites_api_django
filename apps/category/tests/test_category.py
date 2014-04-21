@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 from copy import copy
 from django.core.urlresolvers import reverse
+from django.contrib.contenttypes.models import ContentType
 from django.http.request import HttpRequest
 from rest_framework.test import APILiveServerTestCase
 
+from apps.resource.tests import routines as resource_routines
+from apps.resource.models import Resource
+from apps.publication.models import Publication
 from apps.category.models import Category
 from apps.category.serializers import CategorySerializer
-from apps.resource.tests import routines as resource_routines
 import test_routines
 import test_fixtures
 
@@ -16,13 +19,14 @@ class CategoryAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
         self.url = reverse('category-list')
+        resource_content_type = ContentType.objects.get_for_model(Resource)
         self.data = {
             'name': 'Category 1',
-            'model': 'uncategorized'
+            'model': resource_content_type.id,
         }
         self.altered_data = {
             'name': 'Category 1 altered',
-            'model': 'uncategorized'
+            'model': resource_content_type.id,
         }
         test_fixtures.user_accountuser_account_permissions_token_fixture(self)
         self.set_authorization_bearer()
@@ -85,10 +89,11 @@ class CategoryAPITestCase(APILiveServerTestCase):
 
     def test_filter_model_name(self):
         data = copy(self.data)
-        data.update({'model': 'other category'})
+        other_category_content_type = ContentType.objects.get_for_model(Publication)
+        data.update({'model': other_category_content_type.id})
         response = self.client.post(self.url, data)
         self.assertEqual(201, response.status_code, response.data)
-        model_filter = {'model': 'other category'}
+        model_filter = {'model': other_category_content_type.id}
         response2 = self.client.get(self.url, model_filter)
         self.assertEqual(1, response2.data['count'], response2.data)
 
@@ -97,9 +102,9 @@ class CategoryAPITestCase(APILiveServerTestCase):
         request.user = self.owner
         possible_parents = CategorySerializer(context={'request': request}).get_fields()['parent'].queryset
         self.assertIn(('Category 1', ), possible_parents.values_list('name'))
-
+        resource_content_type = ContentType.objects.get_for_model(Resource)
         other_user_category = Category.objects.create(author=self.second_owner, account=self.second_owner.account,
-                                                      name='Other category', model='uncategorized')
+                                                      name='Other category', model=resource_content_type)
         possible_parents = CategorySerializer(context={'request': request}).get_fields()['parent'].queryset
         self.assertIn(('Category 1', ), possible_parents.values_list('name'))
         self.assertNotIn(other_user_category, possible_parents)

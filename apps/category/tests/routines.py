@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 from copy import copy
+from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from rest_framework import status
 
 
 def test_add_category_routine(test_case, name='Category 1'):
     data2 = copy(test_case.data)
+    model_content_type = ContentType.objects.get_for_model(test_case.model)
     category_data = {
         'name': name,
-        'model': test_case.model._meta.model_name,
+        'model': model_content_type.id,
     }
     category_url = reverse('category-list')
     response = test_case.client.post(category_url, category_data)

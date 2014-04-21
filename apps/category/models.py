@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.contenttypes.models import ContentType
 # Create your models here.
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
@@ -15,7 +16,7 @@ class Category(MPTTModel, Resource):
     name = models.CharField(_('name'), max_length=150)
     parent = TreeForeignKey('self', verbose_name=_('parent category'), null=True, blank=True,
                             related_name='children_set')
-    model = models.CharField(_('model name'), max_length=50)
+    model = models.ForeignKey(ContentType, verbose_name=_('model name'))
 
     def __str__(self):
         return self.name
