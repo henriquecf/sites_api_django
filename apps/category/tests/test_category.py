@@ -18,11 +18,11 @@ class CategoryAPITestCase(APILiveServerTestCase):
         self.url = reverse('category-list')
         self.data = {
             'name': 'Category 1',
-            'model_name': 'uncategorized'
+            'model': 'uncategorized'
         }
         self.altered_data = {
             'name': 'Category 1 altered',
-            'model_name': 'uncategorized'
+            'model': 'uncategorized'
         }
         test_fixtures.user_accountuser_account_permissions_token_fixture(self)
         self.set_authorization_bearer()
@@ -85,10 +85,10 @@ class CategoryAPITestCase(APILiveServerTestCase):
 
     def test_filter_model_name(self):
         data = copy(self.data)
-        data.update({'model_name': 'other category'})
+        data.update({'model': 'other category'})
         response = self.client.post(self.url, data)
         self.assertEqual(201, response.status_code, response.data)
-        model_filter = {'model_name': 'other category'}
+        model_filter = {'model': 'other category'}
         response2 = self.client.get(self.url, model_filter)
         self.assertEqual(1, response2.data['count'], response2.data)
 
@@ -99,7 +99,7 @@ class CategoryAPITestCase(APILiveServerTestCase):
         self.assertIn(('Category 1', ), possible_parents.values_list('name'))
 
         other_user_category = Category.objects.create(author=self.second_owner, account=self.second_owner.account,
-                                                      name='Other category', model_name='uncategorized')
+                                                      name='Other category', model='uncategorized')
         possible_parents = CategorySerializer(context={'request': request}).get_fields()['parent'].queryset
         self.assertIn(('Category 1', ), possible_parents.values_list('name'))
         self.assertNotIn(other_user_category, possible_parents)

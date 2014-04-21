@@ -15,7 +15,7 @@ class Category(MPTTModel, Resource):
     name = models.CharField(_('name'), max_length=150)
     parent = TreeForeignKey('self', verbose_name=_('parent category'), null=True, blank=True,
                             related_name='children_set')
-    model_name = models.CharField(_('model name'), max_length=50)
+    model = models.CharField(_('model name'), max_length=50)
 
     def __str__(self):
         return self.name
