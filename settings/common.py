@@ -55,6 +55,7 @@ INSTALLED_APPS = (
     'apps.newsletter',
     'apps.resource',
     'apps.category',
+    'apps.cms',
 )
 
 MIDDLEWARE_CLASSES = (

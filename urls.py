@@ -9,6 +9,7 @@ from apps.publication import views as publication_views
 from apps.file_explorer import views as file_explorer_views
 from apps.newsletter import views as newsletter_views
 from apps.resource import views as resource_views
+from apps.cms import views as cms_views
 
 
 admin.autodiscover()
@@ -29,6 +30,7 @@ router.register(r'user', account_views.UserViewSet)
 router.register(r'accountgroup', account_views.AccountGroupViewSet)
 router.register(r'authorrestriction', account_views.AuthorRestrictionViewSet)
 router.register(r'accountsite', resource_views.AccountSiteRetrieveAPIViewSet)
+router.register(r'page', cms_views.PageViewSet)
 
 urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
