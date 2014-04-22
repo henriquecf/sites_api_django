@@ -79,7 +79,11 @@ class SiteSerializer(serializers.HyperlinkedModelSerializer):
         model = ContribSite
 
 
-class AuthorRestrictionSerializer(serializers.HyperlinkedModelSerializer):
+class AuthorRestrictionSerializer(ResourceSerializer):
+    user = serializers.PrimaryKeyRelatedField(label=_('user'), blank=True)
+    permission = serializers.PrimaryKeyRelatedField(label=_('permission'))
+    group = serializers.PrimaryKeyRelatedField(label=_('group'), blank=True)
+
     def get_fields(self):
         fields = super(AuthorRestrictionSerializer, self).get_fields()
         fields['user'].queryset = fields['user'].queryset.filter(
@@ -88,9 +92,5 @@ class AuthorRestrictionSerializer(serializers.HyperlinkedModelSerializer):
             group__owner=self.context['request'].user.user.owner)
         return fields
 
-    user = serializers.PrimaryKeyRelatedField(label=_('user'), blank=True)
-    permission = serializers.PrimaryKeyRelatedField(label=_('permission'))
-    group = serializers.PrimaryKeyRelatedField(label=_('group'), blank=True)
-
-    class Meta:
+    class Meta(ResourceSerializer.Meta):
         model = AuthorRestriction

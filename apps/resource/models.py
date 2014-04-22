@@ -83,7 +83,7 @@ class Site(Resource):
         verbose_name_plural = _('sites')
 
 
-class AuthorRestriction(Common):
+class AuthorRestriction(Resource):
     filter_values = models.TextField(_('filter values'))
     permission = models.ForeignKey(Permission, verbose_name=_('permission'))
     user = models.ForeignKey(AuthUser, verbose_name=_('user'), null=True, blank=True,

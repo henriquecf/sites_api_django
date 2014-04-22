@@ -151,13 +151,9 @@ class SiteViewSet(ReadOnlyModelViewSet):
         return super(SiteViewSet, self).get_queryset().filter(site__owner=self.request.user.user.owner)
 
 
-class AuthorRestrictionViewSet(ModelViewSet):
+class AuthorRestrictionViewSet(ResourceViewSet):
     model = AuthorRestriction
     serializer_class = AuthorRestrictionSerializer
-    permission_classes = (
-        permissions.IsAdminUser,
-    )
-    filter_backends = ()
 
     def get_queryset(self):
         queryset = super(AuthorRestrictionViewSet, self).get_queryset()
