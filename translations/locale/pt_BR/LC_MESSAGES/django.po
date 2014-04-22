@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-16 17:54-0300\n"
+"POT-Creation-Date: 2014-04-22 14:57-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,140 +17,24 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: apps/account/exceptions.py:14
-msgid "There was an error validating the request."
-msgstr "Houve um erro ao validar a requisição."
-
-#: apps/account/models.py:19
-msgid "creation date"
-msgstr "data de criação"
-
-#: apps/account/models.py:20
-msgid "last modification date"
-msgstr "data da última modificação"
-
-#: apps/account/models.py:32
-msgid "expiration date"
-msgstr "data de expiração"
-
-#: apps/account/models.py:33 apps/account/serializers.py:10
-msgid "owner"
-msgstr "proprietário"
-
-#: apps/account/models.py:39 apps/account/models.py:46
-#: apps/account/models.py:68 apps/account/serializers.py:18
-#: apps/account/serializers.py:47 apps/resource/models.py:10
-#: apps/resource/models.py:29
-msgid "account"
-msgstr "conta"
-
-#: apps/account/models.py:40
-msgid "accounts"
-msgstr "contas"
-
-#: apps/account/models.py:44 apps/account/models.py:82
-#: apps/account/serializers.py:48 apps/account/serializers.py:69
-msgid "group"
-msgstr "grupo"
-
-#: apps/account/models.py:45
-msgid "role"
-msgstr "função"
-
-#: apps/account/models.py:62
-msgid "account group"
-msgstr "grupo da conta"
-
-#: apps/account/models.py:63
-msgid "account groups"
-msgstr "grupos da conta"
-
-#: apps/account/models.py:67 apps/account/models.py:81
-#: apps/account/serializers.py:17 apps/account/serializers.py:67
-msgid "user"
-msgstr "usuário"
-
-#: apps/account/models.py:74
-msgid "account user"
-msgstr "usuário da conta"
-
-#: apps/account/models.py:75
-msgid "account users"
-msgstr "usuários da conta"
-
-#: apps/account/models.py:79
-msgid "filter values"
-msgstr "valores do filtro"
-
-#: apps/account/models.py:80 apps/account/serializers.py:68
-msgid "permission"
-msgstr "permissão"
-
-#: apps/account/models.py:120
-msgid "author restriction"
-msgstr "restrição por autor"
-
-#: apps/account/models.py:121
-msgid "author restrictions"
-msgstr "restrições por autor"
-
-#: apps/account/serializers.py:49
-msgid "assign permissions"
-msgstr "atribuir permissões"
-
-#: apps/account/serializers.py:51
-msgid "unassign permissions"
-msgstr "retirar permissões"
-
-#: apps/account/views.py:41
-msgid "You already have an account and can not create another one."
-msgstr "Você já tem uma conta e não pode criar outra."
-
-#: apps/account/views.py:77
-msgid "You can create just one user account."
-msgstr "Você pode criar apenas uma conta de usuário."
-
-#: apps/account/views.py:151
-msgid "Role field is unique. Please insert another name."
-msgstr "Campo função é único. Por favor insira outro nome."
-
-#: apps/account/views.py:162
-msgid "You must define the permissions through dict key \"permissions\"."
-msgstr "Você deve definir as permissões pela chave \"permissions\"."
-
-#: apps/account/views.py:175
-#, fuzzy
-#| msgid "You must define the permissions through dict key \"permissions\"."
-msgid ""
-"You must define the permissions to assign through dict key \"permissions\"."
-msgstr "Você deve definir as permissões pela chave \"permissions\"."
-
-#: apps/account/views.py:207
-msgid "You must specify either User or Group field."
-msgstr "Você deve especificar o campo Usuário ou o campo Grupo."
-
-#: apps/account/views.py:210
-msgid "You can not alter other account permissions."
-msgstr "Você não pode alterar permissões de outra conta."
-
-#: apps/category/models.py:15 apps/newsletter/models.py:18
+#: apps/category/models.py:16 apps/newsletter/models.py:18
 msgid "name"
 msgstr "nome"
 
-#: apps/category/models.py:16
+#: apps/category/models.py:17
 msgid "parent category"
 msgstr "categoria pai"
 
-#: apps/category/models.py:18
+#: apps/category/models.py:19
 msgid "model name"
 msgstr "nome do modelo"
 
-#: apps/category/models.py:24
+#: apps/category/models.py:25
 msgid "category"
 msgstr "categoria"
 
-#: apps/category/models.py:25 apps/file_explorer/models.py:18
-#: apps/news/models.py:20
+#: apps/category/models.py:26 apps/file_explorer/models.py:18
+#: apps/news/models.py:19
 msgid "categories"
 msgstr "categorias"
 
@@ -163,7 +47,7 @@ msgid "is leaf node"
 msgstr "é nó folha"
 
 #: apps/file_explorer/models.py:17 apps/file_explorer/models.py:27
-#: apps/file_explorer/serializers.py:21
+#: apps/file_explorer/serializers.py:24
 msgid "file"
 msgstr "arquivo"
 
@@ -171,19 +55,15 @@ msgstr "arquivo"
 msgid "files"
 msgstr "arquivos"
 
-#: apps/news/models.py:18 apps/newsletter/models.py:41
-msgid "content"
-msgstr "conteúdo"
-
-#: apps/news/models.py:19
+#: apps/news/models.py:18
 msgid "image"
 msgstr "imagem"
 
-#: apps/news/models.py:27
+#: apps/news/models.py:26
 msgid "news"
 msgstr "notícia"
 
-#: apps/news/models.py:28
+#: apps/news/models.py:27
 msgid "tidings"
 msgstr "notícias"
 
@@ -212,6 +92,10 @@ msgstr "assinaturas"
 msgid "subject"
 msgstr "assunto"
 
+#: apps/newsletter/models.py:41 apps/publication/models.py:16
+msgid "content"
+msgstr "conteúdo"
+
 #: apps/newsletter/models.py:42
 msgid "sender email"
 msgstr "email do remetente"
@@ -233,7 +117,7 @@ msgstr "estado"
 msgid "submission"
 msgstr "submissão"
 
-#: apps/newsletter/models.py:112 apps/newsletter/serializers.py:25
+#: apps/newsletter/models.py:112 apps/newsletter/serializers.py:26
 msgid "submissions"
 msgstr "submissões"
 
@@ -253,27 +137,27 @@ msgstr "Você não pode descadastrar sem uma chave válida."
 msgid "title"
 msgstr "título"
 
-#: apps/publication/models.py:16
+#: apps/publication/models.py:17
 msgid "description"
 msgstr "descrição"
 
-#: apps/publication/models.py:17
+#: apps/publication/models.py:18
 msgid "slug"
 msgstr "apelido"
 
-#: apps/publication/models.py:18
+#: apps/publication/models.py:19
 msgid "publication start date"
 msgstr "data de início da publicação"
 
-#: apps/publication/models.py:19
+#: apps/publication/models.py:20
 msgid "publication end date"
 msgstr "data final da publicação"
 
-#: apps/publication/models.py:62
+#: apps/publication/models.py:73
 msgid "publication"
 msgstr "publicação"
 
-#: apps/publication/models.py:63
+#: apps/publication/models.py:74
 msgid "publications"
 msgstr "publicações"
 
@@ -289,30 +173,104 @@ msgstr "publicar"
 msgid "unpublish"
 msgstr "despublicar"
 
-#: apps/resource/models.py:11 apps/resource/serializers.py:21
-msgid "site"
-msgstr "site"
+#: apps/resource/exceptions.py:14
+msgid "There was an error validating the request."
+msgstr "Houve um erro ao validar a requisição."
 
-#: apps/resource/models.py:18
-msgid "account site"
-msgstr "site da conta"
+#: apps/resource/models.py:16
+msgid "creation date"
+msgstr "data de criação"
 
-#: apps/resource/models.py:19
-msgid "account sites"
-msgstr "sites da conta"
+#: apps/resource/models.py:17
+msgid "last modification date"
+msgstr "data da última modificação"
 
-#: apps/resource/models.py:30
+#: apps/resource/models.py:31
+msgid "owner"
+msgstr "proprietário"
+
+#: apps/resource/models.py:32
 msgid "author"
 msgstr "autor"
 
-#: apps/resource/models.py:31
+#: apps/resource/models.py:33 apps/resource/models.py:83
 msgid "sites"
 msgstr "sites"
 
-#: apps/resource/models.py:40
+#: apps/resource/models.py:42
 msgid "resource"
 msgstr "recurso"
 
-#: apps/resource/models.py:41
+#: apps/resource/models.py:43
 msgid "resources"
 msgstr "recursos"
+
+#: apps/resource/models.py:47 apps/resource/models.py:60
+#: apps/resource/models.py:91 apps/resource/serializers.py:73
+msgid "group"
+msgstr "grupo"
+
+#: apps/resource/models.py:48
+msgid "role"
+msgstr "função"
+
+#: apps/resource/models.py:61
+msgid "groups"
+msgstr "grupos"
+
+#: apps/resource/models.py:65 apps/resource/models.py:71
+#: apps/resource/models.py:89 apps/resource/serializers.py:71
+msgid "user"
+msgstr "usuário"
+
+#: apps/resource/models.py:72
+msgid "users"
+msgstr "usuários"
+
+#: apps/resource/models.py:76 apps/resource/models.py:82
+msgid "site"
+msgstr "site"
+
+#: apps/resource/models.py:87
+msgid "filter values"
+msgstr "valores do filtro"
+
+#: apps/resource/models.py:88 apps/resource/serializers.py:72
+msgid "permission"
+msgstr "permissão"
+
+#: apps/resource/models.py:129
+msgid "author restriction"
+msgstr "restrição por autor"
+
+#: apps/resource/models.py:130
+msgid "author restrictions"
+msgstr "restrições por autor"
+
+#: apps/resource/serializers.py:54
+msgid "assign permissions"
+msgstr "atribuir permissões"
+
+#: apps/resource/serializers.py:56
+msgid "unassign permissions"
+msgstr "retirar permissões"
+
+#: apps/resource/views.py:96
+msgid "Role field is unique. Please insert another name."
+msgstr "Campo função é único. Por favor insira outro nome."
+
+#: apps/resource/views.py:107
+msgid "You must define the permissions through dict key \"permissions\"."
+msgstr "Você deve definir as permissões pela chave \"permissions\"."
+
+#: apps/resource/views.py:120
+msgid "You must define the permissions to assign through dict key \"permissions\"."
+msgstr "Você deve definir as permissões pela chave \"permissions\"."
+
+#: apps/resource/views.py:147
+msgid "You must specify either User or Group field."
+msgstr "Você deve especificar o campo Usuário ou o campo Grupo."
+
+#: apps/resource/views.py:150
+msgid "You can not alter other account permissions."
+msgstr "Você não pode alterar permissões de outra conta."
