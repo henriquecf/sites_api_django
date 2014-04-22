@@ -15,11 +15,7 @@ class Fixtures:
     def create_owner_users(self):
         User.objects.create_superuser('henrique', 'elo.henrique@gmail.com', '123')
         self.owner = User.objects.create_user('owner', 'owner@owner.com', '123')
-        self.owner.is_staff = True
-        self.owner.save()
         self.second_owner = User.objects.create_user('second_owner', 'second_owner@owner.com', '123')
-        self.second_owner.is_staff = True
-        self.second_owner.save()
         self.test_case.owner = self.owner
         self.test_case.second_owner = self.second_owner
 
