@@ -59,9 +59,8 @@ class UserAPITestCase(APILiveServerTestCase):
 
     def test_accountuser_created_has_same_account_as_request_user(self):
         owner_user = User.objects.get(username=self.owner_token)
-        url = self.first_object_response.data['owner']
-        account_id = url.split('/')[-2]
-        self.assertEqual(account_id, str(owner_user.user.owner.id))
+        account_id = self.first_object_response.data['owner']['id']
+        self.assertEqual(account_id, owner_user.user.owner.id)
 
     def test_serializer_hyperlinked_fields(self):
         fields = []

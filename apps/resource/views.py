@@ -1,20 +1,18 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import Permission
 from django.contrib.sites.models import Site as ContribSite
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 
 from apps.resource.exceptions import BadRequestValidationError
 from apps.resource.models import Resource, Site, User, Group, AuthorRestriction
-from apps.resource.serializers import ResourceSerializer, AccountSiteSerializer, UserSerializer, \
-    GroupSerializer, SiteSerializer, AuthorRestrictionSerializer
+from apps.resource.serializers import ResourceSerializer, UserSerializer, \
+    GroupSerializer, AuthorRestrictionSerializer
 
 
 class UserLoginView(FormView):
@@ -64,19 +62,6 @@ class ResourceViewSet(viewsets.ModelViewSet):
             except ObjectDoesNotExist:
                 Site.objects.create(site=site, owner=obj.owner, author=obj.author)
             obj.sites.add(site)
-
-
-class AccountSiteRetrieveAPIViewSet(ReadOnlyModelViewSet):
-    model = Site
-    serializer_class = AccountSiteSerializer
-    permission_classes = (
-        permissions.IsAuthenticated,
-    )
-    filter_backends = ()
-
-    def get_queryset(self):
-        return super(AccountSiteRetrieveAPIViewSet, self).get_queryset().filter(
-            owner=self.request.user.user.owner)
 
 
 class UserViewSet(ResourceViewSet):
@@ -139,18 +124,6 @@ class GroupViewSet(ResourceViewSet):
         return Response(data={'assigned_permissions': permissions_to_unassign})
 
 
-class SiteViewSet(ReadOnlyModelViewSet):
-    model = ContribSite
-    serializer_class = SiteSerializer
-    permission_classes = (
-        permissions.IsAuthenticated,
-    )
-    filter_backends = ()
-
-    def get_queryset(self):
-        return super(SiteViewSet, self).get_queryset().filter(site__owner=self.request.user.user.owner)
-
-
 class AuthorRestrictionViewSet(ResourceViewSet):
     model = AuthorRestriction
     serializer_class = AuthorRestrictionSerializer
@@ -177,11 +150,3 @@ class AuthorRestrictionViewSet(ResourceViewSet):
             raise BadRequestValidationError(_('You can not alter other account permissions.'))
         else:
             super(AuthorRestrictionViewSet, self).pre_save(obj)
-
-
-class PermissionViewSet(ReadOnlyModelViewSet):
-    model = Permission
-    permission_classes = (
-        permissions.IsAdminUser,
-    )
-    filter_backends = ()

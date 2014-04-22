@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.sites.models import Site as ContribSite
-from django.contrib.auth.models import Group as AuthGroup, User as AuthUser
+from django.contrib.auth.models import Group as AuthGroup, User as AuthUser, Permission
 from rest_framework import serializers
 from apps.resource.models import Site, Resource, Group, User, AuthorRestriction
 
 
-class AuthUserSerializer(serializers.HyperlinkedModelSerializer):
-    #def get_fields(self):
-    #    fields = super(AuthUserSerializer, self).get_fields()
-    #    fields['groups'].queryset = fields['groups'].queryset.filter(
-    #        group__account=self.context['request'].user.accountuser.account)
-    #    return fields
+class PermissionSerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model = Permission
+
+
+class AuthUserSerializer(serializers.ModelSerializer):
+    user_permissions = PermissionSerializer(many=True, read_only=True)
     email = serializers.EmailField(required=True)
 
     class Meta:
@@ -36,6 +36,8 @@ class AuthGroupSerializer(serializers.ModelSerializer):
 
 class ResourceSerializer(serializers.HyperlinkedModelSerializer):
     author = AuthUserSerializer(read_only=True)
+    owner = AuthUserSerializer(read_only=True)
+    sites = serializers.PrimaryKeyRelatedField(many=True, required=False)
 
     def get_fields(self):
         fields = super(ResourceSerializer, self).get_fields()
@@ -45,14 +47,6 @@ class ResourceSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Resource
-        read_only_fields = ('owner',)
-
-
-class AccountSiteSerializer(serializers.HyperlinkedModelSerializer):
-    site = serializers.PrimaryKeyRelatedField(label=_('site'), read_only=True)
-
-    class Meta:
-        model = Site
 
 
 class GroupSerializer(ResourceSerializer):
@@ -71,12 +65,6 @@ class UserSerializer(ResourceSerializer):
 
     class Meta(ResourceSerializer.Meta):
         model = User
-
-
-class SiteSerializer(serializers.HyperlinkedModelSerializer):
-
-    class Meta:
-        model = ContribSite
 
 
 class AuthorRestrictionSerializer(ResourceSerializer):
