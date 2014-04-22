@@ -15,7 +15,6 @@ class News(Publication):
     image - A path to the image location on the server. It accepts null valies;
     categories - A many to many relation with category model.
     """
-    content = models.TextField(_('content'))
     image = models.ImageField(_('image'), upload_to=os.path.join(MEDIA_ROOT, 'files'), null=True, blank=True)
     categories = models.ManyToManyField(Category, verbose_name=_('categories'), null=True, blank=True,
                                         related_name='news')

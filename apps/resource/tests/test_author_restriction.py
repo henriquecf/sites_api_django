@@ -8,7 +8,7 @@ from rest_framework.test import APILiveServerTestCase
 from apps.resource.models import Group as CustomGroup, User as CustomUser, AuthorRestriction
 from apps.resource.serializers import AuthorRestrictionSerializer
 
-from test_fixtures import user_accountuser_account_token_fixture
+from test_fixtures import user_accountuser_account_permissions_token_fixture
 import test_routines
 
 
@@ -17,7 +17,7 @@ class AuthorRestrictionAPITestCase(APILiveServerTestCase):
 
     def setUp(self):
         self.url = reverse('authorrestriction-list')
-        user_accountuser_account_token_fixture(self)
+        user_accountuser_account_permissions_token_fixture(self)
         self.data = {
             'filter_values': '1',
             'user': self.owner.id,
@@ -36,11 +36,13 @@ class AuthorRestrictionAPITestCase(APILiveServerTestCase):
             token = self.owner_token
         self.client.credentials(HTTP_AUTHORIZATION='Bearer {0}'.format(token))
 
-    def alter_data(self, user_id, altered_data=False):
+    def alter_data(self, user_id=None, altered_data=False):
         if not altered_data:
             data = self.data
         else:
             data = self.altered_data
+        if not user_id:
+            user_id = self.second_owner.id
         filter_field = 'filter-field-{0}'.format(random.randint(1, 99999))
         data.update({
             'filter_field': filter_field,
@@ -54,6 +56,12 @@ class AuthorRestrictionAPITestCase(APILiveServerTestCase):
 
     def test_admin_permission(self):
         test_routines.test_admin_permission_routine(self)
+
+    def test_resource_permission(self):
+        test_routines.test_resource_permission_routine(self, alter_data=True)
+
+    def test_custom_object_permission(self):
+        test_routines.test_custom_object_permission_routine(self)
 
     def test_second_owner_permission(self):
         self.set_authorization_bearer(self.second_owner_token)

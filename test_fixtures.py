@@ -15,19 +15,15 @@ class Fixtures:
     def create_owner_users(self):
         User.objects.create_superuser('henrique', 'elo.henrique@gmail.com', '123')
         self.owner = User.objects.create_user('owner', 'owner@owner.com', '123')
-        self.owner.is_staff = True
-        self.owner.save()
         self.second_owner = User.objects.create_user('second_owner', 'second_owner@owner.com', '123')
-        self.second_owner.is_staff = True
-        self.second_owner.save()
         self.test_case.owner = self.owner
         self.test_case.second_owner = self.second_owner
 
-    def create_owner_accountusers(self):
+    def create_owner_customusers(self):
         CustomUser.objects.create(owner=self.owner, user=self.owner, author=self.owner)
         CustomUser.objects.create(owner=self.second_owner, user=self.second_owner, author=self.second_owner)
 
-    def create_account_users(self):
+    def create_users(self):
         self.owner_user = User.objects.create_user('owner_user', 'owner_user@owner.com', '123')
         self.owner_user2 = User.objects.create_user('owner_user2', 'owner_user2@owner.com', '123')
         CustomUser.objects.create(owner=self.owner, user=self.owner_user, author=self.owner)
@@ -58,8 +54,8 @@ def create_user_application(user):
 def user_accountuser_account_token_fixture(test_case):
     fixture = Fixtures(test_case)
     fixture.create_owner_users()
-    fixture.create_owner_accountusers()
-    fixture.create_account_users()
+    fixture.create_owner_customusers()
+    fixture.create_users()
     fixture.create_applications_and_tokens()
     return fixture
 
@@ -75,10 +71,9 @@ def user_accountuser_account_permissions_token_fixture(test_case):
         test_case.owner.user_permissions.add(permission)
         test_case.second_owner.user_permissions.add(permission)
         test_case.account_user2.user_permissions.add(permission)
-        AuthorRestriction.objects.create(permission=permission,
-                                         user=test_case.account_user2,
+        AuthorRestriction.objects.create(permission=permission, user=test_case.account_user2, owner=test_case.owner,
                                          filter_values='{0},{1}'.format(test_case.account_user2.id,
-                                                                        test_case.owner.id))
+                                                                        test_case.owner.id), author=test_case.owner)
     test_accountgroup = Group.objects.create(role='Test Group', owner=fixture.owner, author=test_case.owner)
     test_case.owner.groups.add(test_accountgroup.group)
 
