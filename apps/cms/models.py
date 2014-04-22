@@ -14,8 +14,7 @@ class Page(Publication):
              update_fields=None):
         page_content_type = ContentType.objects.get_for_model(Page)
         try:
-            self.category = Category.objects.get(name=self.slug, author=self.author, owner=self.owner,
-                                                 model=page_content_type)
+            self.category
         except Category.DoesNotExist:
             self.category = Category.objects.create(name=self.slug, author=self.author, owner=self.owner,
                                                     model=page_content_type)
