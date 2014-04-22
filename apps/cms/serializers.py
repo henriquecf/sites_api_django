@@ -3,7 +3,7 @@
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from apps.publication.serializers import PublicationSerializer
-from apps.cms.models import Page
+from apps.cms.models import Page, Module
 
 
 class PageSerializer(PublicationSerializer):
@@ -11,3 +11,9 @@ class PageSerializer(PublicationSerializer):
 
     class Meta(PublicationSerializer.Meta):
         model = Page
+
+
+class ModuleSerializer(PublicationSerializer):
+
+    class Meta(PublicationSerializer.Meta):
+        model = Module

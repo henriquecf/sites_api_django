@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
 
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import Permission
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 from apps.resource.tests import routines as resource_routines
 from apps.publication.tests import routines as publication_routines
 import test_routines
 import test_fixtures
-from apps.cms.models import Page
+from apps.cms.models import Module
 
 
-class PageAPITestCase(APILiveServerTestCase):
-    model = Page
+class ModuleAPITestCase(APILiveServerTestCase):
+    model = Module
 
     def setUp(self):
-        self.url = reverse('page-list')
+        self.url = reverse('module-list')
         self.data = {
-            'title': 'First Page',
+            'title': 'First Module',
         }
         self.altered_data = {
-            'title': 'First Page Altered',
+            'title': 'First Module Altered',
         }
         test_fixtures.user_accountuser_account_permissions_token_fixture(self)
         self.set_authorization_bearer()
@@ -81,10 +82,3 @@ class PageAPITestCase(APILiveServerTestCase):
 
     def test_resource_sites_field(self):
         resource_routines.test_resource_sites_field_routine(self)
-
-    def test_create_category(self):
-        self.assertIn('category', self.first_object_response.data)
-        self.assertIsNotNone(self.first_object_response.data['category'])
-        category_url = self.first_object_response.data['category']
-        category_response = self.client.get(category_url)
-        self.assertEqual(status.HTTP_200_OK, category_response.status_code)
