@@ -6,6 +6,7 @@ from apps.news import views as news_views
 from apps.publication import views as publication_views
 from apps.file_explorer import views as file_explorer_views
 from apps.newsletter import views as newsletter_views
+from apps.cms import views as cms_views
 from apps.resource.views import UserViewSet, GroupViewSet, AuthorRestrictionViewSet
 
 
@@ -22,6 +23,7 @@ router.register(r'submission', newsletter_views.SubmissionViewSet)
 router.register(r'user', UserViewSet)
 router.register(r'group', GroupViewSet)
 router.register(r'authorrestriction', AuthorRestrictionViewSet)
+router.register(r'page', cms_views.PageViewSet)
 
 urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
