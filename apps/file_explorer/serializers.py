@@ -7,6 +7,7 @@ from apps.file_explorer.models import File
 
 
 class FileSerializer(PublicationSerializer):
+
     def get_fields(self):
         fields = super(FileSerializer, self).get_fields()
         fields['categories'].queryset = fields['categories'].queryset.filter(

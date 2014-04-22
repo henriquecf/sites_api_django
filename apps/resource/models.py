@@ -130,6 +130,5 @@ class AuthorRestriction(Common):
         verbose_name_plural = _('author restrictions')
 
 
-# TODO Remove account app
 # TODO Revise serializers, viewsets and models. Remove unecessary stuff. Nest serializers.
 # TODO redo translation
