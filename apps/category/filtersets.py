@@ -7,4 +7,4 @@ class CategoryFilterSet(django_filters.FilterSet):
 
     class Meta:
         model = Category
-        fields = ['model_name']
+        fields = ['model']
