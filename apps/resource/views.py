@@ -1,15 +1,13 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import Permission
 from django.contrib.sites.models import Site as ContribSite
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 
 from apps.resource.exceptions import BadRequestValidationError
 from apps.resource.models import Resource, Site, User, Group, AuthorRestriction
@@ -152,11 +150,3 @@ class AuthorRestrictionViewSet(ResourceViewSet):
             raise BadRequestValidationError(_('You can not alter other account permissions.'))
         else:
             super(AuthorRestrictionViewSet, self).pre_save(obj)
-
-
-class PermissionViewSet(ReadOnlyModelViewSet):
-    model = Permission
-    permission_classes = (
-        permissions.IsAdminUser,
-    )
-    filter_backends = ()

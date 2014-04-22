@@ -6,7 +6,7 @@ from apps.news import views as news_views
 from apps.publication import views as publication_views
 from apps.file_explorer import views as file_explorer_views
 from apps.newsletter import views as newsletter_views
-from apps.resource.views import UserViewSet, GroupViewSet, AuthorRestrictionViewSet, PermissionViewSet
+from apps.resource.views import UserViewSet, GroupViewSet, AuthorRestrictionViewSet
 
 
 admin.autodiscover()
@@ -15,7 +15,6 @@ router = DefaultRouter()
 router.register(r'publication', publication_views.PublicationBaseViewSet)
 router.register(r'category', CategoryViewSet)
 router.register(r'news', news_views.NewsViewSet)
-router.register(r'permission', PermissionViewSet)
 router.register(r'file', file_explorer_views.FileViewSet)
 router.register(r'subscription', newsletter_views.SubscriptionViewSet)
 router.register(r'newsletter', newsletter_views.NewsletterViewSet)
