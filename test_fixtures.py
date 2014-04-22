@@ -4,7 +4,7 @@ from datetime import timedelta
 from django.contrib.auth.models import User, Permission
 from django.utils import timezone
 from oauth2_provider.models import Application, AccessToken
-from apps.account.models import AccountUser, Account, AuthorRestriction, AccountGroup
+from apps.resource.models import Group, User as CustomUser, AuthorRestriction
 
 
 class Fixtures:
@@ -23,19 +23,15 @@ class Fixtures:
         self.test_case.owner = self.owner
         self.test_case.second_owner = self.second_owner
 
-    def create_owner_accounts(self):
-        self.owner_account = Account.objects.create(owner=self.owner)
-        self.second_owner_account = Account.objects.create(owner=self.second_owner)
-
     def create_owner_accountusers(self):
-        AccountUser.objects.create(account=self.owner_account, user=self.owner)
-        AccountUser.objects.create(account=self.second_owner_account, user=self.second_owner)
+        CustomUser.objects.create(owner=self.owner, user=self.owner, author=self.owner)
+        CustomUser.objects.create(owner=self.second_owner, user=self.second_owner, author=self.second_owner)
 
     def create_account_users(self):
         self.owner_user = User.objects.create_user('owner_user', 'owner_user@owner.com', '123')
         self.owner_user2 = User.objects.create_user('owner_user2', 'owner_user2@owner.com', '123')
-        AccountUser.objects.create(account=self.owner_account, user=self.owner_user)
-        AccountUser.objects.create(account=self.owner_account, user=self.owner_user2)
+        CustomUser.objects.create(owner=self.owner, user=self.owner_user, author=self.owner)
+        CustomUser.objects.create(owner=self.owner, user=self.owner_user2, author=self.owner)
         self.test_case.account_user = self.owner_user
         self.test_case.account_user2 = self.owner_user2
 
@@ -46,6 +42,7 @@ class Fixtures:
         self.test_case.second_owner_token = create_user_access_token(self.second_owner, self.second_owner_application)
         self.test_case.account_user_token = create_user_access_token(self.owner_user, self.owner_application)
         self.test_case.account_user_token2 = create_user_access_token(self.owner_user2, self.owner_application)
+
 
 def create_user_access_token(user, application):
     return AccessToken.objects.create(user=user, token=user.username,
@@ -61,7 +58,6 @@ def create_user_application(user):
 def user_accountuser_account_token_fixture(test_case):
     fixture = Fixtures(test_case)
     fixture.create_owner_users()
-    fixture.create_owner_accounts()
     fixture.create_owner_accountusers()
     fixture.create_account_users()
     fixture.create_applications_and_tokens()
@@ -83,7 +79,7 @@ def user_accountuser_account_permissions_token_fixture(test_case):
                                          user=test_case.account_user2,
                                          filter_values='{0},{1}'.format(test_case.account_user2.id,
                                                                         test_case.owner.id))
-    test_accountgroup = AccountGroup.objects.create(role='Test Group', account=fixture.owner_account)
+    test_accountgroup = Group.objects.create(role='Test Group', owner=fixture.owner, author=test_case.owner)
     test_case.owner.groups.add(test_accountgroup.group)
 
 
@@ -101,7 +97,6 @@ def user_token_fixture(test_case):
 def user_account_token_fixture(test_case):
     fixture = Fixtures(test_case)
     fixture.create_owner_users()
-    fixture.create_owner_accounts()
     owner_user = User.objects.create_user('owner_user', 'owner_user@owner.com', '123')
     owner_application = create_user_application(fixture.owner)
     second_owner_application = create_user_application(fixture.second_owner)

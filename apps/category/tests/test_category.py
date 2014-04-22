@@ -4,12 +4,11 @@ from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.http.request import HttpRequest
 from rest_framework.test import APILiveServerTestCase
-
-from apps.resource.tests import routines as resource_routines
 from apps.resource.models import Resource
 from apps.publication.models import Publication
 from apps.category.models import Category
 from apps.category.serializers import CategorySerializer
+from apps.resource.tests import routines as resource_routines
 import test_routines
 import test_fixtures
 
@@ -103,7 +102,7 @@ class CategoryAPITestCase(APILiveServerTestCase):
         possible_parents = CategorySerializer(context={'request': request}).get_fields()['parent'].queryset
         self.assertIn(('Category 1', ), possible_parents.values_list('name'))
         resource_content_type = ContentType.objects.get_for_model(Resource)
-        other_user_category = Category.objects.create(author=self.second_owner, account=self.second_owner.account,
+        other_user_category = Category.objects.create(author=self.second_owner, owner=self.second_owner,
                                                       name='Other category', model=resource_content_type)
         possible_parents = CategorySerializer(context={'request': request}).get_fields()['parent'].queryset
         self.assertIn(('Category 1', ), possible_parents.values_list('name'))

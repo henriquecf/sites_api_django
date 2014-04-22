@@ -41,13 +41,13 @@ class Newsletter(Resource):
     content = models.TextField(_('content'))
     sender_email = models.EmailField(_('sender email'), max_length=200, null=True, blank=True)
 
-    def send_newsletter(self, account):
-        subscriptions = Subscription.objects.filter(account=account)
+    def send_newsletter(self, owner):
+        subscriptions = Subscription.objects.filter(owner=owner)
         resent = Submission.objects.filter(newsletter=self, status='failed')
         for subscription in subscriptions:
             try:
-                Submission.objects.create(account=self.account,
-                                          author=self.account.owner,
+                Submission.objects.create(owner=self.owner,
+                                          author=self.owner,
                                           newsletter=self,
                                           subscription=subscription,)
             except IntegrityError:

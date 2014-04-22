@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 import random
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, User
 from django.http.request import HttpRequest
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
+from apps.resource.models import Group as CustomGroup, User as CustomUser, AuthorRestriction
+from apps.resource.serializers import AuthorRestrictionSerializer
 
 from test_fixtures import user_accountuser_account_token_fixture
 import test_routines
-from apps.account.models import AuthorRestriction, AccountGroup, User, AccountUser, Group
-from apps.account.serializers import AuthorRestrictionSerializer
 
 
 class AuthorRestrictionAPITestCase(APILiveServerTestCase):
@@ -96,13 +96,15 @@ class AuthorRestrictionAPITestCase(APILiveServerTestCase):
 
     def test_filter_permission_with_accountgroup(self):
         self.data.pop('user')
-        accountgroup = AccountGroup.objects.create(role='Test role', account=self.owner.accountuser.account)
+        accountgroup = CustomGroup.objects.create(role='Test role', owner=self.owner,
+                                                  author=self.owner)
         self.data.update({'group': accountgroup.group.id})
         test_routines.test_api_basic_methods_routine(self)
 
     def test_permission_is_assigned_and_unassigned_to_group(self):
         self.data.pop('user')
-        accountgroup = AccountGroup.objects.create(role='Test role', account=self.owner.accountuser.account)
+        accountgroup = CustomGroup.objects.create(role='Test role', owner=self.owner,
+                                                  author=self.owner)
         self.data.update({'group': accountgroup.group.id})
         response3 = self.client.post(self.url, self.data)
         self.assertEqual(status.HTTP_201_CREATED, response3.status_code, response3.data)
@@ -126,7 +128,7 @@ class AuthorRestrictionAPITestCase(APILiveServerTestCase):
         self.assertIn(user, possible_users)
 
         other_account_user = User.objects.create_user(username='other_user', password='123')
-        AccountUser.objects.create(user=other_account_user, account=self.second_owner.account)
+        CustomUser.objects.create(user=other_account_user, owner=self.second_owner, author=self.second_owner)
 
         possible_users = AuthorRestrictionSerializer(context={'request': request}).get_fields()['user'].queryset
         self.assertIn(user, possible_users)
@@ -140,12 +142,13 @@ class AuthorRestrictionAPITestCase(APILiveServerTestCase):
     def test_group_filter_get_fields_serializer(self):
         request = HttpRequest()
         request.user = self.owner
-        accountgroup = AccountGroup.objects.create(role='group', account=self.owner.account)
+        accountgroup = CustomGroup.objects.create(role='group', owner=self.owner, author=self.owner)
 
         possible_groups = AuthorRestrictionSerializer(context={'request': request}).get_fields()['group'].queryset
         self.assertIn(accountgroup.group, possible_groups)
 
-        other_account_group = AccountGroup.objects.create(role='other_group', account=self.second_owner.account)
+        other_account_group = CustomGroup.objects.create(role='other_group', owner=self.second_owner,
+                                                         author=self.second_owner)
 
         possible_groups = AuthorRestrictionSerializer(context={'request': request}).get_fields()['group'].queryset
         self.assertIn(accountgroup.group, possible_groups)

@@ -15,7 +15,7 @@ class CategorySerializer(ResourceSerializer):
     def get_fields(self):
         fields = super(CategorySerializer, self).get_fields()
         fields['parent'].queryset = fields['parent'].queryset.filter(
-            account=self.context['request'].user.accountuser.account)
+            owner=self.context['request'].user.user.owner)
         return fields
 
     class Meta(ResourceSerializer.Meta):

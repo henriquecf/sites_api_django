@@ -48,7 +48,6 @@ INSTALLED_APPS = (
     'django_filters',
     'pytz',
 
-    'apps.account',
     'apps.publication',
     'apps.news',
     'apps.file_explorer',
@@ -115,8 +114,8 @@ DJANGO_FILTERS = (
 )
 
 OTHER_FILTERS = (
-    'apps.account.backends.AccountFilterBackend',
-    'apps.account.backends.AuthorRestrictionBackend',
+    'apps.resource.backends.ResourceFilterBackend',
+    'apps.resource.backends.AuthorRestrictionBackend',
     'apps.resource.backends.SiteDomainFilterBackend',
 )
 
