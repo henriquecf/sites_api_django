@@ -6,7 +6,6 @@ from apps.news import views as news_views
 from apps.publication import views as publication_views
 from apps.file_explorer import views as file_explorer_views
 from apps.newsletter import views as newsletter_views
-from apps.resource import views as resource_views
 from apps.resource.views import UserViewSet, GroupViewSet, AuthorRestrictionViewSet, PermissionViewSet
 
 
@@ -24,8 +23,6 @@ router.register(r'submission', newsletter_views.SubmissionViewSet)
 router.register(r'user', UserViewSet)
 router.register(r'group', GroupViewSet)
 router.register(r'authorrestriction', AuthorRestrictionViewSet)
-router.register(r'accountsite', resource_views.AccountSiteRetrieveAPIViewSet)
-router.register(r'site', resource_views.SiteViewSet)
 
 urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),

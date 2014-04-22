@@ -36,6 +36,7 @@ class AuthGroupSerializer(serializers.ModelSerializer):
 
 class ResourceSerializer(serializers.HyperlinkedModelSerializer):
     author = AuthUserSerializer(read_only=True)
+    sites = serializers.PrimaryKeyRelatedField(many=True, required=False)
 
     def get_fields(self):
         fields = super(ResourceSerializer, self).get_fields()
@@ -46,13 +47,6 @@ class ResourceSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Resource
         read_only_fields = ('owner',)
-
-
-class AccountSiteSerializer(serializers.HyperlinkedModelSerializer):
-    site = serializers.PrimaryKeyRelatedField(label=_('site'), read_only=True)
-
-    class Meta:
-        model = Site
 
 
 class GroupSerializer(ResourceSerializer):
@@ -71,12 +65,6 @@ class UserSerializer(ResourceSerializer):
 
     class Meta(ResourceSerializer.Meta):
         model = User
-
-
-class SiteSerializer(serializers.HyperlinkedModelSerializer):
-
-    class Meta:
-        model = ContribSite
 
 
 class AuthorRestrictionSerializer(ResourceSerializer):
