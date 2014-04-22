@@ -4,17 +4,17 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import Permission
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
+from apps.resource.models import Group
 
 from test_fixtures import user_accountuser_account_permissions_token_fixture
 import test_routines
-from apps.account.models import AccountGroup
 
 
-class AccountGroupAPITestCase(APILiveServerTestCase):
-    model = AccountGroup
+class GroupAPITestCase(APILiveServerTestCase):
+    model = Group
 
     def setUp(self):
-        self.url = reverse('accountgroup-list')
+        self.url = reverse('group-list')
         self.data = {
             'role': 'Group'
         }
@@ -58,7 +58,7 @@ class AccountGroupAPITestCase(APILiveServerTestCase):
     def test_list(self):
         response = self.client.get(self.url)
         self.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
-        self.assertEqual(2, response.data['count'])
+        self.assertEqual(1, response.data['count'], response.data)
 
     def test_destroy(self):
         response = self.client.delete(self.first_object_response.data['url'])
@@ -75,11 +75,11 @@ class AccountGroupAPITestCase(APILiveServerTestCase):
         test_routines.test_search_fields_routine(self, search_fields=fields)
 
     def test_hyperlinked_fields(self):
-        fields = ['account', 'group']
+        fields = []
         test_routines.test_serializer_hyperlinked_fields_routine(self, fields=fields)
 
     def test_read_only_fields(self):
-        fields = ['account', 'group']
+        fields = []
         test_routines.test_serializer_read_only_fields_routine(self, fields=fields)
 
     def test_role_and_account_are_unique_together(self):
@@ -94,7 +94,7 @@ class AccountGroupAPITestCase(APILiveServerTestCase):
         try:
             assign_perms_url = self.first_object_response.data['assign_permissions']
         except KeyError:
-            self.assertFalse('No assign_permissions action found in accountgroup')
+            self.assertFalse('No assign_permissions action found in group')
         permission_queryset = Permission.objects.filter(codename__endswith='group')
         permission_list = []
         for permission in permission_queryset:
@@ -109,14 +109,14 @@ class AccountGroupAPITestCase(APILiveServerTestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
         self.assertEqual(permission_list, response.data['assigned_permissions'], response.data)
 
-        accountgroup_id = self.first_object_response.data['url'].split('/')[-2]
-        accountgroup = AccountGroup.objects.get(id=accountgroup_id)
-        self.assertEqual(list(permission_queryset), list(accountgroup.group.permissions.all()))
+        group_id = self.first_object_response.data['url'].split('/')[-2]
+        group = Group.objects.get(id=group_id)
+        self.assertEqual(list(permission_queryset), list(group.group.permissions.all()))
 
         try:
             unassign_perms_url = self.first_object_response.data['unassign_permissions']
         except KeyError:
-            self.assertFalse('No unassign_permissions action found in accountgroup')
+            self.assertFalse('No unassign_permissions action found in group')
 
         response = self.client.post(unassign_perms_url)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code, response.data)
@@ -125,9 +125,9 @@ class AccountGroupAPITestCase(APILiveServerTestCase):
 
         response = self.client.post(unassign_perms_url, data={'permissions': permission_list})
         self.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
-        self.assertEqual([], list(accountgroup.group.permissions.all()))
+        self.assertEqual([], list(group.group.permissions.all()))
 
         permission_list.append(1273817)
         response = self.client.post(assign_perms_url, data={'permissions': permission_list})
         self.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
-        self.assertEqual(list(permission_queryset), list(accountgroup.group.permissions.all()))
+        self.assertEqual(list(permission_queryset), list(group.group.permissions.all()))

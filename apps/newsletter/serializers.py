@@ -21,7 +21,8 @@ class SubmissionSerializer(ResourceSerializer):
 
 
 class NewsletterSerializer(ResourceSerializer):
-    send_newsletter = serializers.HyperlinkedIdentityField(label=_('send newsletter'), view_name='newsletter-send-newsletter')
+    send_newsletter = serializers.HyperlinkedIdentityField(label=_('send newsletter'),
+                                                           view_name='newsletter-send-newsletter')
     submissions = serializers.RelatedField(label=_('submissions'), many=True, source='submissions')
 
     class Meta(ResourceSerializer.Meta):

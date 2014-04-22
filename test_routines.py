@@ -4,7 +4,7 @@ from django.contrib.auth.models import Permission
 from rest_framework import status
 
 
-def test_api_basic_methods_routine(test_case, token=None, count=2, object_url=None):
+def test_api_basic_methods_routine(test_case, token=None, count=2, object_url=None, alter_data=False):
     if not token:
         token = test_case.owner_token
     test_case.set_authorization_bearer(token)
@@ -13,14 +13,20 @@ def test_api_basic_methods_routine(test_case, token=None, count=2, object_url=No
         object_url = test_case.first_object_response.data['url']
 
     # Test POST
+    if alter_data:
+        test_case.alter_data()
     response = test_case.client.post(test_case.url, test_case.data)
     test_case.assertEqual(status.HTTP_201_CREATED, response.status_code, response.data)
 
     # Test PUT
+    if alter_data:
+        test_case.alter_data(altered_data=True)
     response = test_case.client.put(object_url, test_case.altered_data)
     test_case.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
 
     # Test PATCH
+    if alter_data:
+        test_case.alter_data(altered_data=True)
     response = test_case.client.patch(object_url, test_case.altered_data)
     test_case.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
 
@@ -92,7 +98,7 @@ def test_search_fields_routine(test_case, search_fields):
         test_case.assertEqual(1, response.data['count'], 'Field "{0}" not in search fields'.format(field))
 
 
-def test_custom_object_permission_routine(test_case, count=3):
+def test_custom_object_permission_routine(test_case, count=3, alter_data=False):
 
     # Removes permission from the owner
     test_case.owner.user_permissions.clear()
@@ -102,23 +108,27 @@ def test_custom_object_permission_routine(test_case, count=3):
 
     # Changes to an user that has global permissions
     # He should get the same treatment as the owner
-    test_api_basic_methods_routine(test_case, token=test_case.account_user_token2)
+    test_api_basic_methods_routine(test_case, token=test_case.account_user_token2, alter_data=alter_data)
 
     # Now the global permissions are removed from the user that had them
     test_case.account_user2.creator_restrictions.clear()
 
     # He should get restrictions to owner resources now
-    test_resource_permission_routine(test_case, token=test_case.account_user_token2, count=count)
+    test_resource_permission_routine(test_case, token=test_case.account_user_token2, count=count, alter_data=alter_data)
 
 
-def test_resource_permission_routine(test_case, token=None, count=2):
+def test_resource_permission_routine(test_case, token=None, count=2, alter_data=False):
     if not token:
         token = test_case.second_owner_token
     test_case.set_authorization_bearer(token)
 
+    if alter_data:
+        test_case.alter_data()
     response = test_case.client.post(test_case.url, test_case.data)
     test_case.assertEqual(status.HTTP_201_CREATED, response.status_code, response.data)
 
+    if alter_data:
+        test_case.alter_data(altered_data=True)
     response = test_case.client.put(test_case.first_object_response.data['url'], test_case.altered_data)
     test_case.assertEqual(status.HTTP_201_CREATED, response.status_code, response.data)
 
