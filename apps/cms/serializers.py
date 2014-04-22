@@ -7,6 +7,7 @@ from apps.cms.models import Page
 
 
 class PageSerializer(PublicationSerializer):
+    category = serializers.HyperlinkedRelatedField(view_name='category-detail', read_only=True)
 
     class Meta(PublicationSerializer.Meta):
         model = Page

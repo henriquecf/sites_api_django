@@ -11,3 +11,8 @@ class PageViewSet(PublicationBaseViewSet):
     model = Page
     filter_class = PageFilterSet
     search_fields = ['title', 'description']
+
+    def post_save(self, obj, created=False):
+        super(PageViewSet, self).post_save(obj, created=created)
+        obj.category.sites = obj.sites.all()
+        obj.save()

@@ -82,3 +82,10 @@ class PageAPITestCase(APILiveServerTestCase):
 
     def test_resource_sites_field(self):
         resource_routines.test_resource_sites_field_routine(self)
+
+    def test_create_category(self):
+        self.assertIn('category', self.first_object_response.data)
+        self.assertIsNotNone(self.first_object_response.data['category'])
+        category_url = self.first_object_response.data['category']
+        category_response = self.client.get(category_url)
+        self.assertEqual(status.HTTP_200_OK, category_response.status_code)
