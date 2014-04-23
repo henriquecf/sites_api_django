@@ -4,6 +4,7 @@ from apps.news.models import News
 
 
 class NewsSerializer(PublicationSerializer):
+
     def get_fields(self):
         fields = super(NewsSerializer, self).get_fields()
         file_content_type = ContentType.objects.get_for_model(News)
