@@ -2,6 +2,7 @@
 
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 from apps.category.models import Category
 from apps.publication.models import Publication
@@ -14,8 +15,7 @@ class Page(Publication):
              update_fields=None):
         page_content_type = ContentType.objects.get_for_model(Page)
         try:
-            self.category = Category.objects.get(name=self.slug, author=self.author, owner=self.owner,
-                                                 model=page_content_type)
+            self.category
         except Category.DoesNotExist:
             self.category = Category.objects.create(name=self.slug, author=self.author, owner=self.owner,
                                                     model=page_content_type)
@@ -24,3 +24,13 @@ class Page(Publication):
     class Meta(Publication.Meta):
         verbose_name = _('Page')
         verbose_name_plural = _('Pages')
+
+
+class Module(Publication):
+    model = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    model_object = GenericForeignKey('model', 'object_id')
+    filters = models.TextField(blank=True)
+    page = models.ForeignKey(Page, related_name='modules')
+    position = models.CharField(max_length=4, choices=(
+        ('1', _('Top')), ('2', _('Left')), ('3', _('Center')), ('4', _('Right')), ('5', _('Bottom'))))

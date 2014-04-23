@@ -71,4 +71,4 @@ def register_custom_permissions(permissions, appname):
     for codename, name in permissions:
         p, created = Permission.objects.get_or_create(codename=codename,
                                                       content_type__pk=ct.id,
-                                                      defaults={'name': name, 'content_type': ct})
+                                                      defaults={'name': name, 'model': ct})

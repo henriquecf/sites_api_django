@@ -24,7 +24,11 @@ router.register(r'user', UserViewSet)
 router.register(r'group', GroupViewSet)
 router.register(r'authorrestriction', AuthorRestrictionViewSet)
 router.register(r'page', cms_views.PageViewSet)
+<<<<<<< HEAD
 router.register(r'customhtml', publication_views.CustomHTMLViewSet)
+=======
+router.register(r'module', cms_views.ModuleViewSet)
+>>>>>>> master
 
 urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
