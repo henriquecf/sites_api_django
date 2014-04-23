@@ -25,7 +25,7 @@ class NestedAuthUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AuthUser
-        fields = ('username', 'email')
+        fields = ('id', 'username', 'email')
 
 
 class AuthGroupSerializer(serializers.ModelSerializer):
