@@ -212,7 +212,7 @@ msgstr "grupo"
 
 #: apps/resource/models.py:48
 msgid "role"
-msgstr "função"
+msgstr "papel"
 
 #: apps/resource/models.py:61
 msgid "groups"
