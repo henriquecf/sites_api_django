@@ -13,7 +13,7 @@ from apps.resource.views import UserViewSet, GroupViewSet, AuthorRestrictionView
 admin.autodiscover()
 
 router = DefaultRouter()
-router.register(r'publication', publication_views.PublicationBaseViewSet)
+router.register(r'publication', publication_views.PublicationViewSet)
 router.register(r'category', CategoryViewSet)
 router.register(r'news', news_views.NewsViewSet)
 router.register(r'file', file_explorer_views.FileViewSet)
@@ -24,6 +24,7 @@ router.register(r'user', UserViewSet)
 router.register(r'group', GroupViewSet)
 router.register(r'authorrestriction', AuthorRestrictionViewSet)
 router.register(r'page', cms_views.PageViewSet)
+router.register(r'customhtml', publication_views.CustomHTMLViewSet)
 
 urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),

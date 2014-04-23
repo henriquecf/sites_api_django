@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 
 from apps.resource.serializers import ResourceSerializer
-from apps.publication.models import Publication
+from apps.publication.models import Publication, CustomHTML
 
 
 class PublicationSerializer(ResourceSerializer):
@@ -14,3 +14,8 @@ class PublicationSerializer(ResourceSerializer):
         model = Publication
 
 
+class CustomHTMLSerializer(PublicationSerializer):
+    content = serializers.CharField(required=True)
+
+    class Meta(PublicationSerializer.Meta):
+        model = CustomHTML

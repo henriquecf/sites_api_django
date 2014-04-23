@@ -6,7 +6,7 @@ from apps.publication.tests import routines as publication_routines
 from apps.resource.tests import routines as resource_routines
 import test_routines
 import test_fixtures
-from apps.publication.models import Publication
+from apps.publication.models import Publication, CustomHTML
 
 
 class PublicationAPITestCase(APILiveServerTestCase):
@@ -19,6 +19,34 @@ class PublicationAPITestCase(APILiveServerTestCase):
         }
         self.altered_data = {
             'title': 'First publication altered'
+        }
+        test_fixtures.user_accountuser_account_permissions_token_fixture(self)
+        self.set_authorization_bearer()
+        self.first_object_response = self.client.post(self.url, self.data)
+
+    def set_authorization_bearer(self, token=None):
+        if not token:
+            token = self.owner_token
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer {0}'.format(token))
+
+    def test_list(self):
+        response = self.client.get(self.url)
+        self.assertEqual(200, response.status_code, response.data)
+        self.assertEqual(0, response.data['count'])
+
+
+class CustomHTMLAPITestCase(APILiveServerTestCase):
+    model = CustomHTML
+
+    def setUp(self):
+        self.url = reverse('customhtml-list')
+        self.data = {
+            'title': 'First custom HTML',
+            'content': 'HTML content',
+        }
+        self.altered_data = {
+            'title': 'First custom HTML altered',
+            'content': 'HTML content',
         }
         test_fixtures.user_accountuser_account_permissions_token_fixture(self)
         self.set_authorization_bearer()
