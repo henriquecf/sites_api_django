@@ -128,7 +128,3 @@ class AuthorRestriction(Resource):
     class Meta(Common.Meta):
         verbose_name = _('author restriction')
         verbose_name_plural = _('author restrictions')
-
-
-# TODO Revise serializers, viewsets and models. Remove unecessary stuff. Nest serializers.
-# TODO redo translation

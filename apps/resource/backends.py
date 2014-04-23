@@ -42,34 +42,31 @@ class AuthorRestrictionBackend(filters.BaseFilterBackend):
     """
 
     def filter_queryset(self, request, queryset, view):
-        if not request.user.is_staff:
-            model_cls = getattr(view, 'model', None)
+        model_cls = getattr(view, 'model', None)
 
-            kwargs = {
-                'app_label': model_cls._meta.app_label,
-                'model_name': model_cls._meta.model_name
-            }
+        kwargs = {
+            'app_label': model_cls._meta.app_label,
+            'model_name': model_cls._meta.model_name
+        }
+        try:
+            permission = custom_permissions_map[request.method][0] % kwargs
+        except KeyError:
+            permission = None
+        if permission and request.user.has_perm(permission):
+            app_label, codename = permission.split('.')
             try:
-                permission = custom_permissions_map[request.method][0] % kwargs
-            except KeyError:
-                permission = None
-            if permission and request.user.has_perm(permission):
-                app_label, codename = permission.split('.')
-                try:
-                    creator_restriction = AuthorRestriction.objects.filter(
-                        Q(permission__content_type__app_label=app_label), Q(permission__codename=codename),
-                        Q(user=request.user) | Q(group__in=request.user.groups.all()))[0]
-                except ObjectDoesNotExist:
-                    queryset = queryset.filter(author=request.user)
-                except IndexError:
-                    queryset = queryset.filter(author=request.user)
-                else:
-                    queryset = queryset.filter(author__in=creator_restriction.filter_values.split(','))
-                return queryset
+                creator_restriction = AuthorRestriction.objects.filter(
+                    Q(permission__content_type__app_label=app_label), Q(permission__codename=codename),
+                    Q(user=request.user) | Q(group__in=request.user.groups.all()))[0]
+            except ObjectDoesNotExist:
+                queryset = queryset.filter(author=request.user)
+            except IndexError:
+                queryset = queryset.filter(author=request.user)
             else:
-                return queryset.filter(author=request.user)
-        else:
+                queryset = queryset.filter(author__in=creator_restriction.filter_values.split(','))
             return queryset
+        else:
+            return queryset.filter(author=request.user)
 
 
 class ResourceFilterBackend(filters.BaseFilterBackend):
