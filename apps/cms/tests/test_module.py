@@ -18,23 +18,31 @@ class ModuleAPITestCase(APILiveServerTestCase):
     model = Module
 
     def setUp(self):
+        test_fixtures.user_accountuser_account_permissions_token_fixture(self)
+        self.set_authorization_bearer()
+        page_permisions = Permission.objects.filter(codename__endswith='page')
+        for permission in page_permisions:
+            self.owner.user_permissions.add(permission)
+        page_response = self.client.post(reverse('page-list'), {'title': 'A page'})
         self.url = reverse('module-list')
         self.data = {
             'title': 'First Module',
             'model': ContentType.objects.get_for_model(News).id,
             'object_id': None,
             'model_object': None,
-            'filters': '{"categories": ["category 1"]}'
+            'filters': '{"categories": ["category 1"]}',
+            'page': page_response.data['url'],
+            'position': '1',
         }
         self.altered_data = {
             'title': 'First Module Altered',
             'model': ContentType.objects.get_for_model(News).id,
             'object_id': 1,
             'model_object': 1,
-            'filters': '{"categories": ["category 2"]}'
+            'filters': '{"categories": ["category 2"]}',
+            'page': page_response.data['url'],
+            'position': '2',
         }
-        test_fixtures.user_accountuser_account_permissions_token_fixture(self)
-        self.set_authorization_bearer()
         news_permisions = Permission.objects.filter(codename__endswith='news')
         for permission in news_permisions:
             self.owner.user_permissions.add(permission)
@@ -107,3 +115,6 @@ class ModuleAPITestCase(APILiveServerTestCase):
         filter_dict = ast.literal_eval(self.first_object_response.data['filters'])
         get_query = urllib.urlencode(filter_dict)
         self.assertIn(get_query.decode(), content_url)
+
+    def test_position_field(self):
+        self.assertIn('position', self.first_object_response.data)
