@@ -72,3 +72,8 @@ class UserAPITestCase(APILiveServerTestCase):
     def test_serializer_read_only_fields(self):
         fields = []
         test_routines.test_serializer_read_only_fields_routine(self, fields=fields)
+
+    def test_excluded_fields(self):
+        excluded_fields = ['is_superuser', 'is_staff']
+        for field in excluded_fields:
+            self.assertNotIn(field, self.first_object_response.data['user'])

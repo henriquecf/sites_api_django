@@ -17,7 +17,7 @@ class AuthUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AuthUser
-        exclude = ['is_superuser']
+        exclude = ['is_superuser', 'is_staff']
         read_only_fields = ('date_joined', 'last_login', 'is_active')
         write_only_fields = ('password',)
 
