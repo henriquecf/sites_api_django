@@ -21,6 +21,13 @@ class AuthUserSerializer(serializers.ModelSerializer):
         write_only_fields = ('password',)
 
 
+class NestedAuthUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AuthUser
+        fields = ('username', 'email')
+
+
 class AuthGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = AuthGroup
@@ -28,8 +35,8 @@ class AuthGroupSerializer(serializers.ModelSerializer):
 
 
 class ResourceSerializer(serializers.HyperlinkedModelSerializer):
-    author = AuthUserSerializer(read_only=True)
-    owner = AuthUserSerializer(read_only=True)
+    author = NestedAuthUserSerializer(read_only=True)
+    owner = NestedAuthUserSerializer(read_only=True)
     sites = serializers.PrimaryKeyRelatedField(many=True, required=False)
 
     def get_fields(self):
