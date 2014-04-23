@@ -2,6 +2,7 @@
 
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 from apps.category.models import Category
 from apps.publication.models import Publication
@@ -26,4 +27,7 @@ class Page(Publication):
 
 
 class Module(Publication):
-    pass
+    model = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    model_object = GenericForeignKey('model', 'object_id')
+    filters = models.TextField(blank=True)

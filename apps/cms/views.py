@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from rest_framework.decorators import link
 from apps.publication.views import PublicationBaseViewSet
 from apps.cms.serializers import PageSerializer, ModuleSerializer
 from apps.cms.filtersets import PageFilterSet, ModuleFilterSet
