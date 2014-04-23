@@ -13,6 +13,7 @@ from apps.resource.exceptions import BadRequestValidationError
 from apps.resource.models import Resource, Site, User, Group, AuthorRestriction
 from apps.resource.serializers import ResourceSerializer, UserSerializer, \
     GroupSerializer, AuthorRestrictionSerializer
+from apps.resource.backends import AuthorRestrictionBackend, SiteDomainFilterBackend, ResourceFilterBackend
 
 
 class UserLoginView(FormView):
@@ -68,27 +69,11 @@ class UserViewSet(ResourceViewSet):
     model = User
     serializer_class = UserSerializer
 
-    def get_queryset(self):
-        """Returns a filtered queryset when the request user is not a superuser.
-
-        Users must access only objects related to his account, unless they are superusers.
-        """
-        queryset = super(UserViewSet, self).get_queryset()
-        try:
-            owner = self.request.user.user.owner
-        except ObjectDoesNotExist:
-            owner = self.request.user.owner
-        return queryset.filter(owner=owner)
-
 
 class GroupViewSet(ResourceViewSet):
     model = Group
     serializer_class = GroupSerializer
     search_fields = ['role']
-
-    def get_queryset(self):
-        queryset = super(GroupViewSet, self).get_queryset()
-        return queryset.filter(owner=self.request.user.user.owner)
 
     def pre_save(self, obj):
         try:
@@ -127,6 +112,10 @@ class GroupViewSet(ResourceViewSet):
 class AuthorRestrictionViewSet(ResourceViewSet):
     model = AuthorRestriction
     serializer_class = AuthorRestrictionSerializer
+    filter_backends = (
+        AuthorRestrictionBackend,
+        SiteDomainFilterBackend,
+    )
 
     def get_queryset(self):
         queryset = super(AuthorRestrictionViewSet, self).get_queryset()
