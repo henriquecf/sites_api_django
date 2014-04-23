@@ -22,11 +22,6 @@ class AuthUserSerializer(serializers.ModelSerializer):
         write_only_fields = ('password',)
 
 
-class RestrictedOwnerAuthUserSerializer(AuthUserSerializer):
-    class Meta(AuthUserSerializer.Meta):
-        read_only_fields = ('date_joined', 'last_login', 'is_active', 'is_staff', 'user_permissions', 'groups')
-
-
 class AuthGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
