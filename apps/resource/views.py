@@ -69,6 +69,74 @@ class UserViewSet(ResourceViewSet):
     model = User
     serializer_class = UserSerializer
 
+    @action()
+    def assign_groups(self, request, *args, **kwargs):
+        user = self.get_object().user
+        if user == self.get_object().owner:
+            return Response(
+                data={'detail': _('You can not alter owner groups.')},
+                status=status.HTTP_400_BAD_REQUEST)
+        try:
+            groups_to_assign = request.DATA['groups']
+        except KeyError:
+            return Response(
+                data={'detail': _('You must define the groups through dict key "groups".')},
+                status=status.HTTP_400_BAD_REQUEST)
+        for group in groups_to_assign:
+            user.groups.add(group)
+        return Response(data={'assigned_groups': groups_to_assign})
+
+    @action()
+    def unassign_groups(self, request, *args, **kwargs):
+        user = self.get_object().user
+        if user == self.get_object().owner:
+            return Response(
+                data={'detail': _('You can not alter owner groups.')},
+                status=status.HTTP_400_BAD_REQUEST)
+        try:
+            groups_to_unassign = request.DATA['groups']
+        except KeyError:
+            return Response(
+                data={'detail': _('You must define the groups through dict key "groups".')},
+                status=status.HTTP_400_BAD_REQUEST)
+        for group in groups_to_unassign:
+            user.groups.remove(group)
+        return Response(data={'unassigned_groups': groups_to_unassign})
+
+    @action()
+    def assign_permissions(self, request, *args, **kwargs):
+        user = self.get_object().user
+        if user == self.get_object().owner:
+            return Response(
+                data={'detail': _('You can not alter owner permissions.')},
+                status=status.HTTP_400_BAD_REQUEST)
+        try:
+            permissions_to_assign = request.DATA['permissions']
+        except KeyError:
+            return Response(
+                data={'detail': _('You must define the permissions through dict key "permissions".')},
+                status=status.HTTP_400_BAD_REQUEST)
+        for permission in permissions_to_assign:
+            user.user_permissions.add(permission)
+        return Response(data={'assigned_permissions': permissions_to_assign})
+
+    @action()
+    def unassign_permissions(self, request, *args, **kwargs):
+        user = self.get_object().user
+        if user == self.get_object().owner:
+            return Response(
+                data={'detail': _('You can not alter owner permissions.')},
+                status=status.HTTP_400_BAD_REQUEST)
+        try:
+            permissions_to_unassign = request.DATA['permissions']
+        except KeyError:
+            return Response(
+                data={'detail': _('You must define the permissions to assign through dict key "permissions".')},
+                status=status.HTTP_400_BAD_REQUEST)
+        for permission in permissions_to_unassign:
+            user.user_permissions.remove(permission)
+        return Response(data={'unassigned_permissions': permissions_to_unassign})
+
 
 class GroupViewSet(ResourceViewSet):
     model = Group
@@ -106,7 +174,7 @@ class GroupViewSet(ResourceViewSet):
                 status=status.HTTP_400_BAD_REQUEST)
         for permission in permissions_to_unassign:
             group.group.permissions.remove(permission)
-        return Response(data={'assigned_permissions': permissions_to_unassign})
+        return Response(data={'unassigned_permissions': permissions_to_unassign})
 
 
 class AuthorRestrictionViewSet(ResourceViewSet):
