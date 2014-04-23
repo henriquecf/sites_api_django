@@ -6,7 +6,6 @@ from apps.resource.models import Site, Resource, Group, User, AuthorRestriction
 
 
 class PermissionSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Permission
 
@@ -17,16 +16,15 @@ class AuthUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AuthUser
-        exclude = ['is_superuser']
+        exclude = ['is_superuser', 'is_staff']
         read_only_fields = ('date_joined', 'last_login', 'is_active')
         write_only_fields = ('password',)
 
 
 class AuthGroupSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = AuthGroup
-        fields = ('permissions',)
+        fields = ('id', 'permissions')
 
 
 class ResourceSerializer(serializers.HyperlinkedModelSerializer):
@@ -57,6 +55,12 @@ class GroupSerializer(ResourceSerializer):
 
 class UserSerializer(ResourceSerializer):
     user = AuthUserSerializer()
+    assign_groups = serializers.HyperlinkedIdentityField(label=_('assign groups'), view_name='user-assign-groups')
+    unassign_groups = serializers.HyperlinkedIdentityField(label=_('unassign groups'), view_name='user-unassign-groups')
+    assign_permissions = serializers.HyperlinkedIdentityField(label=_('assign permissions'),
+                                                              view_name='user-assign-permissions')
+    unassign_permissions = serializers.HyperlinkedIdentityField(label=_('unassign permissions'),
+                                                                view_name='user-unassign-permissions')
 
     class Meta(ResourceSerializer.Meta):
         model = User
