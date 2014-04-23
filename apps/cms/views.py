@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from rest_framework.decorators import link
 from apps.publication.views import PublicationBaseViewSet
-from apps.cms.serializers import PageSerializer
-from apps.cms.filtersets import PageFilterSet
-from apps.cms.models import Page
+from apps.cms.serializers import PageSerializer, ModuleSerializer
+from apps.cms.filtersets import PageFilterSet, ModuleFilterSet
+from apps.cms.models import Page, Module
 
 
 class PageViewSet(PublicationBaseViewSet):
@@ -16,3 +17,10 @@ class PageViewSet(PublicationBaseViewSet):
         super(PageViewSet, self).post_save(obj, created=created)
         obj.category.sites = obj.sites.all()
         obj.save()
+
+
+class ModuleViewSet(PublicationBaseViewSet):
+    serializer_class = ModuleSerializer
+    model = Module
+    filter_class = ModuleFilterSet
+    search_fields = ['title', 'description']
