@@ -88,3 +88,6 @@ class PageAPITestCase(APILiveServerTestCase):
         category_url = self.first_object_response.data['category']
         category_response = self.client.get(category_url)
         self.assertEqual(status.HTTP_200_OK, category_response.status_code)
+
+    def test_modules_field(self):
+        self.assertIn('modules', self.first_object_response.data)

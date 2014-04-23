@@ -1,18 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import ast, urllib
+import ast, urllib, types
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 from apps.publication.serializers import PublicationSerializer
 from apps.cms.models import Page, Module
-
-
-class PageSerializer(PublicationSerializer):
-    category = serializers.HyperlinkedRelatedField(view_name='category-detail', read_only=True)
-
-    class Meta(PublicationSerializer.Meta):
-        model = Page
 
 
 class ModuleSerializer(PublicationSerializer):
@@ -29,3 +22,15 @@ class ModuleSerializer(PublicationSerializer):
 
     class Meta(PublicationSerializer.Meta):
         model = Module
+
+
+class PageSerializer(PublicationSerializer):
+    category = serializers.HyperlinkedRelatedField(view_name='category-detail', read_only=True)
+
+    def get_fields(self):
+        fields = super(PageSerializer, self).get_fields()
+        fields['modules'] = ModuleSerializer(many=True, read_only=True, context=self.context)
+        return fields
+
+    class Meta(PublicationSerializer.Meta):
+        model = Page

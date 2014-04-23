@@ -31,3 +31,4 @@ class Module(Publication):
     object_id = models.PositiveIntegerField(null=True, blank=True)
     model_object = GenericForeignKey('model', 'object_id')
     filters = models.TextField(blank=True)
+    page = models.ForeignKey(Page, related_name='modules')
