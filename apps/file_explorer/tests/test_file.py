@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
+from django.test import LiveServerTestCase
 from django.http.request import HttpRequest
 from rest_framework.test import APILiveServerTestCase
 
@@ -8,11 +9,41 @@ from apps.category.tests.routines import test_add_category_routine
 from apps.category.models import Category
 from apps.publication.tests import routines as publication_routines
 from apps.publication.models import Publication
+from apps.resource.models import AuthUser, User
 from apps.resource.tests import routines as resource_routines
 import test_routines
 import test_fixtures
 from apps.file_explorer.models import File
-from apps.file_explorer.serializers import FileSerializerTest
+from apps.file_explorer.serializers import FileSerializerTest, FileSerializer
+
+
+class FileTestCase(LiveServerTestCase):
+
+    def setUp(self):
+        user = AuthUser.objects.create_user(username='user', password='123')
+        User.objects.create(owner=user, author=user, user=user)
+        self.file = File.objects.create(owner=user, author=user, title='Page')
+        self.user = user
+        self.request = HttpRequest()
+        self.request.user = user
+
+    def test_serializer_get_fields(self):
+        file_content_type = ContentType.objects.get_for_model(File)
+        category = Category.objects.create(owner=self.user, author=self.user, name='Category', model=file_content_type)
+        file_serializer = FileSerializer(context={'request': self.request})
+        categories = file_serializer.get_fields()['categories'].queryset.all()
+        self.assertIn(category, categories)
+        category.model = ContentType.objects.get_for_model(User)
+        category.save()
+        categories = file_serializer.get_fields()['categories'].queryset.all()
+        self.assertNotIn(category, categories)
+        category.model = file_content_type
+        other_user = AuthUser.objects.create_user(username='other_user', password='123')
+        User.objects.create(owner=other_user, user=other_user, author=other_user)
+        category.owner = other_user
+        category.save()
+        categories = file_serializer.get_fields()['categories'].queryset.all()
+        self.assertNotIn(category, categories)
 
 
 class FileAPITestCase(APILiveServerTestCase):
@@ -128,3 +159,6 @@ class FileAPITestCase(APILiveServerTestCase):
         possible_categories = FileSerializerTest(context={'request': request}).get_fields()['categories'].queryset
         self.assertNotIn(category, possible_categories)
         self.assertNotIn(other_user_category, possible_categories)
+
+
+# TODO Unit test get_serializer_class in FileViewSet

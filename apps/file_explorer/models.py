@@ -21,7 +21,7 @@ class File(Publication):
     def __str__(self):
         if not self.file:
             return self.title
-        return self.file
+        return self.file.name
 
     class Meta(Publication.Meta):
         verbose_name = _('file')
