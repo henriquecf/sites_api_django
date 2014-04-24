@@ -3,6 +3,7 @@
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.test import LiveServerTestCase
+from django.http import HttpRequest
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 from apps.resource.tests import routines as resource_routines
@@ -11,6 +12,7 @@ from apps.publication.tests import routines as publication_routines
 import test_routines
 import test_fixtures
 from apps.cms.models import Page
+from apps.cms.views import PageViewSet
 
 
 class PageTestCase(LiveServerTestCase):
@@ -20,6 +22,8 @@ class PageTestCase(LiveServerTestCase):
         User.objects.create(owner=user, author=user, user=user)
         self.page = Page.objects.create(owner=user, author=user, title='Page')
         self.user = user
+        self.request = HttpRequest()
+        self.request.user = user
 
     def test_save_method(self):
         self.assertTrue(self.page.category)
@@ -27,6 +31,12 @@ class PageTestCase(LiveServerTestCase):
         self.assertEqual(self.page.category.model, ContentType.objects.get_for_model(Page))
         self.assertEqual(self.page.category.owner, self.page.owner)
         self.assertEqual(self.page.category.author, self.page.author)
+
+    def test_post_save_method(self):
+        self.request.META['HTTP_HOST'] = 'testserver'
+        page_view_set = PageViewSet(request=self.request)
+        page_view_set.post_save(self.page)
+        self.assertEqual(list(self.page.sites.all()), list(self.page.category.sites.all()))
 
 
 class PageAPITestCase(APILiveServerTestCase):
@@ -112,4 +122,4 @@ class PageAPITestCase(APILiveServerTestCase):
         self.assertIn('modules', self.first_object_response.data)
 
 
-# TODO Unit tests: save (page model), get_content_url (module serializer), get_fields (page serializer), post_save (page viewset)
+# TODO Unit tests: get_content_url (module serializer), get_fields (page serializer), post_save (page viewset)
