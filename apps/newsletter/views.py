@@ -1,11 +1,10 @@
 from django.utils.translation import ugettext_lazy as _
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from apps.resource.views import ResourceViewSet
-from apps.newsletter.serializers import SubscriptionSerializer, NewsletterSerializer, SubmissionSerializer
-from apps.newsletter.models import Subscription, Newsletter, Submission
+from apps.newsletter.serializers import SubscriptionSerializer, NewsletterSerializer
+from apps.newsletter.models import Subscription, Newsletter
 from apps.newsletter.filtersets import NewsletterFilterSet
 
 
@@ -58,8 +57,3 @@ class NewsletterViewSet(ResourceViewSet):
                 'submissions': status,
             }
             return Response(status=200, data=data)
-
-
-class SubmissionViewSet(ReadOnlyModelViewSet):
-    model = Submission
-    serializer_class = SubmissionSerializer
