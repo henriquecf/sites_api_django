@@ -1,13 +1,32 @@
 # -*- coding: utf-8 -*-
 
 from django.core.urlresolvers import reverse
+from django.contrib.contenttypes.models import ContentType
+from django.test import LiveServerTestCase
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 from apps.resource.tests import routines as resource_routines
+from apps.resource.models import AuthUser, User
 from apps.publication.tests import routines as publication_routines
 import test_routines
 import test_fixtures
 from apps.cms.models import Page
+
+
+class PageTestCase(LiveServerTestCase):
+
+    def setUp(self):
+        user = AuthUser.objects.create_user(username='user', password='123')
+        User.objects.create(owner=user, author=user, user=user)
+        self.page = Page.objects.create(owner=user, author=user, title='Page')
+        self.user = user
+
+    def test_save_method(self):
+        self.assertTrue(self.page.category)
+        self.assertEqual(self.page.category.name, self.page.slug)
+        self.assertEqual(self.page.category.model, ContentType.objects.get_for_model(Page))
+        self.assertEqual(self.page.category.owner, self.page.owner)
+        self.assertEqual(self.page.category.author, self.page.author)
 
 
 class PageAPITestCase(APILiveServerTestCase):
@@ -91,3 +110,6 @@ class PageAPITestCase(APILiveServerTestCase):
 
     def test_modules_field(self):
         self.assertIn('modules', self.first_object_response.data)
+
+
+# TODO Unit tests: save (page model), get_content_url (module serializer), get_fields (page serializer), post_save (page viewset)
