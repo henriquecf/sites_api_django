@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 
 from apps.resource.serializers import ResourceSerializer
-from apps.newsletter.models import Subscription, Newsletter, Submission
+from apps.newsletter.models import Subscription, Newsletter
 
 
 class SubscriptionSerializer(ResourceSerializer):
@@ -10,14 +10,6 @@ class SubscriptionSerializer(ResourceSerializer):
 
     class Meta(ResourceSerializer.Meta):
         model = Subscription
-
-
-class SubmissionSerializer(ResourceSerializer):
-    newsletter = serializers.RelatedField(label=_('newsletter'), read_only=True)
-    subscription = serializers.RelatedField(label=_('subscription'), read_only=True)
-
-    class Meta(ResourceSerializer.Meta):
-        model = Submission
 
 
 class NewsletterSerializer(ResourceSerializer):
