@@ -15,7 +15,7 @@ class PublicationSerializer(ResourceSerializer):
 
 
 class CustomHTMLSerializer(PublicationSerializer):
-    content = serializers.CharField(required=True)
+    content = serializers.CharField(required=True, widget=serializers.widgets.Textarea())
 
     class Meta(PublicationSerializer.Meta):
         model = CustomHTML
