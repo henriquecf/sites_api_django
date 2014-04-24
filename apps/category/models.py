@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
-# Create your models here.
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 from apps.resource.models import Resource
