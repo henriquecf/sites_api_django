@@ -74,6 +74,13 @@ class Publication(Resource):
         verbose_name_plural = _('publications')
 
 
+class CustomHTML(Publication):
+
+    class Meta(Publication.Meta):
+        verbose_name = _('custom HTML')
+        verbose_name_plural = _('custom HTMLs')
+
+
 def find_available_slug(model, instance, slug, original_slug, slug_number=2):
     #Adds underscores with an incrementing number to the slug until an available one is found.
     try:

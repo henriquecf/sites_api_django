@@ -1,12 +1,14 @@
 from django.utils.text import slugify
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework import status
 
 from apps.resource.views import ResourceViewSet
-from apps.publication.serializers import PublicationSerializer
-from apps.publication.models import find_available_slug, Publication
+from apps.publication.serializers import PublicationSerializer, CustomHTMLSerializer
+from apps.publication.models import find_available_slug, Publication, CustomHTML
 from apps.publication.filtersets import PublicationFilterSet
 
 
@@ -64,3 +66,24 @@ class PublicationBaseViewSet(ResourceViewSet):
         """
         publication = self.get_object()
         return Response({'is_published': publication.unpublish()})
+
+
+class PublicationViewSet(PublicationBaseViewSet):
+
+    def create(self, request, *args, **kwargs):
+        return Response(data={'detail': _('Method \'POST\' not allowed.')}, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, *args, **kwargs):
+        return Response(data={'detail': _('Method \'PUT\' not allowed.')}, status=status.HTTP_400_BAD_REQUEST)
+
+    def partial_update(self, request, *args, **kwargs):
+        return Response(data={'detail': _('Method \'PATCH\' not allowed.')}, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, *args, **kwargs):
+        return Response(data={'detail': _('Method \'DELETE\' not allowed.')}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomHTMLViewSet(PublicationBaseViewSet):
+    model = CustomHTML
+    serializer_class = CustomHTMLSerializer
+    filter_class = None
