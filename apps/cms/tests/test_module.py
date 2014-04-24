@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import ast
+from django.http import HttpRequest
+from django.test import LiveServerTestCase
+from apps.cms.serializers import ModuleSerializer
+from apps.resource.models import User
+
 try:
     from urllib import urlencode
 except ImportError:
     from urllib.parse import urlencode
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, User as AuthUser
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 from apps.resource.tests import routines as resource_routines
@@ -15,7 +20,30 @@ from apps.publication.tests import routines as publication_routines
 import test_routines
 import test_fixtures
 from apps.news.models import News
-from apps.cms.models import Module
+from apps.cms.models import Module, Page
+
+
+class ModuleTestCase(LiveServerTestCase):
+
+    def setUp(self):
+        user = AuthUser.objects.create_user(username='user', password='123')
+        User.objects.create(owner=user, author=user, user=user)
+        page = Page.objects.create(owner=user, author=user, title='Page')
+        self.user = user
+        self.request = HttpRequest()
+        self.request.user = user
+        self.model = ContentType.objects.get_for_model(Page)
+        self.module = Module.objects.create(owner=user, author=user, title='Module', model=self.model, position=1,
+                                            page=page)
+
+    def test_serializer_get_content_url(self):
+        self.request.META['SERVER_NAME'] = 'testserver'
+        self.request.META['SERVER_PORT'] = 8080
+        self.module.filters = '{"test": "OK"}'
+        generated_filter = 'test=OK'
+        module_serializer = ModuleSerializer(context={'request': self.request})
+        content_url = module_serializer.get_content_url(self.module)
+        self.assertIn(generated_filter, content_url)
 
 
 class ModuleAPITestCase(APILiveServerTestCase):

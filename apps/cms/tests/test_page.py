@@ -6,17 +6,19 @@ from django.test import LiveServerTestCase
 from django.http import HttpRequest
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
+
 from apps.resource.tests import routines as resource_routines
 from apps.resource.models import AuthUser, User
 from apps.publication.tests import routines as publication_routines
 import test_routines
 import test_fixtures
-from apps.cms.models import Page, Module
+from apps.cms.models import Page
 from apps.cms.views import PageViewSet
 from apps.cms.serializers import PageSerializer, ModuleSerializer
 
 
 class PageTestCase(LiveServerTestCase):
+
     def setUp(self):
         user = AuthUser.objects.create_user(username='user', password='123')
         User.objects.create(owner=user, author=user, user=user)
@@ -124,6 +126,3 @@ class PageAPITestCase(APILiveServerTestCase):
 
     def test_modules_field(self):
         self.assertIn('modules', self.first_object_response.data)
-
-
-        # TODO Unit tests: get_content_url (module serializer)
