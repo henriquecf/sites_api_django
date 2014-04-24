@@ -15,6 +15,7 @@ import test_routines
 import test_fixtures
 from apps.file_explorer.models import File
 from apps.file_explorer.serializers import FileSerializerTest, FileSerializer
+from apps.file_explorer.views import FileViewSet
 
 
 class FileTestCase(LiveServerTestCase):
@@ -44,6 +45,14 @@ class FileTestCase(LiveServerTestCase):
         category.save()
         categories = file_serializer.get_fields()['categories'].queryset.all()
         self.assertNotIn(category, categories)
+
+    def test_viewset_get_serializer_class_method(self):
+        self.request.META['SERVER_NAME'] = 'testserver'
+        file_view_set = FileViewSet(request=self.request)
+        self.assertEqual(file_view_set.get_serializer_class(), FileSerializerTest)
+        self.request.META['SERVER_NAME'] = 'server'
+        file_view_set = FileViewSet(request=self.request)
+        self.assertEqual(file_view_set.get_serializer_class(), FileSerializer)
 
 
 class FileAPITestCase(APILiveServerTestCase):
@@ -159,6 +168,3 @@ class FileAPITestCase(APILiveServerTestCase):
         possible_categories = FileSerializerTest(context={'request': request}).get_fields()['categories'].queryset
         self.assertNotIn(category, possible_categories)
         self.assertNotIn(other_user_category, possible_categories)
-
-
-# TODO Unit test get_serializer_class in FileViewSet
