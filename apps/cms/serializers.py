@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import ast, types
+import ast
 try:
     from urllib import urlencode
 except ImportError:

@@ -11,12 +11,12 @@ from apps.resource.models import AuthUser, User
 from apps.publication.tests import routines as publication_routines
 import test_routines
 import test_fixtures
-from apps.cms.models import Page
+from apps.cms.models import Page, Module
 from apps.cms.views import PageViewSet
+from apps.cms.serializers import PageSerializer, ModuleSerializer
 
 
 class PageTestCase(LiveServerTestCase):
-
     def setUp(self):
         user = AuthUser.objects.create_user(username='user', password='123')
         User.objects.create(owner=user, author=user, user=user)
@@ -25,18 +25,22 @@ class PageTestCase(LiveServerTestCase):
         self.request = HttpRequest()
         self.request.user = user
 
-    def test_save_method(self):
+    def test_model_save_method(self):
         self.assertTrue(self.page.category)
         self.assertEqual(self.page.category.name, self.page.slug)
         self.assertEqual(self.page.category.model, ContentType.objects.get_for_model(Page))
         self.assertEqual(self.page.category.owner, self.page.owner)
         self.assertEqual(self.page.category.author, self.page.author)
 
-    def test_post_save_method(self):
+    def test_viewset_post_save_method(self):
         self.request.META['HTTP_HOST'] = 'testserver'
         page_view_set = PageViewSet(request=self.request)
         page_view_set.post_save(self.page)
         self.assertEqual(list(self.page.sites.all()), list(self.page.category.sites.all()))
+
+    def test_serializer_get_fields_method(self):
+        page_serializer = PageSerializer(context={'request': self.request})
+        self.assertTrue(isinstance(page_serializer.get_fields()['modules'], ModuleSerializer))
 
 
 class PageAPITestCase(APILiveServerTestCase):
@@ -122,4 +126,4 @@ class PageAPITestCase(APILiveServerTestCase):
         self.assertIn('modules', self.first_object_response.data)
 
 
-# TODO Unit tests: get_content_url (module serializer), get_fields (page serializer), post_save (page viewset)
+        # TODO Unit tests: get_content_url (module serializer)
