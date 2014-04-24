@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import ast, urllib
+import ast
+try:
+    from urllib import urlencode
+except ImportError:
+    from urllib.parse import urlencode
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission
@@ -113,8 +117,11 @@ class ModuleAPITestCase(APILiveServerTestCase):
         self.assertEqual(status.HTTP_200_OK, content_url_response.status_code)
         self.assertDictContainsSubset({'count': 0, 'next': None, 'results': []}, content_url_response.data)
         filter_dict = ast.literal_eval(self.first_object_response.data['filters'])
-        get_query = urllib.urlencode(filter_dict)
-        self.assertIn(get_query.decode(), content_url)
+        try:
+            get_query = urlencode(filter_dict).decode()
+        except AttributeError:
+            get_query = urlencode(filter_dict)
+        self.assertIn(get_query, content_url)
 
     def test_position_field(self):
         self.assertIn('position', self.first_object_response.data)
