@@ -5,8 +5,6 @@ try:
     from urllib import urlencode
 except ImportError:
     from urllib.parse import urlencode
-from django.utils.translation import ugettext_lazy as _
-from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 from apps.publication.serializers import PublicationSerializer
 from apps.cms.models import Page, Module

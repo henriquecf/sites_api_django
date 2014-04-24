@@ -2,10 +2,11 @@
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import Group as AuthGroup, User as AuthUser, Permission
 from rest_framework import serializers
-from apps.resource.models import Site, Resource, Group, User, AuthorRestriction
+from apps.resource.models import Resource, Group, User, AuthorRestriction
 
 
 class PermissionSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Permission
 
@@ -17,7 +18,7 @@ class AuthUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = AuthUser
         exclude = ['is_superuser', 'is_staff']
-        read_only_fields = ('date_joined', 'last_login', 'is_active')
+        read_only_fields = ('date_joined', 'last_login', 'is_active', 'groups')
         write_only_fields = ('password',)
 
 
@@ -29,6 +30,7 @@ class NestedAuthUserSerializer(serializers.ModelSerializer):
 
 
 class AuthGroupSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = AuthGroup
         fields = ('id', 'permissions')
