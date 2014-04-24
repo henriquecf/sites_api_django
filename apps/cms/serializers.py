@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import ast, urllib, types
+import ast, types
+try:
+    from urllib import urlencode
+except ImportError:
+    from urllib.parse import urlencode
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
@@ -17,7 +21,10 @@ class ModuleSerializer(PublicationSerializer):
             filter_dict = ast.literal_eval(obj.filters)
         except SyntaxError:
             filter_dict = {}
-        get_query = urllib.urlencode(filter_dict).decode()
+        try:
+            get_query = urlencode(filter_dict)
+        except AttributeError:
+            get_query = urlencode(filter_dict)
         return 'http://{0}/{1}/?{2}'.format(self.context['request'].get_host(), obj.model.model.lower(), get_query)
 
     class Meta(PublicationSerializer.Meta):
