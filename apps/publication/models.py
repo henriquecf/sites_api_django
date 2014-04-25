@@ -94,7 +94,7 @@ def find_available_slug(model, instance, slug, original_slug, slug_number=2):
     except model.DoesNotExist:
         instance.slug = slug
     else:
-        slug = slugify(original_slug + "-{0}".format(slug_number))
+        slug = slugify(u'%s-%d' % (original_slug, slug_number))
         slug_number += 1
         find_available_slug(model, instance, slug, original_slug, slug_number=slug_number)
     return
