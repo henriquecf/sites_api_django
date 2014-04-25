@@ -8,6 +8,7 @@ from apps.file_explorer.models import File
 
 
 class FileSerializer(PublicationSerializer):
+    content = serializers.CharField(required=False, label=_('content'), widget=serializers.widgets.Textarea())
 
     def get_fields(self):
         fields = super(FileSerializer, self).get_fields()

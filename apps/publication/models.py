@@ -13,7 +13,7 @@ class Publication(Resource):
     It has basic publications functionality and can be used by its own, or inherited by other models.
     """
     title = models.CharField(_('title'), max_length=150)
-    content = models.TextField(_('content'), blank=True)
+    content = models.TextField(_('content'))
     description = models.TextField(_('description'), blank=True)
     slug = models.SlugField(_('slug'), max_length=150, editable=False)
     publication_start_date = models.DateTimeField(_('publication start date'), blank=True, default=timezone.now())

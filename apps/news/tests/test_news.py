@@ -5,10 +5,9 @@ from django.http.request import HttpRequest
 from django.test import LiveServerTestCase
 from rest_framework.test import APILiveServerTestCase
 
-from apps.category.tests.routines import test_add_category_routine, test_filter_categories
+from apps.category.tests.routines import test_add_category_routine, test_filter_categories_routine
 from apps.category.models import Category
 from apps.publication.tests import routines as publication_routines
-from apps.publication.models import Publication
 from apps.resource.tests import routines as resource_routines
 from apps.resource.models import AuthUser, User
 import test_routines
@@ -120,43 +119,5 @@ class NewsAPITestCase(APILiveServerTestCase):
     def test_resource_sites_field(self):
         resource_routines.test_resource_sites_field_routine(self)
 
-    def test_categories_filter_get_fields_serializer(self):
-        request = HttpRequest()
-        request.user = self.owner
-        news_content_type = ContentType.objects.get_for_model(News)
-        category = Category.objects.create(author=self.owner, owner=self.owner, name='Category 1',
-                                           model=news_content_type)
-        possible_categories = NewsSerializer(context={'request': request}).get_fields()['categories'].queryset
-        self.assertIn(category, possible_categories)
-        other_user_category = Category.objects.create(author=self.second_owner, owner=self.second_owner,
-                                                      name='Other category', model=news_content_type)
-
-        possible_categories = NewsSerializer(context={'request': request}).get_fields()['categories'].queryset
-        self.assertIn(category, possible_categories)
-        self.assertNotIn(other_user_category, possible_categories)
-
-        request.user = self.second_owner
-
-        possible_categories = NewsSerializer(context={'request': request}).get_fields()['categories'].queryset
-        self.assertNotIn(category, possible_categories)
-        self.assertIn(other_user_category, possible_categories)
-
-        publication_content_type = ContentType.objects.get_for_model(Publication)
-
-        other_user_category.model = publication_content_type
-        other_user_category.save()
-
-        possible_categories = NewsSerializer(context={'request': request}).get_fields()['categories'].queryset
-        self.assertNotIn(category, possible_categories)
-        self.assertNotIn(other_user_category, possible_categories)
-
-        category.model = publication_content_type
-        category.save()
-        request.user = self.owner
-
-        possible_categories = NewsSerializer(context={'request': request}).get_fields()['categories'].queryset
-        self.assertNotIn(category, possible_categories)
-        self.assertNotIn(other_user_category, possible_categories)
-
-
-# TODO Functional: filter categories field filterset
+    def test_filter_categories(self):
+        test_filter_categories_routine(self)

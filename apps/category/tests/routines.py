@@ -26,7 +26,7 @@ def test_add_category_routine(test_case, name='Category 1'):
                           'Field categories not found in model "{0}"'.format(test_case.model._meta.model_name))
 
 
-def test_filter_categories(test_case):
+def test_filter_categories_routine(test_case):
     test_add_category_routine(test_case)
     category_filter = {'categories': 'Category 1'}
     response = test_case.client.get(test_case.url, category_filter)
