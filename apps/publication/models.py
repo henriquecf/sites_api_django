@@ -21,12 +21,19 @@ class Publication(Resource):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        if self.publication_start_date:
-            if timezone.is_naive(self.publication_start_date):
-                timezone.make_aware(self.publication_start_date, timezone.get_current_timezone())
-        if self.publication_end_date:
-            if timezone.is_naive(self.publication_end_date):
-                timezone.make_aware(self.publication_end_date, timezone.get_current_timezone())
+        try:
+            self.publication_start_date = timezone.make_aware(self.publication_start_date,
+                                                              timezone.get_current_timezone())
+        except AttributeError:
+            pass
+        except ValueError:
+            pass
+        try:
+            self.publication_end_date = timezone.make_aware(self.publication_end_date, timezone.get_current_timezone())
+        except AttributeError:
+            pass
+        except ValueError:
+            pass
         super(Publication, self).save()
 
     def __str__(self):
@@ -39,7 +46,7 @@ class Publication(Resource):
         Returns the state of the publication.
         """
         if self.publication_start_date > timezone.now():
-            self.publication_start_date = timezone.datetime.now()
+            self.publication_start_date = timezone.now()
         if self.publication_end_date:
             self.publication_end_date = None
         self.save()
@@ -52,7 +59,7 @@ class Publication(Resource):
         Returns the state of the publication.
         """
         if self.publication_start_date > timezone.now():
-            self.publication_start_date = timezone.datetime.now()
+            self.publication_start_date = timezone.now()
         self.publication_end_date = timezone.now()
         self.save()
         return self.is_published()
@@ -75,14 +82,13 @@ class Publication(Resource):
 
 
 class CustomHTML(Publication):
-
     class Meta(Publication.Meta):
         verbose_name = _('custom HTML')
         verbose_name_plural = _('custom HTMLs')
 
 
 def find_available_slug(model, instance, slug, original_slug, slug_number=2):
-    #Adds underscores with an incrementing number to the slug until an available one is found.
+    #Adds scores with an incrementing number to the slug until an available one is found.
     try:
         sender_node = model.objects.get(slug=slug)
     except model.DoesNotExist:
