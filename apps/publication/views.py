@@ -34,14 +34,14 @@ class PublicationBaseViewSet(ResourceViewSet):
             last_title = Publication.objects.get(id=obj.id).title
         except ObjectDoesNotExist:
             # Creates a slug for the publication based on the title
-            slug = slugify(obj.title)
+            slug = slugify(u'%s' % obj.title)
             find_available_slug(self.model, obj, slug, slug)
         else:
             try:
                 title = self.request.DATA['title']
                 if title != last_title:
                     # Creates a slug for the publication based on the title
-                    slug = slugify(title)
+                    slug = slugify(u'%s' % title)
                     find_available_slug(self.model, obj, slug, slug)
             except KeyError:
                 pass
