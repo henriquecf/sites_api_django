@@ -2,6 +2,7 @@
 from django.core.urlresolvers import reverse
 from django.test import LiveServerTestCase
 from django.utils import timezone
+from django.http import HttpRequest
 from rest_framework.test import APILiveServerTestCase
 
 from apps.publication.tests import routines as publication_routines
@@ -10,6 +11,7 @@ from apps.resource.models import AuthUser, User
 import test_routines
 import test_fixtures
 from apps.publication.models import Publication, CustomHTML, find_available_slug
+from apps.publication.views import PublicationBaseViewSet
 
 
 class PublicationTestCase(LiveServerTestCase):
@@ -19,6 +21,7 @@ class PublicationTestCase(LiveServerTestCase):
         User.objects.create(user=user, author=user, owner=user)
         publication = Publication.objects.create(owner=user, author=user, title='Test pub', content='Content')
         self.publication = publication
+        self.user = user
 
     def test_model_is_published_method(self):
         pub = self.publication
@@ -66,6 +69,32 @@ class PublicationTestCase(LiveServerTestCase):
         pub.save()
         find_available_slug(Publication, pub, slug, slug)
         self.assertEqual(slug, pub.slug)
+
+    def test_viewset_pre_save_method(self):
+        request = HttpRequest()
+        request.user = self.user
+        request.DATA = {}
+        pub_obj = Publication(title='test pub test')
+        pub_view_set = PublicationBaseViewSet(request=request)
+
+        self.assertFalse(pub_obj.slug)
+        pub_view_set.pre_save(pub_obj)
+        self.assertEqual('test-pub-test', pub_obj.slug)
+        pub_obj.save()
+
+        self.assertFalse(self.publication.slug)
+        pub_view_set.pre_save(self.publication)
+        self.assertFalse(self.publication.slug)
+
+        request.DATA['title'] = 'test pub test'
+        pub_view_set.request = request
+        pub_view_set.pre_save(pub_obj)
+        self.assertEqual('test-pub-test', pub_obj.slug)
+
+        request.DATA['title'] = 'another pub'
+        pub_view_set.request = request
+        pub_view_set.pre_save(pub_obj)
+        self.assertEqual('another-pub', pub_obj.slug)
 
 
 class PublicationAPITestCase(APILiveServerTestCase):
