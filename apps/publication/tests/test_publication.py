@@ -4,7 +4,7 @@ from django.test import LiveServerTestCase
 from django.utils import timezone
 from django.http import HttpRequest
 from rest_framework.test import APILiveServerTestCase
-
+from rest_framework import status
 from apps.publication.tests import routines as publication_routines
 from apps.resource.tests import routines as resource_routines
 from apps.resource.models import AuthUser, User
@@ -110,7 +110,8 @@ class PublicationAPITestCase(APILiveServerTestCase):
         }
         test_fixtures.user_accountuser_account_permissions_token_fixture(self)
         self.set_authorization_bearer()
-        self.first_object_response = self.client.post(self.url, self.data)
+        publication = self.model.objects.create(owner=self.owner, author=self.owner, title='publication')
+        self.pub_url = reverse('publication-detail', args=(publication.id,))
 
     def set_authorization_bearer(self, token=None):
         if not token:
@@ -119,8 +120,24 @@ class PublicationAPITestCase(APILiveServerTestCase):
 
     def test_list(self):
         response = self.client.get(self.url)
-        self.assertEqual(200, response.status_code, response.data)
+        self.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
         self.assertEqual(0, response.data['count'])
+
+    def test_create(self):
+        response = self.client.post(self.url, self.data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+
+    def test_update(self):
+        response = self.client.put(self.pub_url, self.data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+
+    def test_partial_update(self):
+        response = self.client.patch(self.pub_url, self.data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+
+    def test_delete(self):
+        response = self.client.delete(self.pub_url, self.data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
 
 class CustomHTMLAPITestCase(APILiveServerTestCase):
