@@ -28,7 +28,7 @@ class FileTestCase(LiveServerTestCase):
         self.request = HttpRequest()
         self.request.user = user
 
-    def test_serializer_get_fields(self):
+    def test_serializer_get_fields_method(self):
         file_content_type = ContentType.objects.get_for_model(File)
         category = Category.objects.create(owner=self.user, author=self.user, name='Category', model=file_content_type)
         file_serializer = FileSerializer(context={'request': self.request})
