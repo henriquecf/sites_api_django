@@ -27,7 +27,7 @@ class SubscriptionViewSet(ResourceViewSet):
     def unsubscribe(self, request, *args, **kwargs):
         """Verify token and subscriber to deactivate a subscritpion.
 
-        If token does not match for the user, a 401 status code is returned.
+        If token does not match for the user, a 400 status code is returned.
         """
         subscription = self.get_object()
         try:
@@ -37,7 +37,7 @@ class SubscriptionViewSet(ResourceViewSet):
         if subscription.token == token:
             subscription.is_active = False
             subscription.save()
-            return Response(status=200)
+            return Response(status=200, data={'detail': _('You was successfully unsubscribed.')})
         else:
             return Response(status=400, data={'detail': _('You can not unsubscribe without a valid token.')})
 

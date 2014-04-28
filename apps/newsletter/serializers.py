@@ -7,9 +7,11 @@ from apps.newsletter.models import Subscription, Newsletter
 
 class SubscriptionSerializer(ResourceSerializer):
     unsubscribe = serializers.HyperlinkedIdentityField(label=_('unsubscribe'), view_name='subscription-unsubscribe')
+    submissions = serializers.RelatedField(label=_('submissions'), many=True, source='submissions')
 
     class Meta(ResourceSerializer.Meta):
         model = Subscription
+        exclude = ['token']
 
 
 class NewsletterSerializer(ResourceSerializer):

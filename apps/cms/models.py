@@ -31,6 +31,7 @@ class Module(Publication):
     object_id = models.PositiveIntegerField(null=True, blank=True)
     model_object = GenericForeignKey('model', 'object_id')
     filters = models.TextField(blank=True)
-    page = models.ForeignKey(Page, related_name='modules')
+    page = models.ManyToManyField(Page, related_name='modules')
     position = models.CharField(max_length=4, choices=(
         ('1', _('Top')), ('2', _('Left')), ('3', _('Center')), ('4', _('Right')), ('5', _('Bottom'))))
+    order = models.IntegerField()

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import Permission
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 
@@ -24,6 +25,12 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
         }
         test_fixtures.user_accountuser_account_permissions_token_fixture(self)
         self.set_authorization_bearer()
+        newsletter_permisions = Permission.objects.filter(codename__endswith='newsletter')
+        submission_permissions = Permission.objects.filter(codename__endswith='submission')
+        for permission in newsletter_permisions:
+            self.owner.user_permissions.add(permission)
+        for permission in submission_permissions:
+            self.owner.user_permissions.add(permission)
         self.first_object_response = self.client.post(self.url, self.data)
         self.data.update({'email': 'ivan@gmail.com'})
 
@@ -48,7 +55,7 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
         test_routines.test_custom_object_permission_routine(self, count=2)
 
     def test_serializer_read_only_fields(self):
-        fields = ['token', 'is_active']
+        fields = ['is_active']
         resource_routines.test_serializer_read_only_fields_routine(self, fields)
 
     def test_hyperlinked_fields(self):
@@ -71,11 +78,6 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
         count_again = Subscription.objects.count()
         self.assertEqual(count, count_again)
 
-    def test_generate_token_string(self):
-        subscription = Subscription.objects.get(email='idan@gmail.com')
-        self.assertTrue(subscription.token)
-        self.assertTrue(isinstance(self.first_object_response.data['token'], type(u'')), 'This value must return a str type')
-
     def test_deactivate(self):
         self.assertEqual(status.HTTP_201_CREATED, self.first_object_response.status_code)
         response = self.client.post(self.url, self.altered_data)
@@ -87,6 +89,7 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
         self.assertTrue(subscription.is_active)
         unsubscribe_response = self.client.post(response.data['unsubscribe'], data={'token': subscription.token})
         self.assertEqual(unsubscribe_response.status_code, status.HTTP_200_OK)
+        self.assertEqual('You was successfully unsubscribed.', unsubscribe_response.data['detail'])
         subscription = Subscription.objects.get(email='ivan_morais@yahoo.com.br')
         self.assertFalse(subscription.is_active)
         response = self.client.post(self.url, self.altered_data)
@@ -106,3 +109,16 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
         self.client.post(self.url, self.data)
         response = self.client.get(self.url)
         self.assertEqual(1, response.data['count'])
+
+    def test_submission_field(self):
+        response1 = self.client.post(reverse('newsletter-list'),
+                                     data={'subject': 'email subject', 'content': 'Email content'})
+        response2 = self.client.get(response1.data['url'])
+        response3 = self.client.post(response2.data['send_newsletter'])
+        response4 = self.client.get(self.first_object_response.data['url'])
+        self.assertEqual(status.HTTP_201_CREATED, response1.status_code)
+        self.assertEqual([], response2.data['submissions'], response2.data)
+        self.assertEqual(['sent - idan@gmail.com'], response4.data['submissions'])
+
+    def test_token_is_not_returned(self):
+        self.assertNotIn('token', self.first_object_response.data)
