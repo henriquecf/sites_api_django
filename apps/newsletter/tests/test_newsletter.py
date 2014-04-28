@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
+from django.http import HttpRequest
 from django.contrib.auth.models import Permission, User as AuthUser
 from django.test import LiveServerTestCase
 from rest_framework.test import APILiveServerTestCase
@@ -24,6 +25,7 @@ class NewsletterTestCase(LiveServerTestCase):
                                                          author=self.user)
         self.newsletter = Newsletter.objects.create(subject='subject', content='content', owner=self.user,
                                                     author=self.user)
+        self.request = HttpRequest()
 
     def test_send_newsletter_method(self):
         status = self.newsletter.send_newsletter(self.user)
