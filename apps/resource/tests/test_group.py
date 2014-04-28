@@ -3,11 +3,14 @@ import random
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import Permission
 from django.test import LiveServerTestCase
+from django.http import HttpRequest
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
+
 from apps.resource.models import Group, AuthUser, User
 from apps.resource.serializers import AuthGroupSerializer
-
+from apps.resource.views import GroupViewSet
+from apps.resource.exceptions import BadRequestValidationError
 from test_fixtures import user_accountuser_account_permissions_token_fixture
 import test_routines
 
@@ -18,6 +21,7 @@ class GroupTestCase(LiveServerTestCase):
         user = AuthUser.objects.create_user(username='user', password='123')
         User.objects.create(user=user, author=user, owner=user)
         self.group = Group.objects.create(owner=user, author=user, role='My group')
+        self.user = user
 
     def test_model_save_method(self):
         group_name = 'user - My group'
@@ -33,6 +37,26 @@ class GroupTestCase(LiveServerTestCase):
 
         for field in fields:
             self.assertIn(field, authgroup_serializer.Meta.fields)
+
+    def test_pre_save_method(self):
+        group = Group(role='test role')
+        request = HttpRequest()
+        request.user = self.user
+
+        viewset = GroupViewSet(request=request)
+
+        viewset.pre_save(group)
+
+        self.assertEqual(self.user, group.owner)
+        self.assertEqual(self.user, group.author)
+
+        group.save()
+
+        try:
+            viewset.pre_save(group)
+            self.assertFalse('It must not be possible to save to groups with the same role name')
+        except BadRequestValidationError:
+            pass
 
 
 class GroupAPITestCase(APILiveServerTestCase):
