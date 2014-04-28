@@ -3,8 +3,10 @@
 import ast
 from django.http import HttpRequest
 from django.test import LiveServerTestCase
+
 from apps.cms.serializers import ModuleSerializer
 from apps.resource.models import User
+
 
 try:
     from urllib import urlencode
@@ -24,7 +26,6 @@ from apps.cms.models import Module, Page
 
 
 class ModuleTestCase(LiveServerTestCase):
-
     def setUp(self):
         user = AuthUser.objects.create_user(username='user', password='123')
         User.objects.create(owner=user, author=user, user=user)
@@ -34,7 +35,9 @@ class ModuleTestCase(LiveServerTestCase):
         self.request.user = user
         self.model = ContentType.objects.get_for_model(Page)
         self.module = Module.objects.create(owner=user, author=user, title='Module', model=self.model, position=1,
-                                            page=page)
+                                            order=1)
+        self.module.page.add(page)
+        self.module.save()
 
     def test_serializer_get_content_url(self):
         self.request.META['SERVER_NAME'] = 'testserver'
