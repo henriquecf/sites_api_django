@@ -136,21 +136,3 @@ class NewsletterAPITestCase(APILiveServerTestCase):
         self.assertEqual(status.HTTP_201_CREATED, response1.status_code)
         self.assertEqual([], response2.data['results'][0]['submissions'], response2.data)
         self.assertEqual(['sent - ivan@ivan.com.br'], response4.data['results'][0]['submissions'])
-
-    '''def test_send_when_newsletter_has_two_failed_submissions(self):
-        response1 = self.client.post(reverse('subscription-list'),
-                                     data={'name': 'ivan', 'email': 'ivan@ivan.com.br'})
-        self.assertEqual(status.HTTP_201_CREATED, response1.status_code)
-        response2 = self.client.post(reverse('subscription-list'),
-                                     data={'name': 'idan', 'email': 'idan@idan.com.br'})
-        self.assertEqual(status.HTTP_201_CREATED, response2.status_code)
-        response3 = self.client.post(self.first_object_response.data['send_newsletter'])
-        self.assertEqual(status.HTTP_202_ACCEPTED, response3.status_code)
-        data = dict(new=2, successful=0, resubmissions=0, failed=2)
-        self.assertEqual(status.HTTP_202_ACCEPTED, response3.status_code)
-        self.assertEqual(data, response3.data['submissions'])
-        response3 = self.client.post(self.first_object_response.data['send_newsletter'])
-        self.assertEqual(status.HTTP_202_ACCEPTED, response3.status_code)
-        data = dict(new=0, successful=2, resubmissions=2, failed=0)
-        self.assertEqual(status.HTTP_202_ACCEPTED, response3.status_code)
-        self.assertEqual(data, response3.data['submissions'])'''

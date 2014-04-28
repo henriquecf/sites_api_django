@@ -87,7 +87,7 @@ class Submission(Resource):
         if self.newsletter.sender_email != '':
             sender_email = self.newsletter.sender_email
         else:
-            sender_email = self.account.owner.email
+            sender_email = self.owner.email
         if not self.status == 'sent':
             message = EmailMultiAlternatives(self.newsletter.subject,
                                              self.newsletter.content,

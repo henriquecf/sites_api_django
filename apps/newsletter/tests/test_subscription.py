@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import Permission
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 
@@ -24,6 +25,12 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
         }
         test_fixtures.user_accountuser_account_permissions_token_fixture(self)
         self.set_authorization_bearer()
+        newsletter_permisions = Permission.objects.filter(codename__endswith='newsletter')
+        submission_permissions = Permission.objects.filter(codename__endswith='submission')
+        for permission in newsletter_permisions:
+            self.owner.user_permissions.add(permission)
+        for permission in submission_permissions:
+            self.owner.user_permissions.add(permission)
         self.first_object_response = self.client.post(self.url, self.data)
         self.data.update({'email': 'ivan@gmail.com'})
 
@@ -106,3 +113,13 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
         self.client.post(self.url, self.data)
         response = self.client.get(self.url)
         self.assertEqual(1, response.data['count'])
+
+    def test_submission_field(self):
+        response1 = self.client.post(reverse('newsletter-list'),
+                                     data={'subject': 'email subject', 'content': 'Email content'})
+        response2 = self.client.get(response1.data['url'])
+        response3 = self.client.post(response2.data['send_newsletter'])
+        response4 = self.client.get(self.first_object_response.data['url'])
+        self.assertEqual(status.HTTP_201_CREATED, response1.status_code)
+        self.assertEqual([], response2.data['submissions'], response2.data)
+        self.assertEqual(['sent - idan@gmail.com'], response4.data['submissions'])
