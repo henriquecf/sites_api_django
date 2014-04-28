@@ -1,13 +1,36 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import Permission
+from django.http import HttpRequest
+from django.contrib.auth.models import Permission, User as AuthUser
+from django.test import LiveServerTestCase
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 
 from apps.resource.tests import routines as resource_routines
+from apps.resource.models import User
 import test_routines
 import test_fixtures
 from apps.newsletter.models import Subscription
+from apps.newsletter.serializers import SubscriptionSerializer
+from apps.newsletter.views import SubscriptionViewSet
+
+
+class SubscriptionTestCase(LiveServerTestCase):
+
+    def setUp(self):
+        self.user = AuthUser.objects.create_user(username='user', password='123')
+        User.objects.create(user=self.user, author=self.user, owner=self.user)
+        self.subscription = Subscription.objects.create(name='ivan', email='ivan@ivan.com', owner=self.user,
+                                                        author=self.user)
+
+    def test_token_is_not_null(self):
+        self.assertIsNotNone(self.subscription.token)
+
+    def test_subscription_serializer(self):
+        request = HttpRequest()
+        request.user = self.user
+        subscription_serializer = SubscriptionSerializer(context={'request': request})
+        self.assertIn('token', subscription_serializer.Meta.exclude)
 
 
 class SubscriptionAPITestCase(APILiveServerTestCase):
@@ -97,6 +120,8 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
         self.assertTrue(subscription.is_active)
         unsubscribe_response = self.client.post(response.data['unsubscribe'], data={'token': None})
         self.assertEqual(unsubscribe_response.status_code, status.HTTP_400_BAD_REQUEST)
+        unsubscribe_response = self.client.post(response.data['unsubscribe'])
+        self.assertEqual(unsubscribe_response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_can_subscribe_with_same_email_in_different_account(self):
         self.client.post(self.url, self.data)
@@ -121,3 +146,15 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
 
     def test_token_is_not_returned(self):
         self.assertNotIn('token', self.first_object_response.data)
+
+    def test_view_set_create_method(self):
+        response = self.client.get(self.first_object_response.data['url'])
+        self.assertTrue(response.data['is_active'])
+        subscription = Subscription.objects.get(id=self.first_object_response.data['url'].split('/')[-2])
+        self.client.post(self.first_object_response.data['unsubscribe'], {'token': subscription.token})
+        response = self.client.get(self.first_object_response.data['url'])
+        self.assertFalse(response.data['is_active'])
+        response = self.client.post(self.url, {'name': 'Idan', 'email': 'idan@gmail.com'})
+        self.assertEqual(response.data['url'], self.first_object_response.data['url'])
+        response = self.client.get(self.first_object_response.data['url'])
+        self.assertTrue(response.data['is_active'])
