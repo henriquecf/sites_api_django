@@ -1,7 +1,6 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.models import Site as ContribSite
-from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
 from django.core.exceptions import ObjectDoesNotExist
@@ -13,7 +12,6 @@ from apps.resource.exceptions import BadRequestValidationError
 from apps.resource.models import Resource, Site, User, Group, AuthorRestriction
 from apps.resource.serializers import ResourceSerializer, UserSerializer, \
     GroupSerializer, AuthorRestrictionSerializer
-from apps.resource.backends import AuthorRestrictionBackend, SiteDomainFilterBackend, ResourceFilterBackend
 
 
 class UserLoginView(FormView):
@@ -180,17 +178,3 @@ class GroupViewSet(ResourceViewSet):
 class AuthorRestrictionViewSet(ResourceViewSet):
     model = AuthorRestriction
     serializer_class = AuthorRestrictionSerializer
-
-    def pre_save(self, obj):
-        try:
-            owner = obj.user.user.owner
-        except AttributeError:
-            try:
-                owner = obj.group.group.owner
-            except AttributeError:
-                raise BadRequestValidationError(_('You must specify either User or Group field.'))
-
-        if owner != self.request.user.user.owner:
-            raise BadRequestValidationError(_('You can not alter other account permissions.'))
-        else:
-            super(AuthorRestrictionViewSet, self).pre_save(obj)
