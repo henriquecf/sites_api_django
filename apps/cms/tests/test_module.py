@@ -35,7 +35,7 @@ class ModuleAPITestCase(APILiveServerTestCase):
             'object_id': None,
             'model_object': None,
             'filters': '{"categories": ["category 1"]}',
-            'page': page_response.data['url'],
+            'page': [page_response.data['url']],
             'position': '1',
             'order': 1,
         }
@@ -45,7 +45,7 @@ class ModuleAPITestCase(APILiveServerTestCase):
             'object_id': 1,
             'model_object': 1,
             'filters': '{"categories": ["category 2"]}',
-            'page': page_response.data['url'],
+            'page': [page_response.data['url']],
             'position': '2',
             'order': 2,
         }
