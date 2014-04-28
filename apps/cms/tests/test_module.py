@@ -37,6 +37,7 @@ class ModuleAPITestCase(APILiveServerTestCase):
             'filters': '{"categories": ["category 1"]}',
             'page': page_response.data['url'],
             'position': '1',
+            'order': 1,
         }
         self.altered_data = {
             'title': 'First Module Altered',
@@ -46,6 +47,7 @@ class ModuleAPITestCase(APILiveServerTestCase):
             'filters': '{"categories": ["category 2"]}',
             'page': page_response.data['url'],
             'position': '2',
+            'order': 2,
         }
         news_permisions = Permission.objects.filter(codename__endswith='news')
         for permission in news_permisions:
@@ -125,3 +127,12 @@ class ModuleAPITestCase(APILiveServerTestCase):
 
     def test_position_field(self):
         self.assertIn('position', self.first_object_response.data)
+
+    def test_order_field(self):
+        self.assertIn('order', self.first_object_response.data)
+        self.data['order'] = '1'
+        response = self.client.post(self.url, self.data)
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+        self.data['order'] = 'a'
+        response = self.client.post(self.url, self.data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
