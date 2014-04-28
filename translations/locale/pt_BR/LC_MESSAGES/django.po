@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-22 14:57-0300\n"
+"POT-Creation-Date: 2014-04-28 14:59-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,23 +17,23 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: apps/category/models.py:16 apps/newsletter/models.py:18
+#: apps/category/models.py:15 apps/newsletter/models.py:18
 msgid "name"
 msgstr "nome"
 
-#: apps/category/models.py:17
+#: apps/category/models.py:16
 msgid "parent category"
 msgstr "categoria pai"
 
-#: apps/category/models.py:19
+#: apps/category/models.py:18
 msgid "model name"
 msgstr "nome do modelo"
 
-#: apps/category/models.py:25
+#: apps/category/models.py:24 apps/cms/serializers.py:35
 msgid "category"
 msgstr "categoria"
 
-#: apps/category/models.py:26 apps/file_explorer/models.py:18
+#: apps/category/models.py:25 apps/file_explorer/models.py:18
 #: apps/news/models.py:19
 msgid "categories"
 msgstr "categorias"
@@ -46,8 +46,46 @@ msgstr "obter descendentes"
 msgid "is leaf node"
 msgstr "é nó folha"
 
+#: apps/cms/models.py:25
+msgid "Page"
+msgstr "Página"
+
+#: apps/cms/models.py:26
+msgid "Pages"
+msgstr "Páginas"
+
+#: apps/cms/models.py:36
+msgid "Top"
+msgstr "Topo"
+
+#: apps/cms/models.py:36
+msgid "Left"
+msgstr "Esquerda"
+
+#: apps/cms/models.py:36
+msgid "Center"
+msgstr "Centro"
+
+#: apps/cms/models.py:36
+msgid "Right"
+msgstr "Direita"
+
+#: apps/cms/models.py:36
+msgid "Bottom"
+msgstr "Abaixo"
+
+#: apps/cms/serializers.py:15
+msgid "model"
+msgstr "modelo"
+
+#: apps/cms/serializers.py:16 apps/cms/serializers.py:36
+#: apps/file_explorer/serializers.py:11 apps/newsletter/models.py:41
+#: apps/publication/models.py:16
+msgid "content"
+msgstr "conteúdo"
+
 #: apps/file_explorer/models.py:17 apps/file_explorer/models.py:27
-#: apps/file_explorer/serializers.py:24
+#: apps/file_explorer/serializers.py:25
 msgid "file"
 msgstr "arquivo"
 
@@ -80,7 +118,6 @@ msgid "subscription status"
 msgstr "estado da assinatura"
 
 #: apps/newsletter/models.py:32 apps/newsletter/models.py:76
-#: apps/newsletter/serializers.py:17
 msgid "subscription"
 msgstr "assinatura"
 
@@ -92,16 +129,11 @@ msgstr "assinaturas"
 msgid "subject"
 msgstr "assunto"
 
-#: apps/newsletter/models.py:41 apps/publication/models.py:16
-msgid "content"
-msgstr "conteúdo"
-
 #: apps/newsletter/models.py:42
 msgid "sender email"
 msgstr "email do remetente"
 
 #: apps/newsletter/models.py:67 apps/newsletter/models.py:77
-#: apps/newsletter/serializers.py:16
 msgid "newsletter"
 msgstr "boletim informativo"
 
@@ -117,7 +149,8 @@ msgstr "estado"
 msgid "submission"
 msgstr "submissão"
 
-#: apps/newsletter/models.py:112 apps/newsletter/serializers.py:26
+#: apps/newsletter/models.py:112 apps/newsletter/serializers.py:10
+#: apps/newsletter/serializers.py:20
 msgid "submissions"
 msgstr "submissões"
 
@@ -125,13 +158,17 @@ msgstr "submissões"
 msgid "unsubscribe"
 msgstr "descadastrar"
 
-#: apps/newsletter/serializers.py:24
+#: apps/newsletter/serializers.py:18
 msgid "send newsletter"
 msgstr "enviar boletim informativo"
 
-#: apps/newsletter/views.py:37 apps/newsletter/views.py:43
+#: apps/newsletter/views.py:36 apps/newsletter/views.py:42
 msgid "You can not unsubscribe without a valid token."
 msgstr "Você não pode descadastrar sem uma chave válida."
+
+#: apps/newsletter/views.py:40
+msgid "You was successfully unsubscribed."
+msgstr "Você foi descadastrado com sucesso"
 
 #: apps/publication/models.py:15
 msgid "title"
@@ -153,13 +190,21 @@ msgstr "data de início da publicação"
 msgid "publication end date"
 msgstr "data final da publicação"
 
-#: apps/publication/models.py:73
+#: apps/publication/models.py:80
 msgid "publication"
 msgstr "publicação"
 
-#: apps/publication/models.py:74
+#: apps/publication/models.py:81
 msgid "publications"
 msgstr "publicações"
+
+#: apps/publication/models.py:86
+msgid "custom HTML"
+msgstr "HTML personalizado"
+
+#: apps/publication/models.py:87
+msgid "custom HTMLs"
+msgstr "HTMLs personalizados"
 
 #: apps/publication/serializers.py:9
 msgid "publication status"
@@ -172,6 +217,22 @@ msgstr "publicar"
 #: apps/publication/serializers.py:11
 msgid "unpublish"
 msgstr "despublicar"
+
+#: apps/publication/views.py:74
+msgid "Method 'POST' not allowed."
+msgstr "O método 'POST' não é permitido."
+
+#: apps/publication/views.py:77
+msgid "Method 'PUT' not allowed."
+msgstr "O método 'PUT' não é permitido."
+
+#: apps/publication/views.py:80
+msgid "Method 'PATCH' not allowed."
+msgstr "O método 'PATCH' não é permitido."
+
+#: apps/publication/views.py:83
+msgid "Method 'DELETE' not allowed."
+msgstr "O método 'DELETE' não é permitido."
 
 #: apps/resource/exceptions.py:14
 msgid "There was an error validating the request."
@@ -193,84 +254,100 @@ msgstr "proprietário"
 msgid "author"
 msgstr "autor"
 
-#: apps/resource/models.py:33 apps/resource/models.py:83
+#: apps/resource/models.py:33 apps/resource/models.py:80
 msgid "sites"
 msgstr "sites"
 
-#: apps/resource/models.py:42
+#: apps/resource/models.py:39
 msgid "resource"
 msgstr "recurso"
 
-#: apps/resource/models.py:43
+#: apps/resource/models.py:40
 msgid "resources"
 msgstr "recursos"
 
-#: apps/resource/models.py:47 apps/resource/models.py:60
-#: apps/resource/models.py:91 apps/resource/serializers.py:73
+#: apps/resource/models.py:44 apps/resource/models.py:57
+#: apps/resource/models.py:88 apps/resource/serializers.py:80
 msgid "group"
 msgstr "grupo"
 
-#: apps/resource/models.py:48
+#: apps/resource/models.py:45
 msgid "role"
 msgstr "papel"
 
-#: apps/resource/models.py:61
+#: apps/resource/models.py:58
 msgid "groups"
 msgstr "grupos"
 
-#: apps/resource/models.py:65 apps/resource/models.py:71
-#: apps/resource/models.py:89 apps/resource/serializers.py:71
+#: apps/resource/models.py:62 apps/resource/models.py:68
+#: apps/resource/models.py:86 apps/resource/serializers.py:78
 msgid "user"
 msgstr "usuário"
 
-#: apps/resource/models.py:72
+#: apps/resource/models.py:69
 msgid "users"
 msgstr "usuários"
 
-#: apps/resource/models.py:76 apps/resource/models.py:82
+#: apps/resource/models.py:73 apps/resource/models.py:79
 msgid "site"
 msgstr "site"
 
-#: apps/resource/models.py:87
+#: apps/resource/models.py:84
 msgid "filter values"
 msgstr "valores do filtro"
 
-#: apps/resource/models.py:88 apps/resource/serializers.py:72
+#: apps/resource/models.py:85 apps/resource/serializers.py:79
 msgid "permission"
 msgstr "permissão"
 
-#: apps/resource/models.py:129
+#: apps/resource/models.py:126
 msgid "author restriction"
 msgstr "restrição por autor"
 
-#: apps/resource/models.py:130
+#: apps/resource/models.py:127
 msgid "author restrictions"
 msgstr "restrições por autor"
 
-#: apps/resource/serializers.py:54
+#: apps/resource/serializers.py:55 apps/resource/serializers.py:68
 msgid "assign permissions"
 msgstr "atribuir permissões"
 
-#: apps/resource/serializers.py:56
+#: apps/resource/serializers.py:57 apps/resource/serializers.py:70
 msgid "unassign permissions"
 msgstr "retirar permissões"
 
-#: apps/resource/views.py:96
-msgid "Role field is unique. Please insert another name."
-msgstr "Campo função é único. Por favor insira outro nome."
+#: apps/resource/serializers.py:66
+msgid "assign groups"
+msgstr "atribuir grupos"
 
-#: apps/resource/views.py:107
+#: apps/resource/serializers.py:67
+msgid "unassign groups"
+msgstr "retirar grupos"
+
+#: apps/resource/views.py:75 apps/resource/views.py:92
+msgid "You can not alter owner groups."
+msgstr "Você não pode alterar grupos do dono."
+
+#: apps/resource/views.py:81 apps/resource/views.py:98
+msgid "You must define the groups through dict key \"groups\"."
+msgstr "Você deve definir os grupos pela chave \"permissions\"."
+
+#: apps/resource/views.py:109 apps/resource/views.py:126
+msgid "You can not alter owner permissions."
+msgstr "Você não pode alterar permissões do dono."
+
+#: apps/resource/views.py:115 apps/resource/views.py:158
 msgid "You must define the permissions through dict key \"permissions\"."
 msgstr "Você deve definir as permissões pela chave \"permissions\"."
 
-#: apps/resource/views.py:120
-msgid "You must define the permissions to assign through dict key \"permissions\"."
+#: apps/resource/views.py:132 apps/resource/views.py:171
+msgid ""
+"You must define the permissions to assign through dict key \"permissions\"."
 msgstr "Você deve definir as permissões pela chave \"permissions\"."
 
 #: apps/resource/views.py:147
-msgid "You must specify either User or Group field."
-msgstr "Você deve especificar o campo Usuário ou o campo Grupo."
+msgid "Role field is unique. Please insert another name."
+msgstr "Campo função é único. Por favor insira outro nome."
 
-#: apps/resource/views.py:150
-msgid "You can not alter other account permissions."
-msgstr "Você não pode alterar permissões de outra conta."
+#~ msgid "You must specify either User or Group field."
+#~ msgstr "Você deve especificar o campo Usuário ou o campo Grupo."
