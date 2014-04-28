@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import Permission
+from django.test import LiveServerTestCase
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 
@@ -8,6 +9,15 @@ from apps.resource.tests import routines as resource_routines
 import test_routines
 import test_fixtures
 from apps.newsletter.models import Subscription
+
+
+class SubscriptionTestCase(LiveServerTestCase):
+
+    def setUp(self):
+        self.subscription = Subscription.objects.create(name='ivan', email='ivan@ivan.com')
+
+    def test_token_is_not_null(self):
+        self.assertIsNotNone(self.subscription.token)
 
 
 class SubscriptionAPITestCase(APILiveServerTestCase):
