@@ -12,13 +12,12 @@ class PermissionSerializer(serializers.ModelSerializer):
 
 
 class AuthUserSerializer(serializers.ModelSerializer):
-    user_permissions = PermissionSerializer(many=True, read_only=True)
     email = serializers.EmailField(required=True)
 
     class Meta:
         model = AuthUser
-        exclude = ['is_superuser', 'is_staff']
-        read_only_fields = ('date_joined', 'last_login', 'is_active', 'groups')
+        exclude = ('is_superuser', 'is_staff')
+        read_only_fields = ('date_joined', 'last_login', 'is_active', 'groups', 'user_permissions')
         write_only_fields = ('password',)
 
 

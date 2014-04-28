@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import ast, types
+import ast
 try:
     from urllib import urlencode
 except ImportError:
     from urllib.parse import urlencode
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from apps.publication.serializers import PublicationSerializer
 from apps.cms.models import Page, Module
 
 
 class ModuleSerializer(PublicationSerializer):
-    model = serializers.PrimaryKeyRelatedField(source='model')
+    model = serializers.PrimaryKeyRelatedField(source='model', label=_('model'))
+    content = serializers.CharField(required=False, label=_('content'), widget=serializers.widgets.Textarea())
     content_url = serializers.SerializerMethodField('get_content_url')
 
     def get_content_url(self, obj):
@@ -30,7 +32,8 @@ class ModuleSerializer(PublicationSerializer):
 
 
 class PageSerializer(PublicationSerializer):
-    category = serializers.HyperlinkedRelatedField(view_name='category-detail', read_only=True)
+    category = serializers.HyperlinkedRelatedField(view_name='category-detail', read_only=True, label=_('category'))
+    content = serializers.CharField(required=False, label=_('content'), widget=serializers.widgets.Textarea())
 
     def get_fields(self):
         fields = super(PageSerializer, self).get_fields()

@@ -11,7 +11,6 @@ class PageViewSet(PublicationBaseViewSet):
     serializer_class = PageSerializer
     model = Page
     filter_class = PageFilterSet
-    search_fields = ['title', 'description']
 
     def post_save(self, obj, created=False):
         super(PageViewSet, self).post_save(obj, created=created)
@@ -23,4 +22,3 @@ class ModuleViewSet(PublicationBaseViewSet):
     serializer_class = ModuleSerializer
     model = Module
     filter_class = ModuleFilterSet
-    search_fields = ['title', 'description']

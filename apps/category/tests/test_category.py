@@ -2,15 +2,63 @@
 from copy import copy
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import User as AuthUser
 from django.http.request import HttpRequest
+from django.test import LiveServerTestCase
 from rest_framework.test import APILiveServerTestCase
-from apps.resource.models import Resource
+from apps.resource.models import Resource, User
 from apps.publication.models import Publication
 from apps.category.models import Category
 from apps.category.serializers import CategorySerializer
+from apps.category.views import CategoryViewSet
 from apps.resource.tests import routines as resource_routines
 import test_routines
 import test_fixtures
+
+
+class CategoryTestCase(LiveServerTestCase):
+    def setUp(self):
+        user = AuthUser.objects.create_user(username='user', password='123')
+        User.objects.create(owner=user, author=user, user=user)
+        self.model = ContentType.objects.get_for_model(Category)
+        self.category = Category.objects.create(author=user, owner=user, name='Test', model=self.model)
+        self.user = user
+        self.request = HttpRequest()
+        self.request.user = user
+
+    def test_get_descendants_method(self):
+        self.request.META['SERVER_NAME'] = 'testserver'
+        self.request.META['SERVER_PORT'] = 8080
+        child_category = Category.objects.create(author=self.user, owner=self.user, name='Child Test', model=self.model,
+                                                 parent=self.category)
+        viewset = CategoryViewSet(context={'request': self.request}, request=self.request, filter_backends=None)
+        viewset.kwargs = {'lookup_url_field': self.category.id, 'pk': self.category.id}
+        descendants = viewset.get_descendants(self.request).data['descendants']
+        self.assertEqual(1, len(descendants))
+        self.assertEqual(child_category.name, descendants[0]['name'])
+        child_id = int(descendants[0]['url'].split('/')[-2])
+        self.assertEqual(child_category.id, child_id)
+
+        child_category.parent = None
+        child_category.save()
+
+        descendants = viewset.get_descendants(self.request).data['descendants']
+        self.assertEqual(0, len(descendants))
+
+    def test_get_fields_method(self):
+        serializer = CategorySerializer(context={'request': self.request})
+        queryset = serializer.get_fields()['parent'].queryset
+        self.assertEqual(1, queryset.count())
+        self.assertEqual(self.category, queryset[0])
+        other_user = AuthUser.objects.create_user(username='user2', password='123')
+        User.objects.create(owner=other_user, author=other_user, user=other_user)
+        Category.objects.create(owner=other_user, author=other_user, name='Other cat', model=self.model)
+        self.assertEqual(1, queryset.count())
+        self.assertEqual(self.category, queryset[0])
+        cat2 = Category.objects.create(owner=self.user, author=self.user, name='Another Category', model=self.model)
+        self.assertEqual(2, queryset.count())
+        self.assertEqual(self.category, queryset[0])
+        self.assertEqual(cat2, queryset[1])
 
 
 class CategoryAPITestCase(APILiveServerTestCase):
@@ -95,6 +143,12 @@ class CategoryAPITestCase(APILiveServerTestCase):
         model_filter = {'model': other_category_content_type.id}
         response2 = self.client.get(self.url, model_filter)
         self.assertEqual(1, response2.data['count'], response2.data)
+        self.client.post(self.url, self.data)
+        response2 = self.client.get(self.url, model_filter)
+        self.assertEqual(1, response2.data['count'], response2.data)
+        self.client.post(self.url, data)
+        response2 = self.client.get(self.url, model_filter)
+        self.assertEqual(2, response2.data['count'], response2.data)
 
     def test_parent_filter_get_fields_serializer(self):
         request = HttpRequest()

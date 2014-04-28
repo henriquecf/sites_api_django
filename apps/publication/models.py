@@ -13,7 +13,7 @@ class Publication(Resource):
     It has basic publications functionality and can be used by its own, or inherited by other models.
     """
     title = models.CharField(_('title'), max_length=150)
-    content = models.TextField(_('content'), blank=True)
+    content = models.TextField(_('content'))
     description = models.TextField(_('description'), blank=True)
     slug = models.SlugField(_('slug'), max_length=150, editable=False)
     publication_start_date = models.DateTimeField(_('publication start date'), blank=True, default=timezone.now())
@@ -21,12 +21,19 @@ class Publication(Resource):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        if self.publication_start_date:
-            if timezone.is_naive(self.publication_start_date):
-                timezone.make_aware(self.publication_start_date, timezone.get_current_timezone())
-        if self.publication_end_date:
-            if timezone.is_naive(self.publication_end_date):
-                timezone.make_aware(self.publication_end_date, timezone.get_current_timezone())
+        try:
+            self.publication_start_date = timezone.make_aware(self.publication_start_date,
+                                                              timezone.get_current_timezone())
+        except AttributeError:
+            pass
+        except ValueError:
+            pass
+        try:
+            self.publication_end_date = timezone.make_aware(self.publication_end_date, timezone.get_current_timezone())
+        except AttributeError:
+            pass
+        except ValueError:
+            pass
         super(Publication, self).save()
 
     def __str__(self):
@@ -39,7 +46,7 @@ class Publication(Resource):
         Returns the state of the publication.
         """
         if self.publication_start_date > timezone.now():
-            self.publication_start_date = timezone.datetime.now()
+            self.publication_start_date = timezone.now()
         if self.publication_end_date:
             self.publication_end_date = None
         self.save()
@@ -52,7 +59,7 @@ class Publication(Resource):
         Returns the state of the publication.
         """
         if self.publication_start_date > timezone.now():
-            self.publication_start_date = timezone.datetime.now()
+            self.publication_start_date = timezone.now()
         self.publication_end_date = timezone.now()
         self.save()
         return self.is_published()
@@ -75,20 +82,19 @@ class Publication(Resource):
 
 
 class CustomHTML(Publication):
-
     class Meta(Publication.Meta):
         verbose_name = _('custom HTML')
         verbose_name_plural = _('custom HTMLs')
 
 
 def find_available_slug(model, instance, slug, original_slug, slug_number=2):
-    #Adds underscores with an incrementing number to the slug until an available one is found.
+    #Adds scores with an incrementing number to the slug until an available one is found.
     try:
         sender_node = model.objects.get(slug=slug)
     except model.DoesNotExist:
         instance.slug = slug
     else:
-        slug = slugify(original_slug + "-{0}".format(slug_number))
+        slug = slugify(u'%s-%d' % (original_slug, slug_number))
         slug_number += 1
         find_available_slug(model, instance, slug, original_slug, slug_number=slug_number)
     return
