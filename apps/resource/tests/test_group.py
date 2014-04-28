@@ -2,12 +2,29 @@
 import random
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import Permission
+from django.test import LiveServerTestCase
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
-from apps.resource.models import Group
+from apps.resource.models import Group, AuthUser, User
 
 from test_fixtures import user_accountuser_account_permissions_token_fixture
 import test_routines
+
+
+class GroupTestCase(LiveServerTestCase):
+
+    def setUp(self):
+        user = AuthUser.objects.create_user(username='user', password='123')
+        User.objects.create(user=user, author=user, owner=user)
+        self.group = Group.objects.create(owner=user, author=user, role='My group')
+
+    def test_model_save_method(self):
+        group_name = 'user - My group'
+        self.assertEqual(group_name, self.group.group.name)
+        self.group.role = 'Ohh'
+        self.group.save()
+        group_name = 'user - Ohh'
+        self.assertEqual(group_name, self.group.group.name)
 
 
 class GroupAPITestCase(APILiveServerTestCase):
