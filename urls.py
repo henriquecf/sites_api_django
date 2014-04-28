@@ -22,7 +22,7 @@ router.register(r'newsletter', newsletter_views.NewsletterViewSet)
 router.register(r'user', UserViewSet)
 router.register(r'group', GroupViewSet)
 router.register(r'authorrestriction', AuthorRestrictionViewSet)
-router.register(r'page', cms_views.PageViewSet)
+router.register(r'pages', cms_views.PageViewSet)
 router.register(r'customhtml', publication_views.CustomHTMLViewSet)
 router.register(r'module', cms_views.ModuleViewSet)
 

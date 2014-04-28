@@ -36,7 +36,7 @@ class ModuleTestCase(LiveServerTestCase):
         self.model = ContentType.objects.get_for_model(Page)
         self.module = Module.objects.create(owner=user, author=user, title='Module', model=self.model, position=1,
                                             order=1)
-        self.module.page.add(page)
+        self.module.pages.add(page)
         self.module.save()
 
     def test_serializer_get_content_url(self):
@@ -58,7 +58,7 @@ class ModuleAPITestCase(APILiveServerTestCase):
         page_permisions = Permission.objects.filter(codename__endswith='page')
         for permission in page_permisions:
             self.owner.user_permissions.add(permission)
-        page_response = self.client.post(reverse('page-list'), {'title': 'A page'})
+        page_response = self.client.post(reverse('page-list'), {'title': 'A pages'})
         self.url = reverse('module-list')
         self.data = {
             'title': 'First Module',
@@ -66,7 +66,7 @@ class ModuleAPITestCase(APILiveServerTestCase):
             'object_id': None,
             'model_object': None,
             'filters': '{"categories": ["category 1"]}',
-            'page': [page_response.data['url']],
+            'pages': [page_response.data['url']],
             'position': '1',
             'order': 1,
         }
@@ -76,7 +76,7 @@ class ModuleAPITestCase(APILiveServerTestCase):
             'object_id': 1,
             'model_object': 1,
             'filters': '{"categories": ["category 2"]}',
-            'page': [page_response.data['url']],
+            'pages': [page_response.data['url']],
             'position': '2',
             'order': 2,
         }

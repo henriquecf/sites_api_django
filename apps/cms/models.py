@@ -22,8 +22,8 @@ class Page(Publication):
         super(Page, self).save()
 
     class Meta(Publication.Meta):
-        verbose_name = _('Page')
-        verbose_name_plural = _('Pages')
+        verbose_name = _('pages')
+        verbose_name_plural = _('pages')
 
 
 class Module(Publication):
@@ -31,7 +31,11 @@ class Module(Publication):
     object_id = models.PositiveIntegerField(null=True, blank=True)
     model_object = GenericForeignKey('model', 'object_id')
     filters = models.TextField(blank=True)
-    page = models.ManyToManyField(Page, related_name='modules')
+    pages = models.ManyToManyField(Page, related_name='modules')
     position = models.CharField(max_length=4, choices=(
         ('1', _('Top')), ('2', _('Left')), ('3', _('Center')), ('4', _('Right')), ('5', _('Bottom'))))
     order = models.IntegerField()
+
+    class Meta(Publication.Meta):
+        verbose_name = _('module')
+        verbose_name_plural = _('modules')
