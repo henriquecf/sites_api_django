@@ -6,7 +6,7 @@ from django.http.request import HttpRequest
 from django.test import LiveServerTestCase
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
-from apps.resource.models import Group, User, AuthorRestriction, AuthUser
+from apps.resource.models import Group, User, AuthorRestriction, AuthUser, AuthGroup
 from apps.resource.serializers import AuthorRestrictionSerializer
 
 from test_fixtures import user_accountuser_account_permissions_token_fixture
@@ -20,7 +20,7 @@ class AuthorRestrictionTestCase(LiveServerTestCase):
         User.objects.create(user=user, owner=user, author=user)
         perm = Permission.objects.first()
         author_restriction = AuthorRestriction.objects.create(owner=user, author=user, user=user, permission=perm,
-                                                              filter_values='1')
+                                                              filter_values=user.id)
         self.author_restriction = author_restriction
         self.perm = perm
         self.user = user
@@ -34,10 +34,47 @@ class AuthorRestrictionTestCase(LiveServerTestCase):
         self.user.groups.add(group.group)
 
         author_rest = AuthorRestriction.objects.create(owner=self.user, author=self.user, group=group.group,
-                                                       filter_values='1', permission=self.perm)
+                                                       filter_values=self.user.id, permission=self.perm)
         self.assertIn(self.perm, group.group.permissions.all())
         author_rest.delete()
         self.assertNotIn(self.perm, group.group.permissions.all())
+
+    def test_serializer_get_fields_method(self):
+        request = HttpRequest()
+
+        other_user = AuthUser.objects.create_user(username='other_user', password='123')
+        User.objects.create(user=other_user, owner=other_user, author=other_user)
+        other_user_group = Group.objects.create(owner=other_user, author=other_user, role='other group')
+
+        AuthorRestriction.objects.create(owner=other_user, author=other_user, user=other_user, permission=self.perm,
+                                         filter_values=other_user.id)
+        AuthorRestriction.objects.create(owner=other_user, author=other_user, group=other_user_group.group,
+                                         permission=self.perm, filter_values=other_user.id)
+
+        group = Group.objects.create(owner=self.user, author=self.user, role='group')
+        AuthorRestriction.objects.create(owner=self.user, author=self.user, group=group.group, permission=self.perm,
+                                         filter_values=self.user.id)
+
+        request.user = self.user
+        serializer = AuthorRestrictionSerializer(context={'request': request})
+
+        queryset = serializer.get_fields()['user'].queryset
+        self.assertEqual(1, queryset.count())
+        self.assertEqual(list(AuthUser.objects.filter(user__owner=self.user.user.owner)), list(queryset))
+
+        queryset = serializer.get_fields()['group'].queryset
+        self.assertEqual(1, queryset.count())
+        self.assertEqual(list(AuthGroup.objects.filter(group__owner=self.user.user.owner)), list(queryset))
+
+        request.user = other_user
+
+        queryset = serializer.get_fields()['user'].queryset
+        self.assertEqual(1, queryset.count())
+        self.assertEqual(list(AuthUser.objects.filter(user__owner=other_user.user.owner)), list(queryset))
+
+        queryset = serializer.get_fields()['group'].queryset
+        self.assertEqual(1, queryset.count())
+        self.assertEqual(list(AuthGroup.objects.filter(group__owner=other_user.user.owner)), list(queryset))
 
 
 class AuthorRestrictionAPITestCase(APILiveServerTestCase):

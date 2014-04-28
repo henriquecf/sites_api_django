@@ -6,6 +6,7 @@ from django.test import LiveServerTestCase
 from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
 from apps.resource.models import Group, AuthUser, User
+from apps.resource.serializers import AuthGroupSerializer
 
 from test_fixtures import user_accountuser_account_permissions_token_fixture
 import test_routines
@@ -25,6 +26,13 @@ class GroupTestCase(LiveServerTestCase):
         self.group.save()
         group_name = 'user - Ohh'
         self.assertEqual(group_name, self.group.group.name)
+
+    def test_authgroup_serializer(self):
+        authgroup_serializer = AuthGroupSerializer
+        fields = ('id', 'permissions')
+
+        for field in fields:
+            self.assertIn(field, authgroup_serializer.Meta.fields)
 
 
 class GroupAPITestCase(APILiveServerTestCase):
