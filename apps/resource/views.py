@@ -180,19 +180,6 @@ class GroupViewSet(ResourceViewSet):
 class AuthorRestrictionViewSet(ResourceViewSet):
     model = AuthorRestriction
     serializer_class = AuthorRestrictionSerializer
-    filter_backends = (
-        AuthorRestrictionBackend,
-        SiteDomainFilterBackend,
-    )
-
-    def get_queryset(self):
-        queryset = super(AuthorRestrictionViewSet, self).get_queryset()
-        user = self.request.user
-        if user.is_superuser:
-            return queryset
-        else:
-            return queryset.filter(
-                Q(user__user__owner=user.user.owner) | Q(group__group__owner=user.user.owner))
 
     def pre_save(self, obj):
         try:
