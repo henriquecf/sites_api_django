@@ -32,9 +32,6 @@ class Resource(Common):
     author = models.ForeignKey(AuthUser, verbose_name=_('author'), editable=False, related_name='authors')
     sites = models.ManyToManyField(ContribSite, verbose_name=_('sites'), blank=True)
 
-    def account_sites(self):
-        return self.sites.filter(owner=self.owner)
-
     def __str__(self):
         return '{0} - {1}'.format(self.owner, self.author)
 

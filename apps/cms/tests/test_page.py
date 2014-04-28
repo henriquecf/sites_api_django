@@ -1,13 +1,48 @@
 # -*- coding: utf-8 -*-
 
 from django.core.urlresolvers import reverse
+from django.contrib.contenttypes.models import ContentType
+from django.test import LiveServerTestCase
+from django.http import HttpRequest
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
+
 from apps.resource.tests import routines as resource_routines
+from apps.resource.models import AuthUser, User
 from apps.publication.tests import routines as publication_routines
 import test_routines
 import test_fixtures
 from apps.cms.models import Page
+from apps.cms.views import PageViewSet
+from apps.cms.serializers import PageSerializer, ModuleSerializer
+
+
+class PageTestCase(LiveServerTestCase):
+
+    def setUp(self):
+        user = AuthUser.objects.create_user(username='user', password='123')
+        User.objects.create(owner=user, author=user, user=user)
+        self.page = Page.objects.create(owner=user, author=user, title='Page')
+        self.user = user
+        self.request = HttpRequest()
+        self.request.user = user
+
+    def test_model_save_method(self):
+        self.assertTrue(self.page.category)
+        self.assertEqual(self.page.category.name, self.page.slug)
+        self.assertEqual(self.page.category.model, ContentType.objects.get_for_model(Page))
+        self.assertEqual(self.page.category.owner, self.page.owner)
+        self.assertEqual(self.page.category.author, self.page.author)
+
+    def test_viewset_post_save_method(self):
+        self.request.META['HTTP_HOST'] = 'testserver'
+        page_view_set = PageViewSet(request=self.request)
+        page_view_set.post_save(self.page)
+        self.assertEqual(list(self.page.sites.all()), list(self.page.category.sites.all()))
+
+    def test_serializer_get_fields_method(self):
+        page_serializer = PageSerializer(context={'request': self.request})
+        self.assertTrue(isinstance(page_serializer.get_fields()['modules'], ModuleSerializer))
 
 
 class PageAPITestCase(APILiveServerTestCase):

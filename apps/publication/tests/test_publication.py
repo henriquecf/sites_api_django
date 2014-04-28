@@ -1,12 +1,100 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
+from django.test import LiveServerTestCase
+from django.utils import timezone
+from django.http import HttpRequest
 from rest_framework.test import APILiveServerTestCase
-
+from rest_framework import status
 from apps.publication.tests import routines as publication_routines
 from apps.resource.tests import routines as resource_routines
+from apps.resource.models import AuthUser, User
 import test_routines
 import test_fixtures
-from apps.publication.models import Publication, CustomHTML
+from apps.publication.models import Publication, CustomHTML, find_available_slug
+from apps.publication.views import PublicationBaseViewSet
+
+
+class PublicationTestCase(LiveServerTestCase):
+
+    def setUp(self):
+        user = AuthUser.objects.create_user(username='user', password='123')
+        User.objects.create(user=user, author=user, owner=user)
+        publication = Publication.objects.create(owner=user, author=user, title='Test pub', content='Content')
+        self.publication = publication
+        self.user = user
+
+    def test_model_is_published_method(self):
+        pub = self.publication
+        self.assertTrue(pub.is_published())
+        self.assertFalse(pub.unpublish())
+        self.assertFalse(pub.is_published())
+        self.assertTrue(pub.publish())
+        self.assertTrue(pub.is_published())
+
+    def test_model_publish_method(self):
+        pub = self.publication
+        tomorrow = timezone.now() + timezone.timedelta(1)
+        pub.publication_start_date = tomorrow
+        pub.save()
+        self.assertFalse(pub.is_published())
+        self.assertTrue(pub.publish())
+
+    def test_model_unpublish_method(self):
+        pub = self.publication
+        self.assertFalse(pub.unpublish())
+        self.assertTrue(pub.publish())
+        pub.publication_end_date = timezone.now()
+        pub.save()
+        self.assertFalse(pub.is_published())
+        self.assertTrue(pub.publish())
+
+    def test_model_save_method(self):
+        pub = self.publication
+        pub.publication_start_date = timezone.datetime.now()
+        pub.publication_end_date = timezone.datetime.now()
+        self.assertFalse(timezone.is_aware(pub.publication_start_date))
+        self.assertFalse(timezone.is_aware(pub.publication_end_date))
+        pub.save()
+        self.assertTrue(timezone.is_aware(pub.publication_start_date))
+        self.assertTrue(timezone.is_aware(pub.publication_end_date))
+
+    def test_find_available_slug_method(self):
+        slug = 'test'
+        pub = self.publication
+        find_available_slug(Publication, pub, slug, slug)
+        self.assertEqual(slug, pub.slug)
+        pub.save()
+        find_available_slug(Publication, pub, slug, slug)
+        self.assertEqual(slug + '-2', pub.slug)
+        pub.save()
+        find_available_slug(Publication, pub, slug, slug)
+        self.assertEqual(slug, pub.slug)
+
+    def test_viewset_pre_save_method(self):
+        request = HttpRequest()
+        request.user = self.user
+        request.DATA = {}
+        pub_obj = Publication(title='test pub test')
+        pub_view_set = PublicationBaseViewSet(request=request)
+
+        self.assertFalse(pub_obj.slug)
+        pub_view_set.pre_save(pub_obj)
+        self.assertEqual('test-pub-test', pub_obj.slug)
+        pub_obj.save()
+
+        self.assertFalse(self.publication.slug)
+        pub_view_set.pre_save(self.publication)
+        self.assertFalse(self.publication.slug)
+
+        request.DATA['title'] = 'test pub test'
+        pub_view_set.request = request
+        pub_view_set.pre_save(pub_obj)
+        self.assertEqual('test-pub-test', pub_obj.slug)
+
+        request.DATA['title'] = 'another pub'
+        pub_view_set.request = request
+        pub_view_set.pre_save(pub_obj)
+        self.assertEqual('another-pub', pub_obj.slug)
 
 
 class PublicationAPITestCase(APILiveServerTestCase):
@@ -22,7 +110,8 @@ class PublicationAPITestCase(APILiveServerTestCase):
         }
         test_fixtures.user_accountuser_account_permissions_token_fixture(self)
         self.set_authorization_bearer()
-        self.first_object_response = self.client.post(self.url, self.data)
+        publication = self.model.objects.create(owner=self.owner, author=self.owner, title='publication')
+        self.pub_url = reverse('publication-detail', args=(publication.id,))
 
     def set_authorization_bearer(self, token=None):
         if not token:
@@ -31,8 +120,24 @@ class PublicationAPITestCase(APILiveServerTestCase):
 
     def test_list(self):
         response = self.client.get(self.url)
-        self.assertEqual(200, response.status_code, response.data)
+        self.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
         self.assertEqual(0, response.data['count'])
+
+    def test_create(self):
+        response = self.client.post(self.url, self.data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+
+    def test_update(self):
+        response = self.client.put(self.pub_url, self.data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+
+    def test_partial_update(self):
+        response = self.client.patch(self.pub_url, self.data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+
+    def test_delete(self):
+        response = self.client.delete(self.pub_url, self.data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
 
 class CustomHTMLAPITestCase(APILiveServerTestCase):

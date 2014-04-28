@@ -1,16 +1,45 @@
 # -*- coding: utf-8 -*-
 import random
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import Permission
+from django.test import LiveServerTestCase
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
-from apps.resource.models import Site, ContribSite
+from apps.resource.models import Site, ContribSite, AuthUser
+from apps.resource.serializers import AuthUserSerializer, NestedAuthUserSerializer
 from test_fixtures import user_accountuser_account_permissions_token_fixture
 import test_routines
 
 
+class UserTestCase(LiveServerTestCase):
+
+    def test_authuser_serializer(self):
+        authuser_serializer = AuthUserSerializer()
+        read_only_fields = ('date_joined', 'last_login', 'is_active', 'groups', 'user_permissions')
+        write_only_fields = ('password',)
+        exclude = ('is_superuser', 'is_staff')
+
+        for field in read_only_fields:
+            self.assertIn(field, authuser_serializer.Meta.read_only_fields)
+
+        for field in write_only_fields:
+            self.assertIn(field, authuser_serializer.Meta.write_only_fields)
+
+        for field in exclude:
+            self.assertIn(field, authuser_serializer.Meta.exclude)
+
+        self.assertTrue(authuser_serializer.get_fields()['email'].required)
+
+    def test_nested_authuser_serializer(self):
+        nested_authuser_serializer = NestedAuthUserSerializer()
+        fields = ('username', 'email', 'id')
+
+        for field in fields:
+            self.assertIn(field, nested_authuser_serializer.Meta.fields)
+
+
 class UserAPITestCase(APILiveServerTestCase):
-    model = User
+    model = AuthUser
 
     def setUp(self):
         self.url = reverse('user-list')
@@ -59,7 +88,7 @@ class UserAPITestCase(APILiveServerTestCase):
         test_routines.test_custom_object_permission_routine(self, alter_data=True)
 
     def test_accountuser_created_has_same_account_as_request_user(self):
-        owner_user = User.objects.get(username=self.owner_token)
+        owner_user = AuthUser.objects.get(username=self.owner_token)
         account_id = self.first_object_response.data['owner']['id']
         self.assertEqual(account_id, owner_user.user.owner.id)
 
@@ -92,7 +121,7 @@ class UserAPITestCase(APILiveServerTestCase):
         groups = {'groups': [group_id]}
         response = self.client.post(self.first_object_response.data['assign_groups'], groups)
         self.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
-        user = User.objects.get(id=self.first_object_response.data['user']['id'])
+        user = AuthUser.objects.get(id=self.first_object_response.data['user']['id'])
         self.assertIn((group_id,), user.groups.values_list('id'))
         self.assertIn('unassign_groups', self.first_object_response.data)
         response = self.client.post(self.first_object_response.data['unassign_groups'], groups)
@@ -108,7 +137,7 @@ class UserAPITestCase(APILiveServerTestCase):
         permissions = {'permissions': perms_ids}
         response = self.client.post(self.first_object_response.data['assign_permissions'], permissions)
         self.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
-        user = User.objects.get(id=self.first_object_response.data['user']['id'])
+        user = AuthUser.objects.get(id=self.first_object_response.data['user']['id'])
         for perm in perms:
             self.assertIn((perm.id,), user.user_permissions.values_list('id'))
         self.assertIn('unassign_permissions', self.first_object_response.data)
