@@ -16,14 +16,15 @@ class SubscriptionViewSet(ResourceViewSet):
         try:
             subscription = Subscription.objects.get(email=request.DATA['email'],
                                                     owner=request.user.user.owner)
+        except Subscription.DoesNotExist:
+            return super(SubscriptionViewSet, self).create(request, *args, **kwargs)
+        else:
             subscription.is_active = True
             subscription.save()
             serialized_data = SubscriptionSerializer(subscription, context={'request': request})
             return Response(data=serialized_data.data, status=201)
-        except:
-            return super(SubscriptionViewSet, self).create(request, *args, **kwargs)
 
-    @action(methods=['post'])
+    @action()
     def unsubscribe(self, request, *args, **kwargs):
         """Verify token and subscriber to deactivate a subscritpion.
 
@@ -32,7 +33,7 @@ class SubscriptionViewSet(ResourceViewSet):
         subscription = self.get_object()
         try:
             token = request.DATA['token']
-        except:
+        except KeyError:
             return Response(status=400, data={'detail': _('You can not unsubscribe without a valid token.')})
         if subscription.token == token:
             subscription.is_active = False
@@ -47,13 +48,12 @@ class NewsletterViewSet(ResourceViewSet):
     model = Newsletter
     filter_class = NewsletterFilterSet
 
-    @action(methods=['post'])
+    @action()
     def send_newsletter(self, request, *args, **kwargs):
         """Send the newsletter calling the model function."""
         newsletter = self.get_object()
         status = newsletter.send_newsletter(owner=request.user.user.owner)
-        if status:
-            data = {
-                'submissions': status,
-            }
-            return Response(status=200, data=data)
+        data = {
+            'submissions': status,
+        }
+        return Response(status=200, data=data)

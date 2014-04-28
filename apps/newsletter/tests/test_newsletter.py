@@ -14,6 +14,7 @@ from apps.newsletter.models import Newsletter, Subscription
 
 
 class NewsletterTestCase(LiveServerTestCase):
+
     def setUp(self):
         self.user = AuthUser.objects.create_user(username='user', password='123')
         self.user2 = AuthUser.objects.create_user(username='user2', password='123')
