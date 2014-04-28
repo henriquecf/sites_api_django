@@ -22,59 +22,44 @@ from apps.news.models import News
 from apps.cms.models import Module, Page, ModulePosition
 
 
-class ModuleTestCase(LiveServerTestCase):
-
-    def setUp(self):
-        user = AuthUser.objects.create_user(username='user', password='123')
-        User.objects.create(owner=user, author=user, user=user)
-        page = Page.objects.create(owner=user, author=user, title='Page')
-        self.user = user
-        self.request = HttpRequest()
-        self.request.user = user
-        self.model = ContentType.objects.get_for_model(Page)
-        self.module = Module.objects.create(owner=user, author=user, title='Module', model=self.model)
-        ModulePosition.objects.create(title=self.module.title, page=page, module=self.module, position='1', order=1, owner=user, author=user)
-        self.module.save()
-
-    def test_serializer_get_content_url(self):
-        self.request.META['SERVER_NAME'] = 'testserver'
-        self.request.META['SERVER_PORT'] = 8080
-        self.module.filters = '{"test": "OK"}'
-        generated_filter = 'test=OK'
-        module_serializer = ModuleSerializer(context={'request': self.request})
-        content_url = module_serializer.get_content_url(self.module)
-        self.assertIn(generated_filter, content_url)
-        self.module.filters = '{"test": "OK"'
-        content_url = module_serializer.get_content_url(self.module)
-        self.assertNotIn(generated_filter, content_url)
-
-
-class ModuleAPITestCase(APILiveServerTestCase):
-    model = Module
+class ModulePositionAPITestCase(APILiveServerTestCase):
+    model = ModulePosition
 
     def setUp(self):
         test_fixtures.user_accountuser_account_permissions_token_fixture(self)
         self.set_authorization_bearer()
         page_permisions = Permission.objects.filter(codename__endswith='page')
+        module_permissions = Permission.objects.filter(codename__endswith='module')
         for permission in page_permisions:
             self.owner.user_permissions.add(permission)
-        page_response = self.client.post(reverse('page-list'), {'title': 'A pages'})
-        self.url = reverse('module-list')
-        self.data = {
+        for permission in module_permissions:
+            self.owner.user_permissions.add(permission)
+        page_response = self.client.post(reverse('page-list'), {'title': 'A page'})
+        data = {
             'title': 'First Module',
+            'content': 'Content',
             'model': ContentType.objects.get_for_model(News).id,
             'object_id': None,
             'model_object': None,
             'filters': '{"categories": ["category 1"]}',
-            'pages': {'page': page_response.data['url'], 'position': '1', 'order': 1},
+        }
+        module_response = self.client.post(reverse('module-list'), data)
+        self.url = reverse('moduleposition-list')
+        self.data = {
+            'title': 'First Module',
+            'content': 'Content',
+            'page': page_response.data['url'],
+            'module': module_response.data['url'],
+            'position': '1',
+            'order': 1,
         }
         self.altered_data = {
-            'title': 'First Module Altered',
-            'model': ContentType.objects.get_for_model(News).id,
-            'object_id': 1,
-            'model_object': 1,
-            'filters': '{"categories": ["category 2"]}',
-            'pages': {'page': page_response.data['url'], 'position': '1', 'order': 1},
+            'title': 'First Module',
+            'content': 'altered content',
+            'page': page_response.data['url'],
+            'module': module_response.data['url'],
+            'position': '2',
+            'order': 2,
         }
         news_permisions = Permission.objects.filter(codename__endswith='news')
         for permission in news_permisions:
@@ -137,28 +122,3 @@ class ModuleAPITestCase(APILiveServerTestCase):
 
     def test_resource_sites_field(self):
         resource_routines.test_resource_sites_field_routine(self)
-
-    def test_content_url(self):
-        self.assertIn('content_url', self.first_object_response.data)
-        content_url = self.first_object_response.data['content_url']
-        self.assertIn('/news/', content_url)
-        content_url_response = self.client.get(content_url)
-        self.assertEqual(status.HTTP_200_OK, content_url_response.status_code)
-        self.assertDictContainsSubset({'count': 0, 'next': None, 'results': []}, content_url_response.data)
-        filter_dict = ast.literal_eval(self.first_object_response.data['filters'])
-        try:
-            get_query = urlencode(filter_dict).decode()
-        except AttributeError:
-            get_query = urlencode(filter_dict)
-        self.assertIn(get_query, content_url)
-
-    def test_module_position(self):
-        pass
-    """def test_order_field(self):
-        self.assertIn('order', self.first_object_response.data)
-        self.data['order'] = '1'
-        response = self.client.post(self.url, self.data)
-        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
-        self.data['order'] = 'a'
-        response = self.client.post(self.url, self.data)
-        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)"""
