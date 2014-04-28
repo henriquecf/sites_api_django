@@ -11,6 +11,7 @@ class SubscriptionSerializer(ResourceSerializer):
 
     class Meta(ResourceSerializer.Meta):
         model = Subscription
+        exclude = ['token']
 
 
 class NewsletterSerializer(ResourceSerializer):
