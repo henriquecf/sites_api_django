@@ -1,13 +1,51 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, User as AuthUser
+from django.test import LiveServerTestCase
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 
 from apps.resource.tests import routines as resource_routines
+from apps.resource.models import User
 import test_routines
 import test_fixtures
-from apps.newsletter.models import Newsletter
+from apps.newsletter.models import Newsletter, Subscription
+
+
+class NewsletterTestCase(LiveServerTestCase):
+    def setUp(self):
+        self.user = AuthUser.objects.create_user(username='user', password='123')
+        self.user2 = AuthUser.objects.create_user(username='user2', password='123')
+        User.objects.create(user=self.user, author=self.user, owner=self.user)
+        User.objects.create(user=self.user2, author=self.user2, owner=self.user2)
+        self.subscription = Subscription.objects.create(name='ivan', email='ivan@ivan.com', owner=self.user,
+                                                        author=self.user)
+        self.subscription2 = Subscription.objects.create(name='idan', email='idan@idan.com', owner=self.user,
+                                                         author=self.user)
+        self.newsletter = Newsletter.objects.create(subject='subject', content='content', owner=self.user,
+                                                    author=self.user)
+
+    def test_send_newsletter_method(self):
+        status = self.newsletter.send_newsletter(self.user)
+        expected = dict(new=2,
+                        successful=2,
+                        failed=0,
+                        resubmissions=0)
+        self.assertEqual(expected, status)
+        status = self.newsletter.send_newsletter(self.user)
+        expected = dict(new=0,
+                        successful=2,
+                        failed=0,
+                        resubmissions=0)
+        self.assertEqual(expected, status)
+
+    def test_send_newsletter_method_with_different_owner(self):
+        status = self.newsletter.send_newsletter(self.user2)
+        expected = dict(new=0,
+                        successful=0,
+                        failed=0,
+                        resubmissions=0)
+        self.assertEqual(expected, status)
 
 
 class NewsletterAPITestCase(APILiveServerTestCase):

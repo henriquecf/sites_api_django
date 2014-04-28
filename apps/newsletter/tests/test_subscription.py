@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import Permission, User
+from django.contrib.auth.models import Permission, User as AuthUser
 from django.test import LiveServerTestCase
 from rest_framework.test import APILiveServerTestCase
 from rest_framework import status
 
 from apps.resource.tests import routines as resource_routines
-from apps.resource.models import AuthUser
+from apps.resource.models import User
 import test_routines
 import test_fixtures
 from apps.newsletter.models import Subscription
 
 
 class SubscriptionTestCase(LiveServerTestCase):
-
     def setUp(self):
         self.user = AuthUser.objects.create_user(username='user', password='123')
         User.objects.create(user=self.user, author=self.user, owner=self.user)
-        self.subscription = Subscription.objects.create(name='ivan', email='ivan@ivan.com', owner=self.user)
+        self.subscription = Subscription.objects.create(name='ivan', email='ivan@ivan.com', owner=self.user,
+                                                        author=self.user)
 
     def test_token_is_not_null(self):
         self.assertIsNotNone(self.subscription.token)
