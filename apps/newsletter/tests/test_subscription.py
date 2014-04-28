@@ -89,7 +89,6 @@ class SubscriptionAPITestCase(APILiveServerTestCase):
         self.assertTrue(subscription.is_active)
         unsubscribe_response = self.client.post(response.data['unsubscribe'], data={'token': subscription.token})
         self.assertEqual(unsubscribe_response.status_code, status.HTTP_200_OK)
-        self.assertEqual('You was successfully unsubscribed.', unsubscribe_response.data['detail'])
         subscription = Subscription.objects.get(email='ivan_morais@yahoo.com.br')
         self.assertFalse(subscription.is_active)
         response = self.client.post(self.url, self.altered_data)
