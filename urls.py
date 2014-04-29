@@ -25,6 +25,7 @@ router.register(r'authorrestriction', AuthorRestrictionViewSet)
 router.register(r'pages', cms_views.PageViewSet)
 router.register(r'customhtml', publication_views.CustomHTMLViewSet)
 router.register(r'module', cms_views.ModuleViewSet)
+router.register(r'moduleposition', cms_views.ModulePositionViewSet)
 
 urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),

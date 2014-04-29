@@ -8,13 +8,20 @@ except ImportError:
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from apps.publication.serializers import PublicationSerializer
-from apps.cms.models import Page, Module
+from apps.cms.models import Page, Module, ModulePosition
+
+
+class ModulePositionSerializer(PublicationSerializer):
+
+    class Meta(PublicationSerializer.Meta):
+        model = ModulePosition
 
 
 class ModuleSerializer(PublicationSerializer):
     model = serializers.PrimaryKeyRelatedField(source='model', label=_('model'))
     content = serializers.CharField(required=False, label=_('content'), widget=serializers.widgets.Textarea())
     content_url = serializers.SerializerMethodField('get_content_url')
+    pages = serializers.RelatedField(many=True)
 
     def get_content_url(self, obj):
         try:
