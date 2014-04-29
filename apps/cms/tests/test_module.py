@@ -5,6 +5,7 @@ from django.http import HttpRequest
 from django.test import LiveServerTestCase
 from apps.cms.serializers import ModuleSerializer
 from apps.resource.models import User
+
 try:
     from urllib import urlencode
 except ImportError:
@@ -22,6 +23,26 @@ from apps.news.models import News
 from apps.cms.models import Module, Page, ModulePosition
 
 
+class ModuleSerializerTestCase(LiveServerTestCase):
+
+    def setUp(self):
+        user = AuthUser.objects.create_user(username='user', password='123')
+        User.objects.create(owner=user, author=user, user=user)
+        self.user = user
+        self.request = HttpRequest()
+        self.request.user = user
+        self.serializer = ModuleSerializer(context={'request': self.request},
+                                           data={'owner': user, 'author': user, 'title': 'Module', 'model': Page})
+
+    def test_serializer_model_field(self):
+        models = self.serializer.get_fields()['model'].queryset.all()
+        excluded_models = ContentType.objects.filter(app_label__in=(
+            'admin', 'auth', 'contenttypes', 'oauth2_provider', 'sessions', 'sites', 'resource', 'cms', 'newsletter',
+            'category'))
+        self.assertNotIn(excluded_models, models)
+        self.assertIn(ContentType.objects.get_for_model(News), models)
+
+
 class ModuleTestCase(LiveServerTestCase):
 
     def setUp(self):
@@ -33,7 +54,8 @@ class ModuleTestCase(LiveServerTestCase):
         self.request.user = user
         self.model = ContentType.objects.get_for_model(Page)
         self.module = Module.objects.create(owner=user, author=user, title='Module', model=self.model)
-        ModulePosition.objects.create(title=self.module.title, page=page, module=self.module, position='1', order=1, owner=user, author=user)
+        ModulePosition.objects.create(title=self.module.title, page=page, module=self.module, position='1', order=1,
+                                      owner=user, author=user)
         self.module.save()
 
     def test_serializer_get_content_url(self):
@@ -44,9 +66,11 @@ class ModuleTestCase(LiveServerTestCase):
         module_serializer = ModuleSerializer(context={'request': self.request})
         content_url = module_serializer.get_content_url(self.module)
         self.assertIn(generated_filter, content_url)
+        self.assertIn('?', content_url)
         self.module.filters = '{"test": "OK"'
         content_url = module_serializer.get_content_url(self.module)
         self.assertNotIn(generated_filter, content_url)
+        self.assertNotIn('?', content_url)
 
 
 class ModuleAPITestCase(APILiveServerTestCase):
@@ -151,14 +175,6 @@ class ModuleAPITestCase(APILiveServerTestCase):
         except AttributeError:
             get_query = urlencode(filter_dict)
         self.assertIn(get_query, content_url)
-
-    def test_module_position(self):
-        pass
-    """def test_order_field(self):
-        self.assertIn('order', self.first_object_response.data)
-        self.data['order'] = '1'
-        response = self.client.post(self.url, self.data)
-        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
-        self.data['order'] = 'a'
-        response = self.client.post(self.url, self.data)
-        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)"""
+        self.assertIn('?', content_url)
+        response = self.client.patch(self.first_object_response.data['url'], {'filters': ''})
+        self.assertNotIn('?', response.data['content_url'])
