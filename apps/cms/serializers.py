@@ -12,6 +12,7 @@ from apps.cms.models import Page, Module, ModulePosition
 
 
 class ModulePositionSerializer(PublicationSerializer):
+    content = serializers.CharField(required=False, label=_('content'), widget=serializers.widgets.Textarea())
 
     class Meta(PublicationSerializer.Meta):
         model = ModulePosition

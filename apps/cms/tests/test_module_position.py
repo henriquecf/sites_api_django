@@ -47,7 +47,6 @@ class ModulePositionAPITestCase(APILiveServerTestCase):
         self.url = reverse('moduleposition-list')
         self.data = {
             'title': 'First Module',
-            'content': 'Content',
             'page': page_response.data['url'],
             'module': module_response.data['url'],
             'position': '1',
@@ -55,7 +54,6 @@ class ModulePositionAPITestCase(APILiveServerTestCase):
         }
         self.altered_data = {
             'title': 'First Module',
-            'content': 'altered content',
             'page': page_response.data['url'],
             'module': module_response.data['url'],
             'position': '2',
