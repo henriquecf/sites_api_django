@@ -2,6 +2,7 @@
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import Group as AuthGroup, User as AuthUser, Permission
 from rest_framework import serializers
+
 from apps.resource.models import Resource, Group, User, AuthorRestriction
 
 
@@ -85,6 +86,10 @@ class AuthorRestrictionSerializer(ResourceSerializer):
             user__owner=self.context['request'].user.user.owner)
         fields['group'].queryset = fields['group'].queryset.filter(
             group__owner=self.context['request'].user.user.owner)
+        queryset = fields['permission'].queryset
+        queryset = queryset.exclude(content_type__app_label__in=['admin', 'auth', 'contenttypes', 'oauth2_provider',
+                                                                 'sessions', 'sites'])
+        fields['permission'].queryset = queryset
         return fields
 
     class Meta(ResourceSerializer.Meta):
