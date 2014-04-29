@@ -5,6 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User as AuthUser
 from django.http.request import HttpRequest
 from django.test import LiveServerTestCase
+from django.core.exceptions import ValidationError
 from rest_framework.test import APILiveServerTestCase
 from apps.resource.models import Resource, User
 from apps.publication.models import Publication
@@ -17,6 +18,7 @@ import test_fixtures
 
 
 class CategoryTestCase(LiveServerTestCase):
+
     def setUp(self):
         user = AuthUser.objects.create_user(username='user', password='123')
         User.objects.create(owner=user, author=user, user=user)
@@ -59,6 +61,17 @@ class CategoryTestCase(LiveServerTestCase):
         self.assertEqual(2, queryset.count())
         self.assertEqual(self.category, queryset[0])
         self.assertEqual(cat2, queryset[1])
+
+    def test_model_clean_method(self):
+        model = ContentType.objects.get_for_model(Publication)
+        cat2 = Category.objects.create(owner=self.user, author=self.user, name='Another Category', model=model)
+        try:
+            self.category.parent = cat2
+            self.category.full_clean()
+            self.category.save()
+            self.assertFalse('Category parent must be the same model as children')
+        except ValidationError:
+            pass
 
 
 class CategoryAPITestCase(APILiveServerTestCase):

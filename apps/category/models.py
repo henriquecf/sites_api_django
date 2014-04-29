@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 from apps.resource.models import Resource
@@ -19,6 +20,13 @@ class Category(MPTTModel, Resource):
 
     def __str__(self):
         return self.name
+
+    def clean(self):
+        try:
+            if self.parent.model != self.model:
+                raise ValidationError(_('Parent model must be the same as category.'))
+        except AttributeError:
+            pass
 
     class Meta(MPTTModel.Meta, Resource.Meta):
         verbose_name = _('category')
