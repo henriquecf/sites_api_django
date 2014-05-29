@@ -17,4 +17,4 @@ boto==2.27.0
 
 dj-database-url==0.3.0
 
-https://www.djangoproject.com/download/1.7b4/tarball/
+https://www.djangoproject.com/download/1.7.b4/tarball/
