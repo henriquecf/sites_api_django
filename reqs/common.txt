@@ -1,6 +1,6 @@
 pytz
 Pygments==1.6
-djangorestframework==2.3.13
+https://github.com/IvanOM/django-rest-framework/archive/2.3.14.tar.gz
 shortuuid==0.4
 django-oauth-toolkit==0.7.0
 django-braces==1.4.0
